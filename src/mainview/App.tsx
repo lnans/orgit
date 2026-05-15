@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 
 function App() {
@@ -8,6 +9,8 @@ function App() {
       <div className="container mx-auto px-4 py-10 max-w-3xl">
         <h1 className="text-5xl font-bold text-center text-white mb-2 drop-shadow-lg">React + Tailwind + Vite</h1>
         <p className="text-xl text-center text-white/90 mb-10">A fast Electrobun app with hot module replacement</p>
+
+        <Button>Shadcn button</Button>
 
         <div className="bg-white rounded-xl shadow-xl p-8 mb-8">
           <h2 className="text-2xl font-semibold text-indigo-600 mb-4">Interactive Counter</h2>
