@@ -1,0 +1,9 @@
+@import 'tailwindcss';
+
+.window-drag-region {
+  width: 100dvw;
+  height: 28px;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
