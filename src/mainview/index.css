@@ -123,11 +123,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-.window-drag-region {
-  width: 100dvw;
-  height: 28px;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
