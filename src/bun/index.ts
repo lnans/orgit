@@ -1,4 +1,5 @@
-import { BrowserWindow, Updater, Utils } from 'electrobun/bun'
+import { BrowserWindow, Updater } from 'electrobun/bun'
+import { webviewRPC } from './electrobun-server'
 
 const DEV_SERVER_PORT = 5173
 const DEV_SERVER_URL = `http://localhost:${DEV_SERVER_PORT}`
@@ -19,11 +20,9 @@ async function getMainViewUrl(): Promise<string> {
 }
 
 // Create the main application window
-const url = await getMainViewUrl()
-
-const mainWindow = new BrowserWindow({
+export const mainWindow = new BrowserWindow({
   title: 'Orgit',
-  url,
+  url: await getMainViewUrl(),
   frame: {
     width: 900,
     height: 700,
@@ -36,10 +35,10 @@ const mainWindow = new BrowserWindow({
     Closable: true,
     FullSizeContentView: true,
   },
+  trafficLightOffset: {
+    y: 6,
+    x: 6,
+  },
   titleBarStyle: 'hiddenInset',
-})
-
-// Quit the app when the main window is closed
-mainWindow.on('close', () => {
-  Utils.quit()
+  rpc: webviewRPC,
 })
