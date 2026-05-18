@@ -1,0 +1,25 @@
+import { Utils } from 'electrobun/bun'
+import { createAppState } from './features/app-state/index'
+import { createRpc } from './rpc'
+import { createMainWindow } from './window'
+
+export async function startApp() {
+  const appState = createAppState()
+
+  const rpc = createRpc({
+    onDoubleClickTitleBar: ({ mainWindow }) => {
+      mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize()
+    },
+    onSelectRepository: ({ repository }) => appState.selectRepository(repository),
+  })
+
+  const mainWindow = await createMainWindow(rpc)
+  rpc.setMainWindow(mainWindow)
+
+  mainWindow.on('close', () => Utils.quit())
+
+  mainWindow.webview.on('dom-ready', () => {
+    rpc.syncAppState(appState.initialize())
+    console.log('Main view is ready')
+  })
+}

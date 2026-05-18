@@ -1,13 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { App, Providers } from './App'
+import { Root } from './App'
 import './index.css'
-import './lib/electrobun'
+import './rpc'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Providers>
-      <App />
-    </Providers>
+    <Root />
   </StrictMode>
 )
