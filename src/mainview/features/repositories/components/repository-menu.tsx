@@ -1,5 +1,5 @@
 import { SidebarGroup, SidebarGroupContent, SidebarMenu } from '@client/components/ui/sidebar'
-import { useAppStore } from '@client/stores/app-store'
+import { useAppStore } from '@client/store'
 import { useTranslation } from 'react-i18next'
 import { RepositoryMenuItem } from './repository-menu-item'
 import { RepositoryMenuLabel } from './repository-menu-label'

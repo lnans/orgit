@@ -2,7 +2,7 @@ import { Card, CardContent } from '@client/components/ui/card'
 import { SidebarMenuItem } from '@client/components/ui/sidebar'
 import { Text } from '@client/components/ui/text'
 import { cn } from '@client/lib/utils'
-import { useAppStore } from '@client/stores/app-store'
+import { useAppStore } from '@client/store'
 import { cva } from 'class-variance-authority'
 import { GitBranch } from 'lucide-react'
 
@@ -22,7 +22,7 @@ type RepositoryMenuItemProps = {
 
 function RepositoryMenuItem({ name, branch }: RepositoryMenuItemProps) {
   const selectedRepository = useAppStore((state) => state.selectedRepository)
-  const selectRepository = useAppStore((state) => state.actions.selectRepository)
+  const selectRepository = useAppStore((state) => state.selectRepository)
 
   const isSelected = selectedRepository?.name === name
   return (

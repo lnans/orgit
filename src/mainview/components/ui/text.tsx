@@ -6,7 +6,7 @@ import { cn } from '@client/lib/utils'
 const textVariants = cva('', {
   variants: {
     variant: {
-      default: 'leading-7 [&:not(:first-child)]:mt-6',
+      default: 'leading-7',
       muted: 'text-muted-foreground text-sm',
     },
   },
