@@ -1,4 +1,4 @@
-import type { AppState, MainRPC } from '@shared/types'
+import type { AppState, MainRPC } from '../shared/types'
 import { BrowserView } from 'electrobun'
 
 type WindowControls = {

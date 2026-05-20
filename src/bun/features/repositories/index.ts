@@ -1,1 +1,1 @@
-export { scanRepositories as listRepositories } from './scan'
+export { listRepositories, type ListRepositoriesOptions } from './scan'

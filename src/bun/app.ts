@@ -19,8 +19,9 @@ export async function startApp() {
 
   mainWindow.on('close', () => Utils.quit())
 
-  mainWindow.webview.on('dom-ready', () => {
-    rpc.syncAppState(appState.initialize())
+  mainWindow.webview.on('dom-ready', async () => {
+    rpc.syncAppState(await appState.initialize())
+    rpc.syncAppState(await appState.refreshRepositories())
     console.log('Main view is ready')
   })
 }
