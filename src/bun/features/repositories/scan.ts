@@ -2,6 +2,7 @@ import type { Repository } from '@shared/types'
 import { Dirent, existsSync, mkdirSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { getCurrentBranch, isRepositoryRoot } from './git'
+import { listWorktrees } from './worktrees'
 
 export function scanRepositories(workspacePath: string): Repository[] {
   ensureWorkspaceExists(workspacePath)
@@ -30,6 +31,7 @@ export function scanRepositories(workspacePath: string): Repository[] {
       name: entry.name,
       branch: getCurrentBranch(repoPath),
       path: repoPath,
+      worktrees: listWorktrees(repoPath),
     })
   }
 

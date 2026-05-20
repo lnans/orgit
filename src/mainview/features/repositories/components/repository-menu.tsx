@@ -15,7 +15,7 @@ function RepositoryMenu() {
       <SidebarGroupContent>
         <SidebarMenu className="gap-2">
           {repositories.map((repository) => (
-            <RepositoryMenuItem key={repository.name} name={repository.name} branch={repository.branch} />
+            <RepositoryMenuItem key={repository.path} name={repository.name} branch={repository.branch} path={repository.path} />
           ))}
           {repositories.length === 0 && (
             <div className="flex items-center justify-center p-4 text-muted-foreground font-semibold text-[10px] w-full">

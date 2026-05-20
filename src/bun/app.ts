@@ -10,7 +10,8 @@ export async function startApp() {
     onDoubleClickTitleBar: ({ mainWindow }) => {
       mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize()
     },
-    onSelectRepository: ({ repository }) => appState.selectRepository(repository),
+    onSelectRepository: ({ repositoryPath }) => appState.selectRepository(repositoryPath),
+    onSelectWorktree: ({ worktreePath }) => appState.selectWorktree(worktreePath),
   })
 
   const mainWindow = await createMainWindow(rpc)

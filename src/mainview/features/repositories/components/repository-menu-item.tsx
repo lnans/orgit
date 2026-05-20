@@ -18,15 +18,16 @@ const repositoryMenuItemVariants = cva('pt-0.5 pb-1 mx-2 gap-0 rounded-sm cursor
 type RepositoryMenuItemProps = {
   name: string
   branch: string
+  path: string
 }
 
-function RepositoryMenuItem({ name, branch }: RepositoryMenuItemProps) {
-  const selectedRepository = useAppStore((state) => state.selectedRepository)
+function RepositoryMenuItem({ name, branch, path }: RepositoryMenuItemProps) {
+  const selectedRepositoryPath = useAppStore((state) => state.selectedRepositoryPath)
   const selectRepository = useAppStore((state) => state.selectRepository)
 
-  const isSelected = selectedRepository?.name === name
+  const isSelected = selectedRepositoryPath === path
   return (
-    <SidebarMenuItem onClick={() => selectRepository(name)}>
+    <SidebarMenuItem onClick={() => selectRepository(path)}>
       <Card className={cn(repositoryMenuItemVariants({ isSelected }))}>
         <CardContent className="px-2">
           <div className="inline-flex w-full flex-1 items-center justify-between">

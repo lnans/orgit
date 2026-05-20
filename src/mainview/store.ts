@@ -1,19 +1,32 @@
 import { mainProcess } from '@client/rpc'
 import type { AppState } from '@shared/types'
+import { getSelectedWorktreePath } from '@shared/selection'
 import { create } from 'zustand'
 
 type AppStore = AppState & {
   syncAppState: (appState: AppState) => void
-  selectRepository: (name: string) => void
+  selectRepository: (path: string) => void
+  selectWorktree: (path: string) => void
 }
 
-export const useAppStore = create<AppStore>()((set, get) => ({
+export const useAppStore = create<AppStore>()((set) => ({
   workspacePath: '',
   repositories: [],
-  selectedRepository: undefined,
+  selectedRepositoryPath: undefined,
+  selectedWorktreePaths: {},
   syncAppState: (appState) => set(() => ({ ...appState })),
-  selectRepository: (name) => {
-    const repository = get().repositories.find((repo) => repo.name === name)
-    mainProcess.onSelectRepository(repository)
+  selectRepository: (path) => {
+    mainProcess.onSelectRepository(path)
+  },
+  selectWorktree: (path) => {
+    mainProcess.onSelectWorktree(path)
   },
 }))
+
+export function useSelectedRepository() {
+  return useAppStore((state) => state.repositories.find((repository) => repository.path === state.selectedRepositoryPath))
+}
+
+export function useSelectedWorktreePath() {
+  return useAppStore((state) => getSelectedWorktreePath(state))
+}

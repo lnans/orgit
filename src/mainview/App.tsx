@@ -2,6 +2,7 @@ import { Sidebar, SidebarContent, SidebarProvider, SidebarTrigger } from '@clien
 import { Text } from '@client/components/ui/text'
 import { Title } from '@client/components/ui/title'
 import { RepositoryMenu } from '@client/features/repositories/components/repository-menu'
+import { WorktreeMenu } from '@client/features/worktrees/components/worktree-menu'
 import { mainProcess } from '@client/rpc'
 import { useAppStore } from '@client/store'
 import { FolderOpen } from 'lucide-react'
@@ -34,6 +35,7 @@ function App() {
             <SidebarContent>
               <ScrollArea className="h-full">
                 <RepositoryMenu />
+                <WorktreeMenu />
               </ScrollArea>
             </SidebarContent>
           </Sidebar>
