@@ -1,4 +1,4 @@
-import type { AppState, PersistedState, SelectedWorktreePaths } from '@shared/types'
+import { PERSISTED_STATE_VERSION, type AppState, type PersistedState, type SelectedWorktreePaths } from '../../../shared/types'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { CONFIG_DIR, DEFAULT_WORKSPACE, STATE_FILE } from './paths'
 
@@ -33,6 +33,7 @@ export function savePersistedState(state: PersistedState) {
 
 export function toPersistedState(state: AppState): PersistedState {
   return {
+    version: PERSISTED_STATE_VERSION,
     workspacePath: state.workspacePath,
     selectedRepositoryPath: state.selectedRepositoryPath,
     selectedWorktreePaths: state.selectedWorktreePaths,
@@ -47,26 +48,44 @@ function ensureConfigDir() {
 
 function defaultPersistedState(): PersistedState {
   return {
+    version: PERSISTED_STATE_VERSION,
     workspacePath: DEFAULT_WORKSPACE,
     selectedWorktreePaths: {},
   }
 }
 
-function parsePersistedState(raw: unknown): PersistedState {
+export function parsePersistedState(raw: unknown): PersistedState {
   if (!raw || typeof raw !== 'object') {
     return defaultPersistedState()
   }
 
   const record = raw as Record<string, unknown>
-  return {
-    workspacePath: typeof record.workspacePath === 'string' ? record.workspacePath : DEFAULT_WORKSPACE,
-    selectedRepositoryPath: parseOptionalPath(record.selectedRepositoryPath),
-    selectedWorktreePaths: parseSelectedWorktreePaths(record),
+  const version = typeof record.version === 'number' ? record.version : 0
+
+  if (version > PERSISTED_STATE_VERSION) {
+    console.warn(`State file version ${version} is newer than supported ${PERSISTED_STATE_VERSION}. Some fields may be ignored.`)
   }
+
+  return migratePersistedState(version, record)
 }
 
-function parseSelectedWorktreePaths(record: Record<string, unknown>): SelectedWorktreePaths {
-  return parseWorktreePathsMap(record.selectedWorktreePaths)
+function migratePersistedState(version: number, record: Record<string, unknown>): PersistedState {
+  // v0: no version field — same shape as v1.
+  if (version < 1) {
+    return {
+      version: PERSISTED_STATE_VERSION,
+      workspacePath: typeof record.workspacePath === 'string' ? record.workspacePath : DEFAULT_WORKSPACE,
+      selectedRepositoryPath: parseOptionalPath(record.selectedRepositoryPath),
+      selectedWorktreePaths: parseWorktreePathsMap(record.selectedWorktreePaths),
+    }
+  }
+
+  return {
+    version: PERSISTED_STATE_VERSION,
+    workspacePath: typeof record.workspacePath === 'string' ? record.workspacePath : DEFAULT_WORKSPACE,
+    selectedRepositoryPath: parseOptionalPath(record.selectedRepositoryPath),
+    selectedWorktreePaths: parseWorktreePathsMap(record.selectedWorktreePaths),
+  }
 }
 
 function parseWorktreePathsMap(raw: unknown): SelectedWorktreePaths {

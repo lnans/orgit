@@ -1,9 +1,21 @@
 import { RPCSchema } from 'electrobun'
 
+export type WorktreeDiffStats = {
+  filesModified: number
+  linesAdded: number
+  linesRemoved: number
+}
+
+export const EMPTY_WORKTREE_DIFF_STATS: WorktreeDiffStats = {
+  filesModified: 0,
+  linesAdded: 0,
+  linesRemoved: 0,
+}
+
 export type Worktree = {
   name: string
   path: string
-}
+} & WorktreeDiffStats
 
 export type Repository = {
   name: string
@@ -14,7 +26,10 @@ export type Repository = {
 
 export type SelectedWorktreePaths = Record<string, string>
 
+export const PERSISTED_STATE_VERSION = 1
+
 export type PersistedState = {
+  version: number
   workspacePath: string
   selectedRepositoryPath?: string
   selectedWorktreePaths: SelectedWorktreePaths

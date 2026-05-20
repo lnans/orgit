@@ -16,7 +16,7 @@ function WorktreeMenu() {
       <SidebarGroupContent>
         <SidebarMenu className="gap-2">
           {worktrees.map((worktree) => (
-            <WorktreeMenuItem key={worktree.path} name={worktree.name} path={worktree.path} />
+            <WorktreeMenuItem key={worktree.path} worktree={worktree} />
           ))}
           {worktrees.length === 0 && (
             <div className="flex w-full items-center justify-center p-4 text-[10px] font-semibold text-muted-foreground">

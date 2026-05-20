@@ -1,5 +1,5 @@
 import { mainProcess } from '@client/rpc'
-import type { AppState } from '@shared/types'
+import { PERSISTED_STATE_VERSION, type AppState } from '@shared/types'
 import { getSelectedWorktreePath } from '@shared/selection'
 import { create } from 'zustand'
 
@@ -10,6 +10,7 @@ type AppStore = AppState & {
 }
 
 export const useAppStore = create<AppStore>()((set) => ({
+  version: PERSISTED_STATE_VERSION,
   workspacePath: '',
   repositories: [],
   selectedRepositoryPath: undefined,

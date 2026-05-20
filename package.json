@@ -8,7 +8,8 @@
     "hmr": "vite --port 5173",
     "build:canary": "vite build && electrobun build --env=canary",
     "build:stable": "vite build && electrobun build --env=stable",
-    "fmt": "prettier --write ."
+    "fmt": "prettier --write .",
+    "test": "bun test"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
@@ -28,7 +29,7 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.0",
     "@types/bun": "latest",
-    "@types/react": "^19.2.14",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "concurrently": "^9.1.0",
