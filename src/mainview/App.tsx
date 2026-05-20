@@ -31,8 +31,8 @@ function App() {
 
         {/* Content between header and footer */}
         <div className="absolute top-10 bottom-6 left-0 right-0 flex flex-row overflow-hidden">
-          <Sidebar className="pt-10">
-            <SidebarContent>
+          <Sidebar>
+            <SidebarContent className="pt-10 pb-6">
               <ScrollArea className="h-full">
                 <RepositoryMenu />
                 <WorktreeMenu />
