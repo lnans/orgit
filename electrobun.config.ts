@@ -16,12 +16,15 @@ export default {
     watchIgnore: ['dist/**'],
     mac: {
       bundleCEF: false,
+      icons: './assets/orgit.icon',
     },
     linux: {
       bundleCEF: false,
+      icon: './assets/orgit.icon.256x256.png',
     },
     win: {
       bundleCEF: false,
+      icon: './assets/orgit.icon.256x256.png',
     },
   },
 } satisfies ElectrobunConfig

@@ -45,6 +45,14 @@ Example: worktrees
 
 Each feature folder exposes a small `index.ts`; keep implementation details in sibling files.
 
+# App icon on MacOS
+
+```
+xcode-select --install
+sudo xcodebuild -license accept
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+```
+
 ## Data flow
 
 ```
