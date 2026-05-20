@@ -1,4 +1,4 @@
-import type { AppState, MainRPC, Repository } from '@shared/types'
+import type { AppState, MainRPC } from '@shared/types'
 import { BrowserView } from 'electrobun'
 
 type WindowControls = {
@@ -9,7 +9,8 @@ type WindowControls = {
 
 type RpcHandlers = {
   onDoubleClickTitleBar: (params: { mainWindow: WindowControls }) => void
-  onSelectRepository: (params: { repository: Repository | null | undefined }) => AppState
+  onSelectRepository: (params: { repositoryPath: string | null | undefined }) => AppState
+  onSelectWorktree: (params: { worktreePath: string | null | undefined }) => AppState
 }
 
 export type WebviewRPC = ReturnType<typeof createRpc>
@@ -26,8 +27,12 @@ export function createRpc(handlers: RpcHandlers) {
             handlers.onDoubleClickTitleBar({ mainWindow })
           }
         },
-        onSelectRepository: ({ repository }) => {
-          const appState = handlers.onSelectRepository({ repository })
+        onSelectRepository: ({ repositoryPath }) => {
+          const appState = handlers.onSelectRepository({ repositoryPath })
+          rpc.send.syncAppState({ appState })
+        },
+        onSelectWorktree: ({ worktreePath }) => {
+          const appState = handlers.onSelectWorktree({ worktreePath })
           rpc.send.syncAppState({ appState })
         },
       },

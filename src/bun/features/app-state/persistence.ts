@@ -1,41 +1,41 @@
-import type { AppState, Repository } from '@shared/types'
+import type { AppState, PersistedState, SelectedWorktreePaths } from '@shared/types'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { CONFIG_DIR, DEFAULT_WORKSPACE, STATE_FILE } from './paths'
-import { reconcileSelectedRepository, shouldPersistState } from './reconcile'
 
-export function loadStateFromDisk(): AppState {
+export function loadPersistedState(): PersistedState {
   ensureConfigDir()
 
   if (!existsSync(STATE_FILE)) {
-    const initial = defaultState()
-    saveStateToDisk(initial)
+    const initial = defaultPersistedState()
+    savePersistedState(initial)
     return initial
   }
 
   try {
     const raw: unknown = JSON.parse(readFileSync(STATE_FILE, 'utf-8'))
-    const parsed = parseState(raw)
-    const state = reconcileSelectedRepository(parsed)
-
-    if (shouldPersistState(parsed, state)) {
-      saveStateToDisk(state)
-    }
-
-    return state
+    return parsePersistedState(raw)
   } catch (error) {
     console.error('Failed to read state file. Using defaults.', error)
-    const initial = defaultState()
-    saveStateToDisk(initial)
+    const initial = defaultPersistedState()
+    savePersistedState(initial)
     return initial
   }
 }
 
-export function saveStateToDisk(state: AppState) {
+export function savePersistedState(state: PersistedState) {
   ensureConfigDir()
   try {
     writeFileSync(STATE_FILE, JSON.stringify(state, null, 2))
   } catch (error) {
     console.error('Failed to persist state file.', error)
+  }
+}
+
+export function toPersistedState(state: AppState): PersistedState {
+  return {
+    workspacePath: state.workspacePath,
+    selectedRepositoryPath: state.selectedRepositoryPath,
+    selectedWorktreePaths: state.selectedWorktreePaths,
   }
 }
 
@@ -45,42 +45,45 @@ function ensureConfigDir() {
   }
 }
 
-function defaultState(): AppState {
+function defaultPersistedState(): PersistedState {
   return {
     workspacePath: DEFAULT_WORKSPACE,
-    repositories: [],
+    selectedWorktreePaths: {},
   }
 }
 
-function parseState(raw: unknown): AppState {
+function parsePersistedState(raw: unknown): PersistedState {
   if (!raw || typeof raw !== 'object') {
-    return defaultState()
+    return defaultPersistedState()
   }
 
   const record = raw as Record<string, unknown>
   return {
     workspacePath: typeof record.workspacePath === 'string' ? record.workspacePath : DEFAULT_WORKSPACE,
-    repositories: parseRepositories(record.repositories),
-    selectedRepository: parseRepository(record.selectedRepository),
+    selectedRepositoryPath: parseOptionalPath(record.selectedRepositoryPath),
+    selectedWorktreePaths: parseSelectedWorktreePaths(record),
   }
 }
 
-function parseRepositories(raw: unknown): Repository[] {
-  if (!Array.isArray(raw)) {
-    return []
-  }
-  return raw.map(parseRepository).filter((repo): repo is Repository => repo !== undefined)
+function parseSelectedWorktreePaths(record: Record<string, unknown>): SelectedWorktreePaths {
+  return parseWorktreePathsMap(record.selectedWorktreePaths)
 }
 
-function parseRepository(raw: unknown): Repository | undefined {
-  if (!raw || typeof raw !== 'object') {
-    return undefined
+function parseWorktreePathsMap(raw: unknown): SelectedWorktreePaths {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+    return {}
   }
 
-  const record = raw as Record<string, unknown>
-  if (typeof record.name !== 'string' || typeof record.path !== 'string' || typeof record.branch !== 'string') {
-    return undefined
+  const map: SelectedWorktreePaths = {}
+  for (const [repositoryPath, worktreePath] of Object.entries(raw)) {
+    if (typeof repositoryPath === 'string' && typeof worktreePath === 'string' && worktreePath.length > 0) {
+      map[repositoryPath] = worktreePath
+    }
   }
 
-  return { name: record.name, path: record.path, branch: record.branch }
+  return map
+}
+
+function parseOptionalPath(value: unknown): string | undefined {
+  return typeof value === 'string' && value.length > 0 ? value : undefined
 }

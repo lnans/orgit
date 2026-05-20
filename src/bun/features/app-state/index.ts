@@ -1,18 +1,17 @@
-import type { AppState, Repository } from '@shared/types'
+import type { AppState, PersistedState } from '@shared/types'
 import { listRepositories } from '../repositories'
-import { loadStateFromDisk, saveStateToDisk } from './persistence'
-import { reconcileSelectedRepository, shouldPersistState } from './reconcile'
+import { loadPersistedState, savePersistedState, toPersistedState } from './persistence'
+import { reconcileAppState, shouldPersistState } from './reconcile'
 
 export function createAppState() {
-  let state = loadStateFromDisk()
-  state = refreshState(state)
+  let state = buildAppState(loadPersistedState())
 
   function commit(next: AppState) {
     const previous = state
-    state = reconcileSelectedRepository(next)
+    state = reconcileAppState(next)
 
     if (shouldPersistState(previous, state)) {
-      saveStateToDisk(state)
+      savePersistedState(toPersistedState(state))
     }
 
     return structuredClone(state)
@@ -28,10 +27,28 @@ export function createAppState() {
       return structuredClone(state)
     },
 
-    selectRepository(repository: Repository | null | undefined): AppState {
+    selectRepository(repositoryPath: string | null | undefined): AppState {
       return commit({
         ...state,
-        selectedRepository: repository ?? undefined,
+        selectedRepositoryPath: repositoryPath ?? undefined,
+      })
+    },
+
+    selectWorktree(worktreePath: string | null | undefined): AppState {
+      if (!state.selectedRepositoryPath) {
+        return structuredClone(state)
+      }
+
+      const selectedWorktreePaths = { ...state.selectedWorktreePaths }
+      if (worktreePath) {
+        selectedWorktreePaths[state.selectedRepositoryPath] = worktreePath
+      } else {
+        delete selectedWorktreePaths[state.selectedRepositoryPath]
+      }
+
+      return commit({
+        ...state,
+        selectedWorktreePaths,
       })
     },
 
@@ -44,14 +61,21 @@ export function createAppState() {
   }
 }
 
+function buildAppState(persisted: PersistedState): AppState {
+  return reconcileAppState({
+    ...persisted,
+    repositories: listRepositories(persisted.workspacePath),
+  })
+}
+
 function refreshState(current: AppState): AppState {
-  const next = reconcileSelectedRepository({
-    ...current,
+  const next = reconcileAppState({
+    ...toPersistedState(current),
     repositories: listRepositories(current.workspacePath),
   })
 
   if (shouldPersistState(current, next)) {
-    saveStateToDisk(next)
+    savePersistedState(toPersistedState(next))
   }
 
   return next

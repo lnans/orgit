@@ -1,15 +1,27 @@
 import { RPCSchema } from 'electrobun'
 
+export type Worktree = {
+  name: string
+  path: string
+}
+
 export type Repository = {
   name: string
   path: string
   branch: string
+  worktrees: Worktree[]
 }
 
-export type AppState = {
+export type SelectedWorktreePaths = Record<string, string>
+
+export type PersistedState = {
   workspacePath: string
+  selectedRepositoryPath?: string
+  selectedWorktreePaths: SelectedWorktreePaths
+}
+
+export type AppState = PersistedState & {
   repositories: Repository[]
-  selectedRepository?: Repository
 }
 
 export type MainRPC = {
@@ -18,7 +30,10 @@ export type MainRPC = {
     messages: {
       onDoubleClickTitleBar: {}
       onSelectRepository: {
-        repository: Repository | null | undefined
+        repositoryPath: string | null | undefined
+      }
+      onSelectWorktree: {
+        worktreePath: string | null | undefined
       }
     }
   }>

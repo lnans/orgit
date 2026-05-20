@@ -1,5 +1,5 @@
 import { useAppStore } from '@client/store'
-import type { MainRPC, Repository } from '@shared/types'
+import type { MainRPC } from '@shared/types'
 import { Electroview } from 'electrobun/view'
 
 const rpc = Electroview.defineRPC<MainRPC>({
@@ -18,5 +18,6 @@ const electroview = new Electroview({ rpc })
 
 export const mainProcess = {
   onDoubleClickTitleBar: () => electroview.rpc?.send.onDoubleClickTitleBar({}),
-  onSelectRepository: (repository?: Repository) => electroview.rpc?.send.onSelectRepository({ repository }),
+  onSelectRepository: (repositoryPath?: string) => electroview.rpc?.send.onSelectRepository({ repositoryPath }),
+  onSelectWorktree: (worktreePath?: string) => electroview.rpc?.send.onSelectWorktree({ worktreePath }),
 }
