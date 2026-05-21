@@ -1,5 +1,6 @@
 {
   "tailwindCSS.classFunctions": ["cva", "cx"],
   "i18n-ally.autoDetection": true,
-  "i18n-ally.localesPaths": ["src/mainview/locales"]
+  "i18n-ally.localesPaths": ["src/mainview/locales"],
+  "editor.rulers": [80]
 }
