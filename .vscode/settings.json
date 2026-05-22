@@ -2,5 +2,9 @@
   "tailwindCSS.classFunctions": ["cva", "cx"],
   "i18n-ally.autoDetection": true,
   "i18n-ally.localesPaths": ["src/mainview/locales"],
-  "editor.rulers": [80]
+  "editor.rulers": [80],
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit"
+  }
 }
