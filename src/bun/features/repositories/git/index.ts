@@ -1,2 +1,9 @@
-export { DETACHED_HEAD, EMPTY_TREE, UNKNOWN_BRANCH, runGit, runGitAsync, type GitResult } from './run'
-export { getCurrentBranch, hasHeadCommit, isRepositoryRoot } from './repo'
+export { getCurrentBranch, hasHeadCommit, isRepositoryRoot } from "./repo";
+export {
+	DETACHED_HEAD,
+	EMPTY_TREE,
+	type GitResult,
+	runGit,
+	runGitAsync,
+	UNKNOWN_BRANCH,
+} from "./run";
