@@ -18,11 +18,13 @@ type RpcHandlers = {
 	}) => AppState;
 	onSetLogPanelOpen: (params: { open: boolean }) => void;
 	onTerminalAttach: (params: {
-		sessionKey: string;
+		sessionId: string;
+		cwd: string;
 		cols: number;
 		rows: number;
 	}) => void;
-	onTerminalInput: (params: { sessionKey: string; data: string }) => void;
+	onTerminalClose: (params: { sessionId: string }) => void;
+	onTerminalInput: (params: { sessionId: string; data: string }) => void;
 	onTerminalResize: (params: { cols: number; rows: number }) => void;
 };
 
@@ -51,11 +53,14 @@ export function createRpc(handlers: RpcHandlers) {
 				onSetLogPanelOpen: ({ open }) => {
 					handlers.onSetLogPanelOpen({ open });
 				},
-				onTerminalAttach: ({ sessionKey, cols, rows }) => {
-					handlers.onTerminalAttach({ sessionKey, cols, rows });
+				onTerminalAttach: ({ sessionId, cwd, cols, rows }) => {
+					handlers.onTerminalAttach({ sessionId, cwd, cols, rows });
 				},
-				onTerminalInput: ({ sessionKey, data }) => {
-					handlers.onTerminalInput({ sessionKey, data });
+				onTerminalClose: ({ sessionId }) => {
+					handlers.onTerminalClose({ sessionId });
+				},
+				onTerminalInput: ({ sessionId, data }) => {
+					handlers.onTerminalInput({ sessionId, data });
 				},
 				onTerminalResize: ({ cols, rows }) => {
 					handlers.onTerminalResize({ cols, rows });
@@ -76,11 +81,11 @@ export function createRpc(handlers: RpcHandlers) {
 		syncLogContent: (content: string) => {
 			rpc.send.syncLogContent({ content });
 		},
-		syncTerminalOutput: (sessionKey: string, data: string) => {
-			rpc.send.syncTerminalOutput({ sessionKey, data });
+		syncTerminalOutput: (sessionId: string, data: string) => {
+			rpc.send.syncTerminalOutput({ sessionId, data });
 		},
-		syncTerminalExit: (sessionKey: string, exitCode: number) => {
-			rpc.send.syncTerminalExit({ sessionKey, exitCode });
+		syncTerminalExit: (sessionId: string, exitCode: number) => {
+			rpc.send.syncTerminalExit({ sessionId, exitCode });
 		},
 		syncAppConfig: (config: AppConfig) => {
 			rpc.send.syncAppConfig({ config });

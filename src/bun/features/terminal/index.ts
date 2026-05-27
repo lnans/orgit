@@ -2,12 +2,12 @@ import { homedir } from "node:os";
 import { createTerminalSession, type TerminalSession } from "./session";
 
 export type TerminalManagerCallbacks = {
-	onOutput: (sessionKey: string, data: string) => void;
-	onExit: (sessionKey: string, exitCode: number) => void;
+	onOutput: (sessionId: string, data: string) => void;
+	onExit: (sessionId: string, exitCode: number) => void;
 };
 
 export type TerminalAttachOptions = {
-	sessionKey: string;
+	sessionId: string;
 	cwd: string;
 	cols: number;
 	rows: number;
@@ -28,13 +28,13 @@ export function resolveTerminalCwd(
 
 export function createTerminalManager(callbacks: TerminalManagerCallbacks) {
 	const sessions = new Map<string, TerminalSession>();
-	let activeSessionKey: string | undefined;
+	let activeSessionId: string | undefined;
 	let cols = 80;
 	let rows = 24;
 
-	function ensureSession(sessionKey: string, cwd: string) {
-		if (sessions.has(sessionKey)) {
-			sessions.get(sessionKey)?.resize(cols, rows);
+	function ensureSession(sessionId: string, cwd: string) {
+		if (sessions.has(sessionId)) {
+			sessions.get(sessionId)?.resize(cols, rows);
 			return;
 		}
 
@@ -43,32 +43,39 @@ export function createTerminalManager(callbacks: TerminalManagerCallbacks) {
 			cols,
 			rows,
 			onData: (data) => {
-				callbacks.onOutput(sessionKey, data);
+				callbacks.onOutput(sessionId, data);
 			},
 			onExit: (exitCode) => {
-				sessions.delete(sessionKey);
-				if (activeSessionKey === sessionKey) {
-					activeSessionKey = undefined;
+				sessions.delete(sessionId);
+				if (activeSessionId === sessionId) {
+					activeSessionId = undefined;
 				}
-				callbacks.onExit(sessionKey, exitCode);
+				callbacks.onExit(sessionId, exitCode);
 			},
 		});
 
-		sessions.set(sessionKey, session);
+		sessions.set(sessionId, session);
 	}
 
 	return {
 		attach(options: TerminalAttachOptions) {
 			cols = options.cols;
 			rows = options.rows;
-			ensureSession(options.sessionKey, options.cwd);
-			activeSessionKey = options.sessionKey;
+			ensureSession(options.sessionId, options.cwd);
+			activeSessionId = options.sessionId;
 		},
-		write(sessionKey: string, data: string) {
-			if (activeSessionKey !== sessionKey) {
+		write(sessionId: string, data: string) {
+			if (activeSessionId !== sessionId) {
 				return;
 			}
-			sessions.get(sessionKey)?.write(data);
+			sessions.get(sessionId)?.write(data);
+		},
+		close(sessionId: string) {
+			sessions.get(sessionId)?.dispose();
+			sessions.delete(sessionId);
+			if (activeSessionId === sessionId) {
+				activeSessionId = undefined;
+			}
 		},
 		resize(nextCols: number, nextRows: number) {
 			cols = nextCols;
@@ -82,7 +89,7 @@ export function createTerminalManager(callbacks: TerminalManagerCallbacks) {
 				session.dispose();
 			}
 			sessions.clear();
-			activeSessionKey = undefined;
+			activeSessionId = undefined;
 		},
 	};
 }

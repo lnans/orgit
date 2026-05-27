@@ -2,17 +2,23 @@ import { useTerminalSession } from "@client/features/terminal/hooks/use-terminal
 import { cn } from "@client/lib/utils";
 import { useRef } from "react";
 
-type WorktreeTerminalProps = {
-	sessionKey: string;
+type TerminalSessionViewProps = {
+	sessionId: string;
+	cwd: string;
+	visible: boolean;
 	active: boolean;
 };
 
-export function WorktreeTerminal({
-	sessionKey,
+export function TerminalSessionView({
+	sessionId,
+	cwd,
+	visible,
 	active,
-}: WorktreeTerminalProps) {
+}: TerminalSessionViewProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
-	useTerminalSession({ sessionKey, active, containerRef });
+	useTerminalSession({ sessionId, cwd, visible, active, containerRef });
+
+	const shown = visible && active;
 
 	return (
 		<div
@@ -20,9 +26,9 @@ export function WorktreeTerminal({
 			className={cn(
 				"orgit-terminal absolute inset-0 min-h-0 overflow-hidden px-2.5",
 				"electrobun-webkit-app-region-no-drag",
-				!active && "invisible pointer-events-none",
+				!shown && "invisible pointer-events-none",
 			)}
-			aria-hidden={!active}
+			aria-hidden={!shown}
 		/>
 	);
 }
