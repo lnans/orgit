@@ -7,6 +7,7 @@ import {
 import { Text } from "@client/components/ui/text";
 import { Title } from "@client/components/ui/title";
 import { LogPanel } from "@client/features/logs/components/log-panel";
+import { LogPanelToggle } from "@client/features/logs/components/log-panel-toggle";
 import { useLogPanelShortcut } from "@client/features/logs/hooks/use-log-panel-shortcut";
 import { useLogStore } from "@client/features/logs/store";
 import { RepositoryMenu } from "@client/features/repositories/components/repository-menu";
@@ -62,11 +63,14 @@ function App() {
 				</div>
 
 				{/* Footer bar */}
-				<div className="z-50 inline-flex h-6 shrink-0 items-center gap-1 border-t bg-sidebar px-2">
-					<FolderOpen size={10} className="text-sidebar-ring" />
-					<Text className="text-[10px]" variant="muted">
-						{workspacePath || "-"}
-					</Text>
+				<div className="z-50 flex h-6 shrink-0 items-stretch border-t bg-sidebar">
+					<div className="flex min-w-0 flex-1 items-center gap-1 px-2">
+						<FolderOpen size={10} className="shrink-0 text-sidebar-ring" />
+						<Text className="truncate text-[10px]" variant="muted">
+							{workspacePath || "-"}
+						</Text>
+					</div>
+					<LogPanelToggle />
 				</div>
 			</SidebarProvider>
 		</div>
