@@ -22,9 +22,10 @@ async function resolveMainViewUrl(): Promise<string> {
 }
 
 export async function createMainWindow(rpc: WebviewRPC) {
-	return new BrowserWindow({
+	const mainWindow = new BrowserWindow({
 		title: "Orgit",
 		url: await resolveMainViewUrl(),
+		activate: true,
 		frame: { width: 900, height: 700, x: 200, y: 200 },
 		styleMask: {
 			Resizable: true,
@@ -36,4 +37,9 @@ export async function createMainWindow(rpc: WebviewRPC) {
 		titleBarStyle: "hiddenInset",
 		rpc,
 	});
+
+	mainWindow.maximize();
+	mainWindow.activate();
+
+	return mainWindow;
 }

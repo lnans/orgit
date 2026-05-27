@@ -12,6 +12,7 @@ import { useLogPanelShortcut } from "@client/features/logs/hooks/use-log-panel-s
 import { useLogStore } from "@client/features/logs/store";
 import { RepositoryMenu } from "@client/features/repositories/components/repository-menu";
 import { WorktreeMenu } from "@client/features/worktrees/components/worktree-menu";
+import { useWindowFocusOnMount } from "@client/hooks/use-window-focus";
 import { mainProcess } from "@client/rpc";
 import { useAppStore } from "@client/store";
 import { FolderOpen } from "lucide-react";
@@ -25,6 +26,7 @@ function App() {
 	const logPanelOpen = useLogStore((state) => state.open);
 
 	useLogPanelShortcut();
+	useWindowFocusOnMount();
 
 	return (
 		<div className="flex h-dvh flex-col overflow-hidden">
