@@ -8,6 +8,14 @@ import {
 
 type LogLevel = "debug" | "info" | "warn" | "error";
 
+function pad2(value: number): string {
+	return String(value).padStart(2, "0");
+}
+
+export function formatLocalDateTime(date = new Date()): string {
+	return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())} ${pad2(date.getHours())}:${pad2(date.getMinutes())}:${pad2(date.getSeconds())}.${String(date.getMilliseconds()).padStart(3, "0")}`;
+}
+
 function formatArgs(args: unknown[]): string {
 	if (args.length === 0) {
 		return "";
@@ -29,7 +37,7 @@ function formatArg(value: unknown): string {
 }
 
 function formatLine(level: LogLevel, message: string, args: unknown[]): string {
-	return `[${new Date().toISOString()}] ${level.toUpperCase()} ${message}${formatArgs(args)}`;
+	return `[${formatLocalDateTime()}] ${level.toUpperCase()} ${message}${formatArgs(args)}`;
 }
 
 function write(level: LogLevel, message: string, ...args: unknown[]) {
