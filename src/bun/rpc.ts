@@ -15,6 +15,7 @@ type RpcHandlers = {
 	onSelectWorktree: (params: {
 		worktreePath: string | null | undefined;
 	}) => AppState;
+	onSetLogPanelOpen: (params: { open: boolean }) => void;
 };
 
 export type WebviewRPC = ReturnType<typeof createRpc>;
@@ -39,6 +40,9 @@ export function createRpc(handlers: RpcHandlers) {
 					const appState = handlers.onSelectWorktree({ worktreePath });
 					rpc.send.syncAppState({ appState });
 				},
+				onSetLogPanelOpen: ({ open }) => {
+					handlers.onSetLogPanelOpen({ open });
+				},
 			},
 			requests: {},
 		},
@@ -51,6 +55,9 @@ export function createRpc(handlers: RpcHandlers) {
 		},
 		syncAppState: (appState: AppState) => {
 			rpc.send.syncAppState({ appState });
+		},
+		syncLogContent: (content: string) => {
+			rpc.send.syncLogContent({ content });
 		},
 	};
 }
