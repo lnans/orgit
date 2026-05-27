@@ -5,6 +5,8 @@
   "noData": "No data to display",
   "selectRepositoryFirst": "Select a repository first",
   "logPanel": "Log",
+  "logs": "Logs",
+  "logsToggle": "Toggle log panel",
   "logPanelEmpty": "No log output yet.",
   "close": "Close"
 }
