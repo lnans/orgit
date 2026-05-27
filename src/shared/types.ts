@@ -50,6 +50,9 @@ export type MainRPC = {
 			onSelectWorktree: {
 				worktreePath: string | null | undefined;
 			};
+			onSetLogPanelOpen: {
+				open: boolean;
+			};
 		};
 	}>;
 	webview: RPCSchema<{
@@ -57,6 +60,9 @@ export type MainRPC = {
 		messages: {
 			syncAppState: {
 				appState: AppState;
+			};
+			syncLogContent: {
+				content: string;
 			};
 		};
 	}>;

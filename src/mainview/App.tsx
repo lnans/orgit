@@ -6,6 +6,9 @@ import {
 } from "@client/components/ui/sidebar";
 import { Text } from "@client/components/ui/text";
 import { Title } from "@client/components/ui/title";
+import { LogPanel } from "@client/features/logs/components/log-panel";
+import { useLogPanelShortcut } from "@client/features/logs/hooks/use-log-panel-shortcut";
+import { useLogStore } from "@client/features/logs/store";
 import { RepositoryMenu } from "@client/features/repositories/components/repository-menu";
 import { WorktreeMenu } from "@client/features/worktrees/components/worktree-menu";
 import { mainProcess } from "@client/rpc";
@@ -18,15 +21,18 @@ import { i18next } from "./lib/i18n";
 
 function App() {
 	const workspacePath = useAppStore((state) => state.workspacePath);
+	const logPanelOpen = useLogStore((state) => state.open);
+
+	useLogPanelShortcut();
 
 	return (
-		<div className="h-dvh overflow-hidden relative">
-			<SidebarProvider className="absolute inset-0 overflow-hidden">
+		<div className="flex h-dvh flex-col overflow-hidden">
+			<SidebarProvider className="flex min-h-0 flex-1 flex-col">
 				{/* Header bar */}
 				{/* biome-ignore lint/a11y/noStaticElementInteractions: title bar double-click is a native macOS window management gesture */}
 				<div
 					onDoubleClick={mainProcess.onDoubleClickTitleBar}
-					className="absolute top-0 left-0 right-0 h-10 z-50 inline-flex items-center justify-end bg-sidebar border-b px-2 electrobun-webkit-app-region-drag"
+					className="z-50 inline-flex h-10 shrink-0 items-center justify-end border-b bg-sidebar px-2 electrobun-webkit-app-region-drag"
 				>
 					<SidebarTrigger
 						variant="ghost"
@@ -35,10 +41,9 @@ function App() {
 					/>
 				</div>
 
-				{/* Content between header and footer */}
-				<div className="absolute top-10 bottom-6 left-0 right-0 flex flex-row overflow-hidden">
+				<div className="flex min-h-0 flex-1 flex-row overflow-hidden">
 					<Sidebar>
-						<SidebarContent className="pt-10 pb-6">
+						<SidebarContent className="pb-6 pt-10">
 							<ScrollArea className="h-full">
 								<RepositoryMenu />
 								<WorktreeMenu />
@@ -46,14 +51,18 @@ function App() {
 						</SidebarContent>
 					</Sidebar>
 
-					<main className="flex-1 overflow-auto">
-						<Title variant="h3">Orgit</Title>
-						<Text>Welcome to Orgit, your personal Git client.</Text>
-					</main>
+					<div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+						<main className="min-h-0 flex-1 overflow-auto">
+							<Title variant="h3">Orgit</Title>
+							<Text>Welcome to Orgit, your personal Git client.</Text>
+						</main>
+
+						{logPanelOpen ? <LogPanel /> : null}
+					</div>
 				</div>
 
 				{/* Footer bar */}
-				<div className="absolute left-0 bottom-0 right-0 h-6 z-50 inline-flex items-center bg-sidebar border-t px-2 gap-1">
+				<div className="z-50 inline-flex h-6 shrink-0 items-center gap-1 border-t bg-sidebar px-2">
 					<FolderOpen size={10} className="text-sidebar-ring" />
 					<Text className="text-[10px]" variant="muted">
 						{workspacePath || "-"}

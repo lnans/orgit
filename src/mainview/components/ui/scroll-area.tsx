@@ -2,11 +2,19 @@ import { ScrollArea as ScrollAreaPrimitive } from "@base-ui/react/scroll-area";
 
 import { cn } from "@client/lib/utils";
 
+type ScrollAreaProps = ScrollAreaPrimitive.Root.Props & {
+	scrollbars?: "vertical" | "both";
+};
+
 function ScrollArea({
 	className,
 	children,
+	scrollbars = "vertical",
 	...props
-}: ScrollAreaPrimitive.Root.Props) {
+}: ScrollAreaProps) {
+	const showVertical = scrollbars === "vertical" || scrollbars === "both";
+	const showHorizontal = scrollbars === "both";
+
 	return (
 		<ScrollAreaPrimitive.Root
 			data-slot="scroll-area"
@@ -19,8 +27,9 @@ function ScrollArea({
 			>
 				{children}
 			</ScrollAreaPrimitive.Viewport>
-			<ScrollBar />
-			<ScrollAreaPrimitive.Corner />
+			{showVertical ? <ScrollBar /> : null}
+			{showHorizontal ? <ScrollBar orientation="horizontal" /> : null}
+			{showVertical ? <ScrollAreaPrimitive.Corner /> : null}
 		</ScrollAreaPrimitive.Root>
 	);
 }

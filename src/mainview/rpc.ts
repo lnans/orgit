@@ -1,3 +1,4 @@
+import { useLogStore } from "@client/features/logs/store";
 import { useAppStore } from "@client/store";
 import type { MainRPC } from "@shared/types";
 import { Electroview } from "electrobun/view";
@@ -9,6 +10,9 @@ const rpc = Electroview.defineRPC<MainRPC>({
 		messages: {
 			syncAppState: ({ appState }) => {
 				useAppStore.getState().syncAppState(appState);
+			},
+			syncLogContent: ({ content }) => {
+				useLogStore.getState().setContent(content);
 			},
 		},
 	},
@@ -22,4 +26,6 @@ export const mainProcess = {
 		electroview.rpc?.send.onSelectRepository({ repositoryPath }),
 	onSelectWorktree: (worktreePath?: string) =>
 		electroview.rpc?.send.onSelectWorktree({ worktreePath }),
+	setLogPanelOpen: (open: boolean) =>
+		electroview.rpc?.send.onSetLogPanelOpen({ open }),
 };
