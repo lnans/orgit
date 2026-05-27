@@ -1,5 +1,6 @@
 import { Utils } from "electrobun/bun";
 import { createAppState } from "./features/app-state/index";
+import { logger } from "./lib/logger";
 import { createRpc } from "./rpc";
 import { createMainWindow } from "./window";
 
@@ -26,6 +27,6 @@ export async function startApp() {
 	mainWindow.webview.on("dom-ready", async () => {
 		rpc.syncAppState(await appState.initialize());
 		rpc.syncAppState(await appState.refreshRepositories());
-		console.log("Main view is ready");
+		logger.info("Main view is ready");
 	});
 }
