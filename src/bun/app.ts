@@ -1,5 +1,6 @@
 import { Utils } from "electrobun/bun";
 import { getSelectedWorktreePath } from "../shared/selection";
+import { DEFAULT_TERMINAL_SESSION_KEY } from "../shared/terminal";
 import { createAppState } from "./features/app-state/index";
 import { createConfigSync } from "./features/config";
 import { createLogSync } from "./features/logs";
@@ -14,17 +15,10 @@ export async function startApp() {
 	let logSync: ReturnType<typeof createLogSync>;
 
 	const terminal = createTerminalManager({
-		onOutput: (data) => rpc.syncTerminalOutput(data),
-		onExit: (exitCode) => rpc.syncTerminalExit(exitCode),
+		onOutput: (sessionKey, data) => rpc.syncTerminalOutput(sessionKey, data),
+		onExit: (sessionKey, exitCode) =>
+			rpc.syncTerminalExit(sessionKey, exitCode),
 	});
-
-	function terminalCwd() {
-		const state = appState.get();
-		return resolveTerminalCwd(
-			state.workspacePath,
-			getSelectedWorktreePath(state),
-		);
-	}
 
 	const rpc = createRpc({
 		onDoubleClickTitleBar: ({ mainWindow }) => {
@@ -43,17 +37,22 @@ export async function startApp() {
 				logSync.stop();
 			}
 		},
-		onTerminalOpen: ({ cols, rows }) => {
-			terminal.open({ cwd: terminalCwd(), cols, rows });
+		onTerminalAttach: ({ sessionKey, cols, rows }) => {
+			const state = appState.get();
+			const cwd =
+				sessionKey === DEFAULT_TERMINAL_SESSION_KEY
+					? resolveTerminalCwd(
+							state.workspacePath,
+							getSelectedWorktreePath(state),
+						)
+					: sessionKey;
+			terminal.attach({ sessionKey, cwd, cols, rows });
 		},
-		onTerminalInput: ({ data }) => {
-			terminal.write(data);
+		onTerminalInput: ({ sessionKey, data }) => {
+			terminal.write(sessionKey, data);
 		},
 		onTerminalResize: ({ cols, rows }) => {
 			terminal.resize(cols, rows);
-		},
-		onTerminalRestart: ({ cols, rows }) => {
-			terminal.restart({ cwd: terminalCwd(), cols, rows });
 		},
 	});
 

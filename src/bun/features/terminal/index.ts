@@ -2,11 +2,12 @@ import { homedir } from "node:os";
 import { createTerminalSession, type TerminalSession } from "./session";
 
 export type TerminalManagerCallbacks = {
-	onOutput: (data: string) => void;
-	onExit: (exitCode: number) => void;
+	onOutput: (sessionKey: string, data: string) => void;
+	onExit: (sessionKey: string, exitCode: number) => void;
 };
 
-export type TerminalSpawnOptions = {
+export type TerminalAttachOptions = {
+	sessionKey: string;
 	cwd: string;
 	cols: number;
 	rows: number;
@@ -26,49 +27,62 @@ export function resolveTerminalCwd(
 }
 
 export function createTerminalManager(callbacks: TerminalManagerCallbacks) {
-	let session: TerminalSession | undefined;
+	const sessions = new Map<string, TerminalSession>();
+	let activeSessionKey: string | undefined;
 	let cols = 80;
 	let rows = 24;
-	let cwd = homedir();
 
-	function spawn() {
-		session?.dispose();
-		session = createTerminalSession({
+	function ensureSession(sessionKey: string, cwd: string) {
+		if (sessions.has(sessionKey)) {
+			sessions.get(sessionKey)?.resize(cols, rows);
+			return;
+		}
+
+		const session = createTerminalSession({
 			cwd,
 			cols,
 			rows,
-			onData: callbacks.onOutput,
+			onData: (data) => {
+				callbacks.onOutput(sessionKey, data);
+			},
 			onExit: (exitCode) => {
-				session = undefined;
-				callbacks.onExit(exitCode);
+				sessions.delete(sessionKey);
+				if (activeSessionKey === sessionKey) {
+					activeSessionKey = undefined;
+				}
+				callbacks.onExit(sessionKey, exitCode);
 			},
 		});
+
+		sessions.set(sessionKey, session);
 	}
 
 	return {
-		open(options: TerminalSpawnOptions) {
-			cwd = options.cwd;
+		attach(options: TerminalAttachOptions) {
 			cols = options.cols;
 			rows = options.rows;
-			spawn();
+			ensureSession(options.sessionKey, options.cwd);
+			activeSessionKey = options.sessionKey;
 		},
-		restart(options: TerminalSpawnOptions) {
-			cwd = options.cwd;
-			cols = options.cols;
-			rows = options.rows;
-			spawn();
-		},
-		write(data: string) {
-			session?.write(data);
+		write(sessionKey: string, data: string) {
+			if (activeSessionKey !== sessionKey) {
+				return;
+			}
+			sessions.get(sessionKey)?.write(data);
 		},
 		resize(nextCols: number, nextRows: number) {
 			cols = nextCols;
 			rows = nextRows;
-			session?.resize(nextCols, nextRows);
+			for (const session of sessions.values()) {
+				session.resize(nextCols, nextRows);
+			}
 		},
 		dispose() {
-			session?.dispose();
-			session = undefined;
+			for (const session of sessions.values()) {
+				session.dispose();
+			}
+			sessions.clear();
+			activeSessionKey = undefined;
 		},
 	};
 }

@@ -1,23 +1,45 @@
 import { create } from "zustand";
 
+type SessionHandlers = {
+	write: (data: string) => void;
+	onExit: (exitCode: number) => void;
+};
+
 type TerminalStore = {
-	writer: ((data: string) => void) | null;
-	exitHandler: ((exitCode: number) => void) | null;
-	setWriter: (writer: ((data: string) => void) | null) => void;
-	setExitHandler: (handler: ((exitCode: number) => void) | null) => void;
-	appendOutput: (data: string) => void;
-	notifyExit: (exitCode: number) => void;
+	openedSessionKeys: string[];
+	openSession: (sessionKey: string) => void;
+	sessions: Record<string, SessionHandlers>;
+	registerSession: (sessionKey: string, handlers: SessionHandlers) => void;
+	unregisterSession: (sessionKey: string) => void;
+	appendOutput: (sessionKey: string, data: string) => void;
+	notifyExit: (sessionKey: string, exitCode: number) => void;
 };
 
 export const useTerminalStore = create<TerminalStore>()((set, get) => ({
-	writer: null,
-	exitHandler: null,
-	setWriter: (writer) => set({ writer }),
-	setExitHandler: (exitHandler) => set({ exitHandler }),
-	appendOutput: (data) => {
-		get().writer?.(data);
+	openedSessionKeys: [],
+	openSession: (sessionKey) => {
+		const { openedSessionKeys } = get();
+		if (openedSessionKeys.includes(sessionKey)) {
+			return;
+		}
+		set({ openedSessionKeys: [...openedSessionKeys, sessionKey] });
 	},
-	notifyExit: (exitCode) => {
-		get().exitHandler?.(exitCode);
+	sessions: {},
+	registerSession: (sessionKey, handlers) => {
+		set((state) => ({
+			sessions: { ...state.sessions, [sessionKey]: handlers },
+		}));
+	},
+	unregisterSession: (sessionKey) => {
+		set((state) => {
+			const { [sessionKey]: _removed, ...sessions } = state.sessions;
+			return { sessions };
+		});
+	},
+	appendOutput: (sessionKey, data) => {
+		get().sessions[sessionKey]?.write(data);
+	},
+	notifyExit: (sessionKey, exitCode) => {
+		get().sessions[sessionKey]?.onExit(exitCode);
 	},
 }));

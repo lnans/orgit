@@ -54,18 +54,16 @@ export type MainRPC = {
 			onSetLogPanelOpen: {
 				open: boolean;
 			};
-			onTerminalOpen: {
+			onTerminalAttach: {
+				sessionKey: string;
 				cols: number;
 				rows: number;
 			};
 			onTerminalInput: {
+				sessionKey: string;
 				data: string;
 			};
 			onTerminalResize: {
-				cols: number;
-				rows: number;
-			};
-			onTerminalRestart: {
 				cols: number;
 				rows: number;
 			};
@@ -81,9 +79,11 @@ export type MainRPC = {
 				content: string;
 			};
 			syncTerminalOutput: {
+				sessionKey: string;
 				data: string;
 			};
 			syncTerminalExit: {
+				sessionKey: string;
 				exitCode: number;
 			};
 			syncAppConfig: {
