@@ -1,6 +1,7 @@
 import { type Dirent, existsSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
 import type { Repository } from "../../../shared/types";
+import { logger } from "../../lib/logger";
 import { mapWithConcurrency } from "../../lib/map-with-concurrency";
 import { getCurrentBranch, isRepositoryRoot } from "./git";
 import { listWorktrees } from "./worktrees";
@@ -28,7 +29,7 @@ export async function listRepositories(
 	try {
 		entries = readdirSync(workspacePath, { withFileTypes: true });
 	} catch (error) {
-		console.error(`Failed to read workspace path ${workspacePath}.`, error);
+		logger.error(`Failed to read workspace path ${workspacePath}.`, error);
 		return [];
 	}
 
@@ -61,12 +62,12 @@ function ensureWorkspaceExists(workspacePath: string): boolean {
 
 	try {
 		mkdirSync(workspacePath, { recursive: true });
-		console.warn(
+		logger.warn(
 			`Workspace path ${workspacePath} did not exist and was created.`,
 		);
 		return true;
 	} catch (error) {
-		console.error(`Failed to create workspace path ${workspacePath}.`, error);
+		logger.error(`Failed to create workspace path ${workspacePath}.`, error);
 		return false;
 	}
 }

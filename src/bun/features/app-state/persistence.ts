@@ -1,11 +1,12 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import {
 	type AppState,
 	PERSISTED_STATE_VERSION,
 	type PersistedState,
 	type SelectedWorktreePaths,
 } from "../../../shared/types";
-import { CONFIG_DIR, DEFAULT_WORKSPACE, STATE_FILE } from "./paths";
+import { logger } from "../../lib/logger";
+import { DEFAULT_WORKSPACE, ensureConfigDir, STATE_FILE } from "./paths";
 
 export function loadPersistedState(): PersistedState {
 	ensureConfigDir();
@@ -20,7 +21,7 @@ export function loadPersistedState(): PersistedState {
 		const raw: unknown = JSON.parse(readFileSync(STATE_FILE, "utf-8"));
 		return parsePersistedState(raw);
 	} catch (error) {
-		console.error("Failed to read state file. Using defaults.", error);
+		logger.error("Failed to read state file. Using defaults.", error);
 		const initial = defaultPersistedState();
 		savePersistedState(initial);
 		return initial;
@@ -32,7 +33,7 @@ export function savePersistedState(state: PersistedState) {
 	try {
 		writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 	} catch (error) {
-		console.error("Failed to persist state file.", error);
+		logger.error("Failed to persist state file.", error);
 	}
 }
 
@@ -43,12 +44,6 @@ export function toPersistedState(state: AppState): PersistedState {
 		selectedRepositoryPath: state.selectedRepositoryPath,
 		selectedWorktreePaths: state.selectedWorktreePaths,
 	};
-}
-
-function ensureConfigDir() {
-	if (!existsSync(CONFIG_DIR)) {
-		mkdirSync(CONFIG_DIR, { recursive: true });
-	}
 }
 
 function defaultPersistedState(): PersistedState {
@@ -68,7 +63,7 @@ export function parsePersistedState(raw: unknown): PersistedState {
 	const version = typeof record.version === "number" ? record.version : 0;
 
 	if (version > PERSISTED_STATE_VERSION) {
-		console.warn(
+		logger.warn(
 			`State file version ${version} is newer than supported ${PERSISTED_STATE_VERSION}. Some fields may be ignored.`,
 		);
 	}

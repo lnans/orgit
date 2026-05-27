@@ -1,4 +1,5 @@
 import { BrowserWindow, Updater } from "electrobun/bun";
+import { logger } from "./lib/logger";
 import type { WebviewRPC } from "./rpc";
 
 const DEV_SERVER_URL = "http://localhost:5173";
@@ -9,10 +10,10 @@ async function resolveMainViewUrl(): Promise<string> {
 	if (channel === "dev") {
 		try {
 			await fetch(DEV_SERVER_URL, { method: "HEAD" });
-			console.log(`HMR enabled: Using Vite dev server at ${DEV_SERVER_URL}`);
+			logger.info(`HMR enabled: Using Vite dev server at ${DEV_SERVER_URL}`);
 			return DEV_SERVER_URL;
 		} catch {
-			console.log(
+			logger.info(
 				"Vite dev server not running. Run 'bun run dev:hmr' for HMR support.",
 			);
 		}

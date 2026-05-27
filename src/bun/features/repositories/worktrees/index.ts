@@ -3,6 +3,7 @@ import {
 	EMPTY_WORKTREE_DIFF_STATS,
 	type Worktree,
 } from "../../../../shared/types";
+import { logger } from "../../../lib/logger";
 import { runGitAsync } from "../git";
 import { getMainBaselineRef, getWorktreeDiffStats } from "./diff-stats";
 import { parseWorktreePorcelain } from "./parse-porcelain";
@@ -23,7 +24,7 @@ export async function listWorktrees(
 	]);
 
 	if (!result.ok) {
-		console.warn(
+		logger.warn(
 			`Unable to list worktrees for ${repoPath} (exit ${result.status})`,
 		);
 		return [];
