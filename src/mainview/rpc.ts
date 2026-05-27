@@ -16,11 +16,11 @@ const rpc = Electroview.defineRPC<MainRPC>({
 			syncLogContent: ({ content }) => {
 				useLogStore.getState().setContent(content);
 			},
-			syncTerminalOutput: ({ sessionKey, data }) => {
-				useTerminalStore.getState().appendOutput(sessionKey, data);
+			syncTerminalOutput: ({ sessionId, data }) => {
+				useTerminalStore.getState().appendOutput(sessionId, data);
 			},
-			syncTerminalExit: ({ sessionKey, exitCode }) => {
-				useTerminalStore.getState().notifyExit(sessionKey, exitCode);
+			syncTerminalExit: ({ sessionId, exitCode }) => {
+				useTerminalStore.getState().notifyExit(sessionId, exitCode);
 			},
 			syncAppConfig: ({ config }) => {
 				useConfigStore.getState().syncConfig(config);
@@ -39,10 +39,16 @@ export const mainProcess = {
 		electroview.rpc?.send.onSelectWorktree({ worktreePath }),
 	setLogPanelOpen: (open: boolean) =>
 		electroview.rpc?.send.onSetLogPanelOpen({ open }),
-	attachTerminal: (sessionKey: string, cols: number, rows: number) =>
-		electroview.rpc?.send.onTerminalAttach({ sessionKey, cols, rows }),
-	writeTerminalInput: (sessionKey: string, data: string) =>
-		electroview.rpc?.send.onTerminalInput({ sessionKey, data }),
+	attachTerminal: (
+		sessionId: string,
+		cwd: string,
+		cols: number,
+		rows: number,
+	) => electroview.rpc?.send.onTerminalAttach({ sessionId, cwd, cols, rows }),
+	closeTerminal: (sessionId: string) =>
+		electroview.rpc?.send.onTerminalClose({ sessionId }),
+	writeTerminalInput: (sessionId: string, data: string) =>
+		electroview.rpc?.send.onTerminalInput({ sessionId, data }),
 	resizeTerminal: (cols: number, rows: number) =>
 		electroview.rpc?.send.onTerminalResize({ cols, rows }),
 };

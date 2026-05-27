@@ -55,12 +55,16 @@ export type MainRPC = {
 				open: boolean;
 			};
 			onTerminalAttach: {
-				sessionKey: string;
+				sessionId: string;
+				cwd: string;
 				cols: number;
 				rows: number;
 			};
+			onTerminalClose: {
+				sessionId: string;
+			};
 			onTerminalInput: {
-				sessionKey: string;
+				sessionId: string;
 				data: string;
 			};
 			onTerminalResize: {
@@ -79,11 +83,11 @@ export type MainRPC = {
 				content: string;
 			};
 			syncTerminalOutput: {
-				sessionKey: string;
+				sessionId: string;
 				data: string;
 			};
 			syncTerminalExit: {
-				sessionKey: string;
+				sessionId: string;
 				exitCode: number;
 			};
 			syncAppConfig: {

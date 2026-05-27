@@ -11,13 +11,17 @@ import { Terminal } from "@xterm/xterm";
 import { useCallback, useEffect, useRef } from "react";
 
 type UseTerminalSessionOptions = {
-	sessionKey: string;
+	sessionId: string;
+	cwd: string;
+	visible: boolean;
 	active: boolean;
 	containerRef: React.RefObject<HTMLDivElement | null>;
 };
 
 export function useTerminalSession({
-	sessionKey,
+	sessionId,
+	cwd,
+	visible,
 	active,
 	containerRef,
 }: UseTerminalSessionOptions) {
@@ -25,8 +29,13 @@ export function useTerminalSession({
 	const fitAddonRef = useRef<FitAddon | null>(null);
 	const terminalConfig = useTerminalConfig();
 	const readyRef = useRef(false);
+	const visibleRef = useRef(visible);
 	const activeRef = useRef(active);
 	const dimensionsRef = useRef({ cols: 80, rows: 24 });
+
+	useEffect(() => {
+		visibleRef.current = visible;
+	}, [visible]);
 
 	useEffect(() => {
 		activeRef.current = active;
@@ -47,6 +56,22 @@ export function useTerminalSession({
 		dimensionsRef.current = dimensions;
 		return dimensions;
 	}, []);
+
+	const attachIfActive = useCallback(() => {
+		const terminal = terminalRef.current;
+		if (!terminal || !readyRef.current || !activeRef.current) {
+			return;
+		}
+
+		const dimensions = fitAndSyncSize();
+		mainProcess.attachTerminal(
+			sessionId,
+			cwd,
+			dimensions.cols,
+			dimensions.rows,
+		);
+		terminal.focus();
+	}, [sessionId, cwd, fitAndSyncSize]);
 
 	useEffect(() => {
 		const container = containerRef.current;
@@ -69,7 +94,7 @@ export function useTerminalSession({
 
 		const { registerSession, unregisterSession } = useTerminalStore.getState();
 
-		registerSession(sessionKey, {
+		registerSession(sessionId, {
 			write: (data) => {
 				terminal.write(data);
 			},
@@ -81,7 +106,7 @@ export function useTerminalSession({
 		});
 
 		const onData = terminal.onData((data) => {
-			mainProcess.writeTerminalInput(sessionKey, data);
+			mainProcess.writeTerminalInput(sessionId, data);
 		});
 
 		const resizeObserver = new ResizeObserver(() => {
@@ -97,27 +122,19 @@ export function useTerminalSession({
 
 		requestAnimationFrame(() => {
 			readyRef.current = true;
-			if (activeRef.current) {
-				const dimensions = fitAndSyncSize();
-				mainProcess.attachTerminal(
-					sessionKey,
-					dimensions.cols,
-					dimensions.rows,
-				);
-				terminal.focus();
-			}
+			attachIfActive();
 		});
 
 		return () => {
 			readyRef.current = false;
 			resizeObserver.disconnect();
 			onData.dispose();
-			unregisterSession(sessionKey);
+			unregisterSession(sessionId);
 			terminal.dispose();
 			terminalRef.current = null;
 			fitAddonRef.current = null;
 		};
-	}, [sessionKey, containerRef, fitAndSyncSize]);
+	}, [sessionId, containerRef, fitAndSyncSize, attachIfActive]);
 
 	useEffect(() => {
 		const terminal = terminalRef.current;
@@ -132,15 +149,11 @@ export function useTerminalSession({
 	}, [terminalConfig, active, fitAndSyncSize]);
 
 	useEffect(() => {
-		const terminal = terminalRef.current;
-		if (!active || !terminal || !readyRef.current) {
+		if (!active) {
 			return;
 		}
-
-		const dimensions = fitAndSyncSize();
-		mainProcess.attachTerminal(sessionKey, dimensions.cols, dimensions.rows);
-		terminal.focus();
-	}, [active, sessionKey, fitAndSyncSize]);
+		attachIfActive();
+	}, [active, attachIfActive]);
 
 	return { terminalRef };
 }
