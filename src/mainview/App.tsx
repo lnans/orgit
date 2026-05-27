@@ -5,12 +5,12 @@ import {
 	SidebarTrigger,
 } from "@client/components/ui/sidebar";
 import { Text } from "@client/components/ui/text";
-import { Title } from "@client/components/ui/title";
 import { LogPanel } from "@client/features/logs/components/log-panel";
 import { LogPanelToggle } from "@client/features/logs/components/log-panel-toggle";
 import { useLogPanelShortcut } from "@client/features/logs/hooks/use-log-panel-shortcut";
 import { useLogStore } from "@client/features/logs/store";
 import { RepositoryMenu } from "@client/features/repositories/components/repository-menu";
+import { TerminalPanel } from "@client/features/terminal/components/terminal-panel";
 import { WorktreeMenu } from "@client/features/worktrees/components/worktree-menu";
 import { useWindowFocusOnMount } from "@client/hooks/use-window-focus";
 import { mainProcess } from "@client/rpc";
@@ -55,9 +55,8 @@ function App() {
 					</Sidebar>
 
 					<div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-						<main className="min-h-0 flex-1 overflow-auto">
-							<Title variant="h3">Orgit</Title>
-							<Text>Welcome to Orgit, your personal Git client.</Text>
+						<main className="flex min-h-0 flex-1 flex-col overflow-hidden">
+							<TerminalPanel />
 						</main>
 
 						{logPanelOpen ? <LogPanel /> : null}

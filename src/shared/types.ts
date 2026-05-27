@@ -1,4 +1,5 @@
 import type { RPCSchema } from "electrobun";
+import type { AppConfig } from "./config";
 
 export type WorktreeDiffStats = {
 	filesModified: number;
@@ -53,6 +54,21 @@ export type MainRPC = {
 			onSetLogPanelOpen: {
 				open: boolean;
 			};
+			onTerminalOpen: {
+				cols: number;
+				rows: number;
+			};
+			onTerminalInput: {
+				data: string;
+			};
+			onTerminalResize: {
+				cols: number;
+				rows: number;
+			};
+			onTerminalRestart: {
+				cols: number;
+				rows: number;
+			};
 		};
 	}>;
 	webview: RPCSchema<{
@@ -63,6 +79,15 @@ export type MainRPC = {
 			};
 			syncLogContent: {
 				content: string;
+			};
+			syncTerminalOutput: {
+				data: string;
+			};
+			syncTerminalExit: {
+				exitCode: number;
+			};
+			syncAppConfig: {
+				config: AppConfig;
 			};
 		};
 	}>;

@@ -1,5 +1,7 @@
 import { useLogStore } from "@client/features/logs/store";
+import { useTerminalStore } from "@client/features/terminal/store";
 import { useAppStore } from "@client/store";
+import { useConfigStore } from "@client/store/config-store";
 import type { MainRPC } from "@shared/types";
 import { Electroview } from "electrobun/view";
 
@@ -13,6 +15,15 @@ const rpc = Electroview.defineRPC<MainRPC>({
 			},
 			syncLogContent: ({ content }) => {
 				useLogStore.getState().setContent(content);
+			},
+			syncTerminalOutput: ({ data }) => {
+				useTerminalStore.getState().appendOutput(data);
+			},
+			syncTerminalExit: ({ exitCode }) => {
+				useTerminalStore.getState().notifyExit(exitCode);
+			},
+			syncAppConfig: ({ config }) => {
+				useConfigStore.getState().syncConfig(config);
 			},
 		},
 	},
@@ -28,4 +39,12 @@ export const mainProcess = {
 		electroview.rpc?.send.onSelectWorktree({ worktreePath }),
 	setLogPanelOpen: (open: boolean) =>
 		electroview.rpc?.send.onSetLogPanelOpen({ open }),
+	openTerminal: (cols: number, rows: number) =>
+		electroview.rpc?.send.onTerminalOpen({ cols, rows }),
+	writeTerminalInput: (data: string) =>
+		electroview.rpc?.send.onTerminalInput({ data }),
+	resizeTerminal: (cols: number, rows: number) =>
+		electroview.rpc?.send.onTerminalResize({ cols, rows }),
+	restartTerminal: (cols: number, rows: number) =>
+		electroview.rpc?.send.onTerminalRestart({ cols, rows }),
 };

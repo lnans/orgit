@@ -73,6 +73,6 @@ export const logger = {
 export function initLogger() {
 	ensureConfigDir();
 	logger.info(
-		`Orgit main process started (log: ${LOG_FILE}, config: ${CONFIG_DIR})`,
+		`Orgit main process started (log: ${LOG_FILE}, dir: ${CONFIG_DIR})`,
 	);
 }
