@@ -1,4 +1,5 @@
 import { BrowserView } from "electrobun";
+import type { AppConfig } from "../shared/config";
 import type { AppState, MainRPC } from "../shared/types";
 
 type WindowControls = {
@@ -16,6 +17,10 @@ type RpcHandlers = {
 		worktreePath: string | null | undefined;
 	}) => AppState;
 	onSetLogPanelOpen: (params: { open: boolean }) => void;
+	onTerminalOpen: (params: { cols: number; rows: number }) => void;
+	onTerminalInput: (params: { data: string }) => void;
+	onTerminalResize: (params: { cols: number; rows: number }) => void;
+	onTerminalRestart: (params: { cols: number; rows: number }) => void;
 };
 
 export type WebviewRPC = ReturnType<typeof createRpc>;
@@ -43,6 +48,18 @@ export function createRpc(handlers: RpcHandlers) {
 				onSetLogPanelOpen: ({ open }) => {
 					handlers.onSetLogPanelOpen({ open });
 				},
+				onTerminalOpen: ({ cols, rows }) => {
+					handlers.onTerminalOpen({ cols, rows });
+				},
+				onTerminalInput: ({ data }) => {
+					handlers.onTerminalInput({ data });
+				},
+				onTerminalResize: ({ cols, rows }) => {
+					handlers.onTerminalResize({ cols, rows });
+				},
+				onTerminalRestart: ({ cols, rows }) => {
+					handlers.onTerminalRestart({ cols, rows });
+				},
 			},
 			requests: {},
 		},
@@ -58,6 +75,15 @@ export function createRpc(handlers: RpcHandlers) {
 		},
 		syncLogContent: (content: string) => {
 			rpc.send.syncLogContent({ content });
+		},
+		syncTerminalOutput: (data: string) => {
+			rpc.send.syncTerminalOutput({ data });
+		},
+		syncTerminalExit: (exitCode: number) => {
+			rpc.send.syncTerminalExit({ exitCode });
+		},
+		syncAppConfig: (config: AppConfig) => {
+			rpc.send.syncAppConfig({ config });
 		},
 	};
 }

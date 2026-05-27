@@ -29,13 +29,17 @@ Electrobun runs two sides:
 2. **Feature folders** — Each domain exposes a small `index.ts`; implementation splits into sibling files as it grows.
 3. **Reconcile after every mutation** — Invalid repo/worktree selections are dropped when the scan result changes.
 4. **Persist user choices only** — `~/.config/orgit/state.json` stores workspace path and selections; `repositories` are always rescanned.
+5. **User preferences in config** — `~/.config/orgit/config.json` controls terminal appearance (fonts, colors). Changes reload while the app is running.
 
 ### Workspace on disk
 
-| Path                         | Purpose                               |
-| ---------------------------- | ------------------------------------- |
-| `~/.config/orgit/state.json` | Persisted state (versioned)           |
-| `~/.config/orgit/workspace/` | Default folder scanned for repo roots |
+| Path                          | Purpose                               |
+| ----------------------------- | ------------------------------------- |
+| `~/.config/orgit/state.json`  | Persisted state (versioned)           |
+| `~/.config/orgit/config.json` | UI preferences (terminal theme, font) |
+| `~/.config/orgit/workspace/`  | Default folder scanned for repo roots |
+
+See [`config.example.json`](./config.example.json) for a documented terminal configuration sample.
 
 A **repository** is a direct child of the workspace whose `.git` is a **directory** (root checkout, not a linked worktree). Each **worktree** entry is a linked checkout; diff stats compare that checkout to main’s committed `HEAD`.
 
