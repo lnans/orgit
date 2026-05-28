@@ -1,5 +1,4 @@
 import { Button } from "@client/components/ui/button";
-import { Text } from "@client/components/ui/text";
 import {
 	useActiveTerminalTabId,
 	useTerminalStore,
@@ -61,14 +60,4 @@ function TerminalTabBar({ worktreePath }: TerminalTabBarProps) {
 	);
 }
 
-function TerminalTabsPlaceholder() {
-	return (
-		<div className="flex min-h-0 flex-1 items-center justify-center px-4">
-			<Text className="text-center text-xs text-muted-foreground">
-				No terminal open. Press ⌘T to open one.
-			</Text>
-		</div>
-	);
-}
-
-export { TerminalTabBar, TerminalTabsPlaceholder };
+export { TerminalTabBar };

@@ -2,6 +2,17 @@ import type { TerminalConfig } from "@shared/config";
 import type { ITerminalOptions, ITheme } from "@xterm/xterm";
 import { createTerminalTheme } from "./terminal-theme";
 
+function toFontWeight(weight: string): ITerminalOptions["fontWeight"] {
+	if (weight === "normal" || weight === "bold") {
+		return weight;
+	}
+	const numeric = Number(weight);
+	if (numeric >= 100 && numeric <= 900 && numeric % 100 === 0) {
+		return numeric as ITerminalOptions["fontWeight"];
+	}
+	return "normal";
+}
+
 export function buildTerminalOptions(
 	terminalConfig: TerminalConfig,
 ): ITerminalOptions {
@@ -9,7 +20,7 @@ export function buildTerminalOptions(
 		cursorBlink: terminalConfig.cursorBlink,
 		fontFamily: terminalConfig.fontFamily,
 		fontSize: terminalConfig.fontSize,
-		fontWeight: terminalConfig.fontWeight,
+		fontWeight: toFontWeight(terminalConfig.fontWeight),
 		lineHeight: terminalConfig.lineHeight,
 		letterSpacing: terminalConfig.letterSpacing,
 		scrollback: terminalConfig.scrollback,

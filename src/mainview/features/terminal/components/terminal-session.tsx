@@ -5,20 +5,16 @@ import { useRef } from "react";
 type TerminalSessionViewProps = {
 	sessionId: string;
 	cwd: string;
-	visible: boolean;
 	active: boolean;
 };
 
 export function TerminalSessionView({
 	sessionId,
 	cwd,
-	visible,
 	active,
 }: TerminalSessionViewProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
-	useTerminalSession({ sessionId, cwd, visible, active, containerRef });
-
-	const shown = visible && active;
+	useTerminalSession({ sessionId, cwd, active, containerRef });
 
 	return (
 		<div
@@ -26,9 +22,9 @@ export function TerminalSessionView({
 			className={cn(
 				"orgit-terminal absolute inset-0 min-h-0 overflow-hidden px-2.5",
 				"electrobun-webkit-app-region-no-drag",
-				!shown && "invisible pointer-events-none",
+				!active && "invisible pointer-events-none",
 			)}
-			aria-hidden={!shown}
+			aria-hidden={!active}
 		/>
 	);
 }

@@ -32,7 +32,9 @@ const DEFAULT_THEME: ITheme = {
 	brightWhite: "#ffffff",
 };
 
-const CSS_THEME_FALLBACKS: Partial<Record<keyof ITheme, string>> = {
+type TerminalColorKey = Exclude<keyof ITheme, "extendedAnsi">;
+
+const CSS_THEME_FALLBACKS: Partial<Record<TerminalColorKey, string>> = {
 	background: "--background",
 	foreground: "--foreground",
 	cursor: "--foreground",
@@ -41,7 +43,7 @@ const CSS_THEME_FALLBACKS: Partial<Record<keyof ITheme, string>> = {
 };
 
 export function createTerminalTheme(configTheme: TerminalThemeConfig): ITheme {
-	const fromApp: Partial<ITheme> = {
+	const fromApp: Partial<Record<TerminalColorKey, string>> = {
 		background: configTheme.background,
 		foreground: configTheme.foreground,
 		cursor: configTheme.cursor,
@@ -68,7 +70,7 @@ export function createTerminalTheme(configTheme: TerminalThemeConfig): ITheme {
 
 	const theme: ITheme = { ...DEFAULT_THEME };
 
-	for (const key of Object.keys(fromApp) as Array<keyof ITheme>) {
+	for (const key of Object.keys(fromApp) as TerminalColorKey[]) {
 		const configured = fromApp[key];
 		if (configured) {
 			theme[key] = configured;
@@ -77,7 +79,11 @@ export function createTerminalTheme(configTheme: TerminalThemeConfig): ITheme {
 
 		const cssVar = CSS_THEME_FALLBACKS[key];
 		if (cssVar) {
-			theme[key] = readCssColor(cssVar, DEFAULT_THEME[key] as string);
+			const fallback = DEFAULT_THEME[key];
+			theme[key] =
+				typeof fallback === "string"
+					? readCssColor(cssVar, fallback)
+					: readCssColor(cssVar, "#000000");
 		}
 	}
 

@@ -6,7 +6,7 @@ describe("parseAppConfig", () => {
 		const config = parseAppConfig(null);
 		expect(config.terminal.fontSize).toBe(DEFAULT_TERMINAL_CONFIG.fontSize);
 		expect(config.terminal.theme.background).toBe("#282a36");
-		expect(config.terminal.fontFamily).toContain("Hack Nerd Font");
+		expect(config.terminal.fontFamily).toContain("FiraCode Nerd Font");
 	});
 
 	test("parses terminal appearance options", () => {

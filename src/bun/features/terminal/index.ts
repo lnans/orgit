@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { createTerminalSession, type TerminalSession } from "./session";
 
@@ -13,14 +14,22 @@ export type TerminalAttachOptions = {
 	rows: number;
 };
 
+function isExistingDirectory(path: string | undefined): path is string {
+	return typeof path === "string" && path.length > 0 && existsSync(path);
+}
+
 export function resolveTerminalCwd(
 	workspacePath: string,
 	worktreePath: string | undefined,
+	repositoryPath?: string,
 ): string {
-	if (worktreePath) {
+	if (isExistingDirectory(worktreePath)) {
 		return worktreePath;
 	}
-	if (workspacePath) {
+	if (isExistingDirectory(repositoryPath)) {
+		return repositoryPath;
+	}
+	if (isExistingDirectory(workspacePath)) {
 		return workspacePath;
 	}
 	return homedir();

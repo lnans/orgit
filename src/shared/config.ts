@@ -69,7 +69,7 @@ export const DEFAULT_TERMINAL_THEME: TerminalThemeConfig = {
 };
 
 export const DEFAULT_TERMINAL_CONFIG: TerminalConfig = {
-	fontFamily: '"Hack Nerd Font", ui-monospace, Menlo, Monaco, monospace',
+	fontFamily: '"FiraCode Nerd Font", ui-monospace, Menlo, Monaco, monospace',
 	fontSize: 10,
 	fontWeight: "normal",
 	lineHeight: 1.2,
