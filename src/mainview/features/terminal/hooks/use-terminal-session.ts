@@ -13,7 +13,6 @@ import { useCallback, useEffect, useRef } from "react";
 type UseTerminalSessionOptions = {
 	sessionId: string;
 	cwd: string;
-	visible: boolean;
 	active: boolean;
 	containerRef: React.RefObject<HTMLDivElement | null>;
 };
@@ -21,7 +20,6 @@ type UseTerminalSessionOptions = {
 export function useTerminalSession({
 	sessionId,
 	cwd,
-	visible,
 	active,
 	containerRef,
 }: UseTerminalSessionOptions) {
@@ -29,13 +27,8 @@ export function useTerminalSession({
 	const fitAddonRef = useRef<FitAddon | null>(null);
 	const terminalConfig = useTerminalConfig();
 	const readyRef = useRef(false);
-	const visibleRef = useRef(visible);
 	const activeRef = useRef(active);
 	const dimensionsRef = useRef({ cols: 80, rows: 24 });
-
-	useEffect(() => {
-		visibleRef.current = visible;
-	}, [visible]);
 
 	useEffect(() => {
 		activeRef.current = active;
@@ -57,7 +50,7 @@ export function useTerminalSession({
 		return dimensions;
 	}, []);
 
-	const attachIfActive = useCallback(() => {
+	const attachToBackend = useCallback(() => {
 		const terminal = terminalRef.current;
 		if (!terminal || !readyRef.current || !activeRef.current) {
 			return;
@@ -122,7 +115,9 @@ export function useTerminalSession({
 
 		requestAnimationFrame(() => {
 			readyRef.current = true;
-			attachIfActive();
+			if (activeRef.current) {
+				attachToBackend();
+			}
 		});
 
 		return () => {
@@ -130,11 +125,12 @@ export function useTerminalSession({
 			resizeObserver.disconnect();
 			onData.dispose();
 			unregisterSession(sessionId);
+			mainProcess.closeTerminal(sessionId);
 			terminal.dispose();
 			terminalRef.current = null;
 			fitAddonRef.current = null;
 		};
-	}, [sessionId, containerRef, fitAndSyncSize, attachIfActive]);
+	}, [sessionId, containerRef, fitAndSyncSize, attachToBackend]);
 
 	useEffect(() => {
 		const terminal = terminalRef.current;
@@ -149,11 +145,11 @@ export function useTerminalSession({
 	}, [terminalConfig, active, fitAndSyncSize]);
 
 	useEffect(() => {
-		if (!active) {
+		if (!active || !terminalRef.current || !readyRef.current) {
 			return;
 		}
-		attachIfActive();
-	}, [active, attachIfActive]);
+		attachToBackend();
+	}, [active, attachToBackend]);
 
 	return { terminalRef };
 }

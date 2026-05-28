@@ -9,6 +9,7 @@
     "build:canary": "vite build && electrobun build --env=canary",
     "build:stable": "vite build && electrobun build --env=stable",
     "fmt": "biome check --write .",
+    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "dependencies": {

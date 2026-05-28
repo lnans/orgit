@@ -2,7 +2,7 @@ import { Utils } from "electrobun/bun";
 import { createAppState } from "./features/app-state/index";
 import { createConfigSync } from "./features/config";
 import { createLogSync } from "./features/logs";
-import { createTerminalManager } from "./features/terminal";
+import { createTerminalManager, resolveTerminalCwd } from "./features/terminal";
 import { logger } from "./lib/logger";
 import { createRpc } from "./rpc";
 import { createMainWindow } from "./window";
@@ -35,7 +35,17 @@ export async function startApp() {
 			}
 		},
 		onTerminalAttach: ({ sessionId, cwd, cols, rows }) => {
-			terminal.attach({ sessionId, cwd, cols, rows });
+			const state = appState.get();
+			terminal.attach({
+				sessionId,
+				cwd: resolveTerminalCwd(
+					state.workspacePath,
+					cwd,
+					state.selectedRepositoryPath,
+				),
+				cols,
+				rows,
+			});
 		},
 		onTerminalClose: ({ sessionId }) => {
 			terminal.close(sessionId);
