@@ -9,6 +9,7 @@ import {
 	snapTerminalContainerHeight,
 	syncAlternateBufferViewport,
 } from "@client/features/terminal/terminal-viewport";
+import { loadWebglAddon } from "@client/features/terminal/terminal-webgl";
 import { mainProcess } from "@client/rpc";
 import { useConfigStore, useTerminalConfig } from "@client/store/config-store";
 import { FitAddon } from "@xterm/addon-fit";
@@ -94,25 +95,15 @@ export function useTerminalSession({
 		terminal.loadAddon(webLinksAddon);
 		terminal.open(container);
 
+		const disposeWebgl = loadWebglAddon(terminal);
+
 		terminalRef.current = terminal;
 		fitAddonRef.current = fitAddon;
 
 		const { registerSession, unregisterSession } = useTerminalStore.getState();
 
-		const disposeViewportGuards = installAlternateBufferViewportGuards(
-			terminal,
-			container,
-		);
-
-		const onWriteParsed = terminal.onWriteParsed(() => {
-			requestAnimationFrame(() => {
-				syncAlternateBufferViewport(terminal);
-			});
-		});
-
-		const onResize = terminal.onResize(() => {
-			syncAlternateBufferViewport(terminal);
-		});
+		const disposeViewportGuards =
+			installAlternateBufferViewportGuards(terminal);
 
 		registerSession(sessionId, {
 			write: (data) => {
@@ -155,8 +146,7 @@ export function useTerminalSession({
 			container.style.height = "";
 			resizeObserver.disconnect();
 			onData.dispose();
-			onWriteParsed.dispose();
-			onResize.dispose();
+			disposeWebgl();
 			disposeViewportGuards();
 			unregisterSession(sessionId);
 			mainProcess.closeTerminal(sessionId);
