@@ -18,12 +18,15 @@ export function buildTerminalOptions(
 ): ITerminalOptions {
 	return {
 		cursorBlink: terminalConfig.cursorBlink,
+		customGlyphs: true,
 		fontFamily: terminalConfig.fontFamily,
 		fontSize: terminalConfig.fontSize,
 		fontWeight: toFontWeight(terminalConfig.fontWeight),
 		lineHeight: terminalConfig.lineHeight,
 		letterSpacing: terminalConfig.letterSpacing,
+		rescaleOverlappingGlyphs: true,
 		scrollback: terminalConfig.scrollback,
+		smoothScrollDuration: 0,
 		theme: createTerminalTheme(terminalConfig.theme),
 	};
 }
@@ -36,11 +39,14 @@ export function applyTerminalOptions(
 ) {
 	const next = buildTerminalOptions(terminalConfig);
 	terminal.options.cursorBlink = next.cursorBlink;
+	terminal.options.customGlyphs = next.customGlyphs;
 	terminal.options.fontFamily = next.fontFamily;
 	terminal.options.fontSize = next.fontSize;
 	terminal.options.fontWeight = next.fontWeight;
 	terminal.options.lineHeight = next.lineHeight;
 	terminal.options.letterSpacing = next.letterSpacing;
+	terminal.options.rescaleOverlappingGlyphs = next.rescaleOverlappingGlyphs;
 	terminal.options.scrollback = next.scrollback;
+	terminal.options.smoothScrollDuration = next.smoothScrollDuration;
 	terminal.options.theme = next.theme as ITheme;
 }
