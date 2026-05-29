@@ -25,20 +25,18 @@ export function LogPanel() {
 
 	return (
 		<section
-			className="flex h-48 shrink-0 flex-col border-t border-sidebar-border bg-sidebar"
+			className="flex h-48 shrink-0 flex-col dark:bg-orgit-surface m-2 mt-0 rounded-md border dark:border-orgit-border"
 			aria-label={t("logPanel")}
 		>
-			<div className="flex h-8 shrink-0 items-center justify-between gap-2 border-b border-sidebar-border px-3">
+			<div className="flex h-8 shrink-0 items-center justify-between gap-2 border-b dark:border-orgit-border ps-3 pe-2">
 				<Text className="text-xs font-medium">{t("logPanel")}</Text>
 				<Button
-					type="button"
+					className="p-1 cursor-pointer dark:text-slate-400 dark:hover:bg-orgit-hover"
 					variant="ghost"
-					size="icon-sm"
-					className="cursor-pointer text-muted-foreground"
+					size="icon-xs"
 					onClick={() => setOpen(false)}
 				>
-					<XIcon />
-					<span className="sr-only">{t("close")}</span>
+					<XIcon className="size-3" />
 				</Button>
 			</div>
 			<ScrollArea scrollbars="both" className="min-h-0 min-w-0 flex-1">

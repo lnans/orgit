@@ -5,7 +5,7 @@ describe("parseAppConfig", () => {
 	test("returns defaults for invalid input", () => {
 		const config = parseAppConfig(null);
 		expect(config.terminal.fontSize).toBe(DEFAULT_TERMINAL_CONFIG.fontSize);
-		expect(config.terminal.theme.background).toBe("#282a36");
+		expect(config.terminal.theme.background).toBe("#1f2227");
 		expect(config.terminal.fontFamily).toContain("FiraCode Nerd Font");
 	});
 

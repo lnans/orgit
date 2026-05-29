@@ -17,11 +17,11 @@ function RepositoryMenu() {
 	const selectRepository = useAppStore((state) => state.selectRepository);
 
 	return (
-		<SidebarGroup>
+		<SidebarGroup className="pe-0">
 			<RepositoryMenuLabel label={t("repositories")} />
 
 			<SidebarGroupContent>
-				<SidebarMenu className="gap-2">
+				<SidebarMenu className="gap-1">
 					{repositories.map((repository) => (
 						<RepositoryMenuItem
 							key={repository.path}

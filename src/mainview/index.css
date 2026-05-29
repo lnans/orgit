@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "./features/terminal/terminal-xterm-scrollbar.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -45,6 +46,13 @@
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-main-surface: var(--main-surface);
+
+	--color-orgit-background: var(--orgit-background);
+	--color-orgit-surface: var(--orgit-surface);
+	--color-orgit-border: var(--orgit-border);
+	--color-orgit-border-darker: var(--orgit-border-darker);
+	--color-orgit-hover: var(--orgit-hover);
+	--color-orgit-input: var(--orgit-input);
 }
 
 :root {
@@ -116,6 +124,13 @@
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.556 0 0);
 	--main-surface: oklch(23.075% 0.00003 271.152);
+
+	--orgit-background: oklch(27.266% 0.01372 267.072);
+	--orgit-surface: oklch(25.1% 0.01048 260.73);
+	--orgit-border: oklch(35.229% 0.0091 268.423);
+	--orgit-border-darker: oklch(21.786% 0.01029 268.225);
+	--orgit-hover: oklch(31.253% 0.01544 264.346);
+	--orgit-input: oklch(23.888% 0.00824 264.438);
 }
 
 @layer base {
@@ -142,6 +157,14 @@
 
 .orgit-terminal .xterm .xterm-viewport {
 	background-color: var(--terminal-bg, #282a36);
+	/* xterm 6 scrolls via DomScrollableElement; hide the legacy viewport bar. */
+	scrollbar-width: none;
+}
+
+.orgit-terminal .xterm .xterm-viewport::-webkit-scrollbar {
+	display: none;
+	width: 0;
+	height: 0;
 }
 
 .orgit-terminal .xterm .xterm-helper-textarea {

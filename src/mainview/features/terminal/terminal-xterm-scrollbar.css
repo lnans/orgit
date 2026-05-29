@@ -1,0 +1,43 @@
+/**
+ * xterm 6 DomScrollableElement overrides. !important is required because xterm sets
+ * scrollbar track/slider sizes via inline styles (see VS Code scrollbar layer).
+ */
+.orgit-terminal .xterm-scrollable-element > .scrollbar {
+	background: transparent !important;
+}
+
+.orgit-terminal .xterm-scrollable-element > .shadow.left {
+	display: none !important;
+}
+
+.orgit-terminal .xterm-decoration-overview-ruler {
+	display: none !important;
+}
+
+.orgit-terminal .xterm-scrollable-element > .scrollbar.vertical {
+	width: 10px !important;
+	max-width: 10px !important;
+}
+
+.orgit-terminal .xterm-scrollable-element > .scrollbar.horizontal {
+	height: 10px !important;
+	max-height: 10px !important;
+}
+
+.orgit-terminal .xterm-scrollable-element > .scrollbar > .slider {
+	border-radius: 9999px !important;
+}
+
+.orgit-terminal .xterm-scrollable-element > .scrollbar.vertical > .slider {
+	left: 2px !important;
+	width: 6px !important;
+	min-width: 6px !important;
+	max-width: 6px !important;
+}
+
+.orgit-terminal .xterm-scrollable-element > .scrollbar.horizontal > .slider {
+	top: 2px !important;
+	height: 6px !important;
+	min-height: 6px !important;
+	max-height: 6px !important;
+}

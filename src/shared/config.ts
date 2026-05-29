@@ -44,7 +44,7 @@ export type AppConfig = {
 
 /** Dracula — matches `personal.config.macos/configs/alacritty.toml`. */
 export const DEFAULT_TERMINAL_THEME: TerminalThemeConfig = {
-	background: "#282a36",
+	background: "#1f2227",
 	foreground: "#f8f8f2",
 	cursor: "#f8f8f2",
 	cursorAccent: "#282a36",

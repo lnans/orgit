@@ -8,6 +8,33 @@ function readCssColor(variable: string, fallback: string): string {
 	return value || fallback;
 }
 
+/** Builds translucent scrollbar thumb colors from a hex foreground (xterm 6 slider). */
+function scrollbarSliderColors(
+	foregroundHex: string,
+): Pick<
+	ITheme,
+	| "scrollbarSliderBackground"
+	| "scrollbarSliderHoverBackground"
+	| "scrollbarSliderActiveBackground"
+> {
+	const hex = foregroundHex.replace("#", "");
+	if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
+		return {
+			scrollbarSliderBackground: "rgba(255, 255, 255, 0.28)",
+			scrollbarSliderHoverBackground: "rgba(255, 255, 255, 0.42)",
+			scrollbarSliderActiveBackground: "rgba(255, 255, 255, 0.52)",
+		};
+	}
+	const r = Number.parseInt(hex.slice(0, 2), 16);
+	const g = Number.parseInt(hex.slice(2, 4), 16);
+	const b = Number.parseInt(hex.slice(4, 6), 16);
+	return {
+		scrollbarSliderBackground: `rgba(${r}, ${g}, ${b}, 0.28)`,
+		scrollbarSliderHoverBackground: `rgba(${r}, ${g}, ${b}, 0.42)`,
+		scrollbarSliderActiveBackground: `rgba(${r}, ${g}, ${b}, 0.52)`,
+	};
+}
+
 const DEFAULT_THEME: ITheme = {
 	background: "#1e1e1e",
 	foreground: "#d4d4d4",
@@ -86,6 +113,12 @@ export function createTerminalTheme(configTheme: TerminalThemeConfig): ITheme {
 					: readCssColor(cssVar, "#000000");
 		}
 	}
+
+	const foreground = theme.foreground ?? DEFAULT_THEME.foreground ?? "#d4d4d4";
+	const background = theme.background ?? DEFAULT_THEME.background ?? "#1e1e1e";
+	Object.assign(theme, scrollbarSliderColors(foreground));
+	// Avoid a light strip when overview ruler is enabled elsewhere.
+	theme.overviewRulerBorder = background;
 
 	return theme;
 }

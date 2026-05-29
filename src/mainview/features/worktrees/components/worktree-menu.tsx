@@ -19,11 +19,11 @@ function WorktreeMenu() {
 	const selectWorktree = useAppStore((state) => state.selectWorktree);
 
 	return (
-		<SidebarGroup>
+		<SidebarGroup className="pe-0">
 			<WorktreeMenuLabel label={t("worktrees")} />
 
 			<SidebarGroupContent>
-				<SidebarMenu className="gap-2">
+				<SidebarMenu className="gap-1">
 					{worktrees.map((worktree) => (
 						<WorktreeMenuItem
 							key={worktree.path}
