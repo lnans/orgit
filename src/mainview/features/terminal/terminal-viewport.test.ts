@@ -1,7 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import type { Terminal } from "@xterm/xterm";
 import {
+	alternateBufferViewportNeedsSync,
 	isCursorHomeParams,
+	pinAlternateBufferToTop,
 	snapTerminalContainerHeight,
 	syncAlternateBufferViewport,
 } from "./terminal-viewport";
@@ -43,9 +45,32 @@ describe("isCursorHomeParams", () => {
 	});
 });
 
+describe("alternateBufferViewportNeedsSync", () => {
+	test("is false when viewport is already at top", () => {
+		const terminal = {
+			buffer: { active: { type: "alternate" as const, viewportY: 0 } },
+			element: { querySelector: () => ({ scrollTop: 0 }) },
+		};
+		expect(
+			alternateBufferViewportNeedsSync(terminal as unknown as Terminal),
+		).toBe(false);
+	});
+
+	test("is true when viewportY drifted", () => {
+		const terminal = {
+			buffer: { active: { type: "alternate" as const, viewportY: 3 } },
+			element: { querySelector: () => ({ scrollTop: 0 }) },
+		};
+		expect(
+			alternateBufferViewportNeedsSync(terminal as unknown as Terminal),
+		).toBe(true);
+	});
+});
+
 describe("syncAlternateBufferViewport", () => {
 	test("scrolls xterm back to top when viewportY drifted", () => {
 		let viewportY = 4;
+		let refreshCalls = 0;
 		const terminal = {
 			rows: 30,
 			buffer: {
@@ -62,11 +87,34 @@ describe("syncAlternateBufferViewport", () => {
 			element: {
 				querySelector: () => ({ scrollTop: 0 }),
 			},
-			refresh: () => {},
+			refresh: () => {
+				refreshCalls += 1;
+			},
 		};
 
-		syncAlternateBufferViewport(terminal as unknown as Terminal);
+		expect(syncAlternateBufferViewport(terminal as unknown as Terminal)).toBe(
+			true,
+		);
 		expect(viewportY).toBe(0);
+		expect(refreshCalls).toBe(1);
+	});
+
+	test("does nothing when already synced", () => {
+		let refreshCalls = 0;
+		const terminal = {
+			rows: 30,
+			buffer: { active: { type: "alternate" as const, viewportY: 0 } },
+			scrollToTop() {},
+			element: { querySelector: () => ({ scrollTop: 0 }) },
+			refresh: () => {
+				refreshCalls += 1;
+			},
+		};
+
+		expect(syncAlternateBufferViewport(terminal as unknown as Terminal)).toBe(
+			false,
+		);
+		expect(refreshCalls).toBe(0);
 	});
 
 	test("does nothing in normal buffer", () => {
@@ -79,9 +127,42 @@ describe("syncAlternateBufferViewport", () => {
 			element: {
 				querySelector: () => ({ scrollTop: 48 }),
 			},
+			refresh: () => {},
 		};
 
-		syncAlternateBufferViewport(terminal as unknown as Terminal);
+		expect(syncAlternateBufferViewport(terminal as unknown as Terminal)).toBe(
+			false,
+		);
 		expect(scrollCalls).toBe(0);
+	});
+});
+
+describe("pinAlternateBufferToTop", () => {
+	test("clears drift without forcing refresh", () => {
+		let viewportY = 2;
+		let refreshCalls = 0;
+		const viewport = { scrollTop: 24 };
+		const terminal = {
+			buffer: {
+				active: {
+					type: "alternate" as const,
+					get viewportY() {
+						return viewportY;
+					},
+				},
+			},
+			scrollToTop() {
+				viewportY = 0;
+			},
+			element: { querySelector: () => viewport },
+			refresh: () => {
+				refreshCalls += 1;
+			},
+		};
+
+		pinAlternateBufferToTop(terminal as unknown as Terminal);
+		expect(viewportY).toBe(0);
+		expect(viewport.scrollTop).toBe(0);
+		expect(refreshCalls).toBe(0);
 	});
 });
