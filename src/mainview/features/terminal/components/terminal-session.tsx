@@ -18,13 +18,19 @@ export function TerminalSessionView({
 
 	return (
 		<div
-			ref={containerRef}
 			className={cn(
-				"orgit-terminal absolute inset-0 min-h-0 overflow-hidden px-2.5",
-				"electrobun-webkit-app-region-no-drag",
+				"absolute inset-0 min-h-0 overflow-hidden px-2.5 py-1.5",
 				!active && "invisible pointer-events-none",
 			)}
 			aria-hidden={!active}
-		/>
+		>
+			<div
+				ref={containerRef}
+				className={cn(
+					"orgit-terminal h-full min-h-0 w-full",
+					"electrobun-webkit-app-region-no-drag",
+				)}
+			/>
+		</div>
 	);
 }

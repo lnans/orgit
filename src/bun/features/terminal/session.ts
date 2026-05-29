@@ -9,17 +9,33 @@ export type TerminalSessionOptions = {
 	onExit: (exitCode: number) => void;
 };
 
-function decodeTerminalData(data: string | Uint8Array): string {
-	return typeof data === "string" ? data : new TextDecoder().decode(data);
+function terminalEnv(): Record<string, string> {
+	const lang = process.env.LC_ALL ?? process.env.LANG ?? "en_US.UTF-8";
+	return {
+		...process.env,
+		TERM: "xterm-256color",
+		COLORTERM: "truecolor",
+		LANG: lang,
+		LC_ALL: lang,
+	};
 }
 
 export function createTerminalSession(options: TerminalSessionOptions) {
 	const shell = getDefaultShell();
 	let proc: Subprocess | undefined;
 	let closed = false;
+	/** Per-session decoder so partial UTF-8 bytes are not mixed across tabs. */
+	const textDecoder = new TextDecoder("utf-8");
+
+	function decodeTerminalData(data: string | Uint8Array): string {
+		return typeof data === "string"
+			? data
+			: textDecoder.decode(data, { stream: true });
+	}
 
 	function dispose() {
 		closed = true;
+		textDecoder.decode();
 		proc?.terminal?.close();
 		proc?.kill();
 		proc = undefined;
@@ -27,10 +43,7 @@ export function createTerminalSession(options: TerminalSessionOptions) {
 
 	proc = Bun.spawn([shell, ...getShellArgs(shell)], {
 		cwd: options.cwd,
-		env: {
-			...process.env,
-			TERM: "xterm-256color",
-		},
+		env: terminalEnv(),
 		terminal: {
 			name: "xterm-256color",
 			cols: options.cols,

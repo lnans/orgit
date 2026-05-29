@@ -3,6 +3,12 @@ import {
 	applyTerminalOptions,
 	buildTerminalOptions,
 } from "@client/features/terminal/terminal-options";
+import {
+	installAlternateBufferViewportGuards,
+	scheduleAlternateBufferViewportSync,
+	snapTerminalContainerHeight,
+	syncAlternateBufferViewport,
+} from "@client/features/terminal/terminal-viewport";
 import { mainProcess } from "@client/rpc";
 import { useConfigStore, useTerminalConfig } from "@client/store/config-store";
 import { FitAddon } from "@xterm/addon-fit";
@@ -37,18 +43,24 @@ export function useTerminalSession({
 	const fitAndSyncSize = useCallback(() => {
 		const fitAddon = fitAddonRef.current;
 		const terminal = terminalRef.current;
+		const container = containerRef.current;
 		if (!fitAddon || !terminal) {
 			return dimensionsRef.current;
 		}
 
 		fitAddon.fit();
+		if (container && snapTerminalContainerHeight(terminal, container)) {
+			fitAddon.fit();
+		}
+		syncAlternateBufferViewport(terminal);
+
 		const dimensions = {
 			cols: terminal.cols,
 			rows: terminal.rows,
 		};
 		dimensionsRef.current = dimensions;
 		return dimensions;
-	}, []);
+	}, [containerRef]);
 
 	const attachToBackend = useCallback(() => {
 		const terminal = terminalRef.current;
@@ -87,6 +99,21 @@ export function useTerminalSession({
 
 		const { registerSession, unregisterSession } = useTerminalStore.getState();
 
+		const disposeViewportGuards = installAlternateBufferViewportGuards(
+			terminal,
+			container,
+		);
+
+		const onWriteParsed = terminal.onWriteParsed(() => {
+			requestAnimationFrame(() => {
+				syncAlternateBufferViewport(terminal);
+			});
+		});
+
+		const onResize = terminal.onResize(() => {
+			syncAlternateBufferViewport(terminal);
+		});
+
 		registerSession(sessionId, {
 			write: (data) => {
 				terminal.write(data);
@@ -99,6 +126,9 @@ export function useTerminalSession({
 		});
 
 		const onData = terminal.onData((data) => {
+			if (data.includes("/reset")) {
+				scheduleAlternateBufferViewportSync(terminal);
+			}
 			mainProcess.writeTerminalInput(sessionId, data);
 		});
 
@@ -122,8 +152,12 @@ export function useTerminalSession({
 
 		return () => {
 			readyRef.current = false;
+			container.style.height = "";
 			resizeObserver.disconnect();
 			onData.dispose();
+			onWriteParsed.dispose();
+			onResize.dispose();
+			disposeViewportGuards();
 			unregisterSession(sessionId);
 			mainProcess.closeTerminal(sessionId);
 			terminal.dispose();
