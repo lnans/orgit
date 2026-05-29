@@ -1,3 +1,4 @@
+import { ScrollArea } from "@client/components/ui/scroll-area";
 import {
 	Sidebar,
 	SidebarContent,
@@ -5,21 +6,19 @@ import {
 	SidebarTrigger,
 } from "@client/components/ui/sidebar";
 import { Text } from "@client/components/ui/text";
-import { LogPanel } from "@client/features/logs/components/log-panel";
-import { LogPanelToggle } from "@client/features/logs/components/log-panel-toggle";
+import { TooltipProvider } from "@client/components/ui/tooltip";
+import { LogPanel, LogPanelToggle } from "@client/features/logs";
 import { useLogPanelShortcut } from "@client/features/logs/hooks/use-log-panel-shortcut";
 import { useLogStore } from "@client/features/logs/store";
-import { RepositoryMenu } from "@client/features/repositories/components/repository-menu";
-import { TerminalPanel } from "@client/features/terminal/components/terminal-panel";
-import { WorktreeMenu } from "@client/features/worktrees/components/worktree-menu";
+import { RepositoryMenu } from "@client/features/repositories";
+import { TerminalPanel } from "@client/features/terminal";
+import { WorktreeMenu } from "@client/features/worktrees";
 import { useWindowFocusOnMount } from "@client/hooks/use-window-focus";
+import { i18next } from "@client/lib/i18n";
 import { mainProcess } from "@client/rpc";
 import { useAppStore } from "@client/store";
 import { FolderOpen } from "lucide-react";
 import { I18nextProvider } from "react-i18next";
-import { ScrollArea } from "./components/ui/scroll-area";
-import { TooltipProvider } from "./components/ui/tooltip";
-import { i18next } from "./lib/i18n";
 
 function App() {
 	const workspacePath = useAppStore((state) => state.workspacePath);
@@ -31,7 +30,6 @@ function App() {
 	return (
 		<div className="flex h-dvh flex-col overflow-hidden">
 			<SidebarProvider className="flex min-h-0 flex-1 flex-col">
-				{/* Header bar */}
 				{/* biome-ignore lint/a11y/noStaticElementInteractions: title bar double-click is a native macOS window management gesture */}
 				<div
 					onDoubleClick={mainProcess.onDoubleClickTitleBar}

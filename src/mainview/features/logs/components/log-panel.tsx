@@ -1,7 +1,7 @@
 import { Button } from "@client/components/ui/button";
 import { ScrollArea } from "@client/components/ui/scroll-area";
 import { Text } from "@client/components/ui/text";
-import { getLogLineClassName } from "@client/features/logs/log-line";
+import { getLogLineClassName } from "@client/features/logs/lib/log-line";
 import { useLogStore } from "@client/features/logs/store";
 import { cn } from "@client/lib/utils";
 import { XIcon } from "lucide-react";

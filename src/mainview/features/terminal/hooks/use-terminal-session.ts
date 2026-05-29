@@ -1,20 +1,11 @@
+import { createXtermInstance } from "@client/features/terminal/lib/create-xterm";
+import { fitTerminalDimensions } from "@client/features/terminal/lib/fit-terminal";
+import { applyTerminalOptions } from "@client/features/terminal/lib/options";
 import { useTerminalStore } from "@client/features/terminal/store";
-import {
-	applyTerminalOptions,
-	buildTerminalOptions,
-} from "@client/features/terminal/terminal-options";
-import {
-	installAlternateBufferViewportGuards,
-	scheduleAlternateBufferViewportSync,
-	snapTerminalContainerHeight,
-	syncAlternateBufferViewport,
-} from "@client/features/terminal/terminal-viewport";
-import { loadWebglAddon } from "@client/features/terminal/terminal-webgl";
 import { mainProcess } from "@client/rpc";
 import { useConfigStore, useTerminalConfig } from "@client/store/config-store";
-import { FitAddon } from "@xterm/addon-fit";
-import { WebLinksAddon } from "@xterm/addon-web-links";
-import { Terminal } from "@xterm/xterm";
+import type { FitAddon } from "@xterm/addon-fit";
+import type { Terminal } from "@xterm/xterm";
 import { useCallback, useEffect, useRef } from "react";
 
 type UseTerminalSessionOptions = {
@@ -24,6 +15,10 @@ type UseTerminalSessionOptions = {
 	containerRef: React.RefObject<HTMLDivElement | null>;
 };
 
+/**
+ * Manages one xterm instance: create/dispose, fit/resize, RPC attach/write.
+ * Inactive tabs stay mounted but only the active tab attaches to the PTY backend.
+ */
 export function useTerminalSession({
 	sessionId,
 	cwd,
@@ -42,24 +37,15 @@ export function useTerminalSession({
 	}, [active]);
 
 	const fitAndSyncSize = useCallback(() => {
-		const fitAddon = fitAddonRef.current;
-		const terminal = terminalRef.current;
-		const container = containerRef.current;
-		if (!fitAddon || !terminal) {
-			return dimensionsRef.current;
+		const dimensions = fitTerminalDimensions(
+			fitAddonRef.current,
+			terminalRef.current,
+			containerRef.current,
+			dimensionsRef.current,
+		);
+		if (fitAddonRef.current && terminalRef.current) {
+			dimensionsRef.current = dimensions;
 		}
-
-		fitAddon.fit();
-		if (container && snapTerminalContainerHeight(terminal, container)) {
-			fitAddon.fit();
-		}
-		syncAlternateBufferViewport(terminal);
-
-		const dimensions = {
-			cols: terminal.cols,
-			rows: terminal.rows,
-		};
-		dimensionsRef.current = dimensions;
 		return dimensions;
 	}, [containerRef]);
 
@@ -85,25 +71,20 @@ export function useTerminalSession({
 			return;
 		}
 
-		const terminal = new Terminal(
-			buildTerminalOptions(useConfigStore.getState().config.terminal),
+		const { terminal, fitAddon, dispose } = createXtermInstance(
+			container,
+			useConfigStore.getState().config.terminal,
+			{
+				onData: (data) => {
+					mainProcess.writeTerminalInput(sessionId, data);
+				},
+			},
 		);
-		const fitAddon = new FitAddon();
-		const webLinksAddon = new WebLinksAddon();
-
-		terminal.loadAddon(fitAddon);
-		terminal.loadAddon(webLinksAddon);
-		terminal.open(container);
-
-		const disposeWebgl = loadWebglAddon(terminal);
 
 		terminalRef.current = terminal;
 		fitAddonRef.current = fitAddon;
 
 		const { registerSession, unregisterSession } = useTerminalStore.getState();
-
-		const disposeViewportGuards =
-			installAlternateBufferViewportGuards(terminal);
 
 		registerSession(sessionId, {
 			write: (data) => {
@@ -114,13 +95,6 @@ export function useTerminalSession({
 					`\r\n\x1b[90m[Process exited with code ${exitCode}]\x1b[0m\r\n`,
 				);
 			},
-		});
-
-		const onData = terminal.onData((data) => {
-			if (data.includes("/reset")) {
-				scheduleAlternateBufferViewportSync(terminal);
-			}
-			mainProcess.writeTerminalInput(sessionId, data);
 		});
 
 		const resizeObserver = new ResizeObserver(() => {
@@ -143,14 +117,10 @@ export function useTerminalSession({
 
 		return () => {
 			readyRef.current = false;
-			container.style.height = "";
 			resizeObserver.disconnect();
-			onData.dispose();
-			disposeWebgl();
-			disposeViewportGuards();
 			unregisterSession(sessionId);
 			mainProcess.closeTerminal(sessionId);
-			terminal.dispose();
+			dispose();
 			terminalRef.current = null;
 			fitAddonRef.current = null;
 		};

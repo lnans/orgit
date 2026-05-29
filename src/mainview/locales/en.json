@@ -8,5 +8,7 @@
   "logs": "Logs",
   "logsToggle": "Toggle log panel",
   "logPanelEmpty": "No log output yet.",
+  "noChanges": "No changes",
+  "closeTab": "Close {{label}}",
   "close": "Close"
 }

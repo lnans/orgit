@@ -1,4 +1,4 @@
-import { resolveNextActiveTabId } from "@client/features/terminal/tab-selection";
+import { resolveNextActiveTabId } from "@client/features/terminal/lib/tab-selection";
 import { mainProcess } from "@client/rpc";
 import type { TerminalTab } from "@shared/terminal-tab";
 import { create } from "zustand";
@@ -29,6 +29,7 @@ function nextTabLabel(worktreePath: string, tabs: TerminalTab[]): string {
 	return `Terminal ${count + 1}`;
 }
 
+/** Webview-local terminal tab state. PTY sessions live in the main process. */
 export const useTerminalStore = create<TerminalStore>()((set, get) => ({
 	tabs: [],
 	activeTabIdByWorktree: {},
