@@ -11,6 +11,10 @@ import { RepositoryMenuLabel } from "./repository-menu-label";
 function RepositoryMenu() {
 	const { t } = useTranslation();
 	const repositories = useAppStore((state) => state.repositories);
+	const selectedRepositoryPath = useAppStore(
+		(state) => state.selectedRepositoryPath,
+	);
+	const selectRepository = useAppStore((state) => state.selectRepository);
 
 	return (
 		<SidebarGroup>
@@ -23,7 +27,8 @@ function RepositoryMenu() {
 							key={repository.path}
 							name={repository.name}
 							branch={repository.branch}
-							path={repository.path}
+							isSelected={selectedRepositoryPath === repository.path}
+							onSelect={() => selectRepository(repository.path)}
 						/>
 					))}
 					{repositories.length === 0 && (

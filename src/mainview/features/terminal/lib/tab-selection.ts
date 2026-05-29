@@ -1,5 +1,6 @@
 import type { TerminalTab } from "@shared/terminal-tab";
 
+/** Picks the next active tab when the current active tab is closed. */
 export function resolveNextActiveTabId(
 	worktreeTabs: TerminalTab[],
 	closingTabId: string,

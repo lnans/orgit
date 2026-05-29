@@ -1,6 +1,6 @@
 import type { TerminalConfig } from "@shared/config";
 import type { ITerminalOptions, ITheme } from "@xterm/xterm";
-import { createTerminalTheme } from "./terminal-theme";
+import { createTerminalTheme } from "./theme";
 
 function toFontWeight(weight: string): ITerminalOptions["fontWeight"] {
 	if (weight === "normal" || weight === "bold") {

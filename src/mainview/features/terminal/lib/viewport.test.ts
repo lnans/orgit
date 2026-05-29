@@ -6,7 +6,7 @@ import {
 	pinAlternateBufferToTop,
 	snapTerminalContainerHeight,
 	syncAlternateBufferViewport,
-} from "./terminal-viewport";
+} from "./viewport";
 
 describe("snapTerminalContainerHeight", () => {
 	test("snaps container height to whole rows", () => {
