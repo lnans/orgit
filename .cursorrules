@@ -1,0 +1,80 @@
+# Orgit — Cursor project rules
+
+Desktop Git workspace manager: Electrobun (Bun main process) + React webview (Vite).
+
+## Stack
+
+- Runtime: Bun, Electrobun 1.x
+- UI: React 19, Zustand, Tailwind 4, shadcn/Base UI, xterm.js
+- Lint/format: Biome (tabs, double quotes)
+- Tests: `bun:test`, colocated `*.test.ts`
+
+## Commands
+
+```bash
+bun install
+bun run dev:hmr    # recommended — Vite HMR + Electrobun
+bun test
+bun run typecheck
+bun run fmt
+```
+
+## Architecture (non-negotiable)
+
+- `src/bun/` — Main process. Git, disk, PTY. No React.
+- `src/mainview/` — React UI. No Git or filesystem access.
+- `src/shared/` — Types, RPC schema (`MainRPC`), pure parsers for both sides.
+
+Data flow: UI → RPC (`mainview/rpc.ts`) → main (`bun/rpc.ts`) → `sync*` → Zustand → UI.
+
+Main owns app state and config. Webview mirrors via RPC. Terminal tabs are webview-local (UUID ids).
+
+## Feature folders
+
+```
+features/<domain>/
+  index.ts       # public API — cross-feature imports go through here
+  components/    # React UI
+  hooks/         # side effects and wiring
+  store.ts       # feature-local Zustand (if needed)
+  lib/           # pure functions
+  *.test.ts      # colocated tests
+```
+
+Main-process features use the same `index.ts` public API pattern under `src/bun/features/`.
+
+## React
+
+- **Pure leaf components** — props in, JSX out; no Zustand or RPC inside.
+- **Containers** — parent components or thin wrappers that read stores and pass callbacks.
+- Do not add app logic to `components/ui/` (shadcn primitives).
+
+## Imports
+
+| Context | Shared | Local |
+|---------|--------|-------|
+| `src/bun/**` | relative to `shared/` | relative |
+| `src/mainview/**` | `@shared/*` | `@client/*` |
+
+- Use `@client/features/<domain>` for cross-feature imports, not deep paths.
+- Bun does not resolve tsconfig path aliases at runtime.
+
+## When adding a feature
+
+1. Extend `src/shared/types.ts` (types + RPC messages) if needed.
+2. Implement main logic in `src/bun/features/<domain>/`, wire in `app.ts` and `bun/rpc.ts`.
+3. Implement UI in `src/mainview/features/<domain>/`; call `mainProcess.*` from `rpc.ts`.
+4. Add colocated tests; run `bun test` and `bun run typecheck`.
+
+## JSDoc
+
+Document public APIs in `index.ts`, shared types, non-obvious hooks, and pure lib helpers. Skip trivial UI components.
+
+## Do not
+
+- Duplicate Git/filesystem logic in the webview.
+- Refactor shadcn `components/ui/` files.
+- Add path aliases in the Bun main process.
+- Create commits unless explicitly asked.
+
+See also: `.cursor/rules/orgit-architecture.mdc` and `README.md`.
