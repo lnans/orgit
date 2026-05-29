@@ -3,14 +3,21 @@ import {
 	useTerminalStore,
 	useWorktreeTerminalTabs,
 } from "@client/features/terminal/store";
+import type { Ref } from "react";
 import { useTranslation } from "react-i18next";
 import { TerminalTabBarView } from "./terminal-tab-bar-view";
 
 type TerminalTabBarProps = {
 	worktreePath: string;
+	activeTabRef?: Ref<HTMLDivElement>;
+	tabBarScrollRef?: Ref<HTMLDivElement>;
 };
 
-function TerminalTabBar({ worktreePath }: TerminalTabBarProps) {
+function TerminalTabBar({
+	worktreePath,
+	activeTabRef,
+	tabBarScrollRef,
+}: TerminalTabBarProps) {
 	const { t } = useTranslation();
 	const tabs = useWorktreeTerminalTabs(worktreePath);
 	const activeTabId = useActiveTerminalTabId(worktreePath);
@@ -24,6 +31,8 @@ function TerminalTabBar({ worktreePath }: TerminalTabBarProps) {
 			closeTabLabel={(label) => t("closeTab", { label })}
 			onSelectTab={setActiveTab}
 			onCloseTab={closeTab}
+			activeTabRef={activeTabRef}
+			tabBarScrollRef={tabBarScrollRef}
 		/>
 	);
 }

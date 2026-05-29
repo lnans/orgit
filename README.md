@@ -4,6 +4,8 @@
 
 Orgit is designed for teams and individuals who juggle several checkouts of the same codebase: feature branches as worktrees, quick visibility into what diverged from main, and a focused environment to run commands without leaving the app.
 
+![Orgit — repositories and worktrees in the sidebar, terminal tabs with an integrated shell](./doc/app.png)
+
 ---
 
 ## Why Orgit

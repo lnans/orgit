@@ -9,7 +9,7 @@
     "cursorBlink": true,
     "scrollback": 10000,
     "theme": {
-      "background": "#282a36",
+      "background": "#1f2227",
       "foreground": "#f8f8f2",
       "cursor": "#f8f8f2",
       "cursorAccent": "#282a36",

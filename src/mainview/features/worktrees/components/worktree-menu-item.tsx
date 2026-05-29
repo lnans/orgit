@@ -4,17 +4,17 @@ import { Text } from "@client/components/ui/text";
 import { cn } from "@client/lib/utils";
 import type { Worktree } from "@shared/types";
 import { cva } from "class-variance-authority";
-import { FileBracesIcon, Minus, Plus } from "lucide-react";
+import { FileBracesIcon, GitFork, Minus, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { hasWorktreeChanges } from "../lib/worktree-changes";
 import { GitStat } from "./git-stat";
 
 const worktreeMenuItemVariants = cva(
-	"pt-0.5 pb-1 mx-2 gap-0 rounded-sm cursor-pointer hover:bg-secondary transition-all",
+	"py-1 mx-2 me-1.5 gap-0 rounded-sm cursor-pointer dark:bg-transparent ring-0 dark:hover:bg-orgit-hover transition-all",
 	{
 		variants: {
 			isSelected: {
-				true: "bg-secondary",
+				true: "dark:bg-orgit-hover",
 				false: "",
 			},
 		},
@@ -40,10 +40,13 @@ export function WorktreeMenuItem({
 			<Card className={cn(worktreeMenuItemVariants({ isSelected }))}>
 				<CardContent className="px-2">
 					<div className="flex flex-col w-full flex-1 gap-1">
-						<Text className="font-medium text-[10px]">{worktree.name}</Text>
+						<div className="inline-flex items-center gap-1">
+							<GitFork size={11} />
+							<Text className="font-medium text-[10px]">{worktree.name}</Text>
+						</div>
 
 						{hasChanges ? (
-							<div className="inline-flex items-center gap-1">
+							<div className="inline-flex items-center gap-1 ms-4">
 								<GitStat
 									className="text-green-600"
 									number={worktree.linesAdded}
@@ -61,7 +64,7 @@ export function WorktreeMenuItem({
 								/>
 							</div>
 						) : (
-							<Text className="text-[10px] text-muted-foreground">
+							<Text className="text-[10px] text-muted-foreground ms-4">
 								{t("noChanges")}
 							</Text>
 						)}
