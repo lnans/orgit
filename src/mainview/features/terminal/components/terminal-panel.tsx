@@ -26,58 +26,49 @@ export function TerminalPanel() {
 	useTerminalNewTabShortcut(selectedWorktreePath);
 
 	const hasWorktreeTabs = worktreeTabs.length > 0;
-
-	if (!selectedWorktreePath) {
-		return (
-			<section
-				className={cn(
-					"terminal-panel relative flex min-h-0 flex-1 flex-col overflow-hidden",
-					"bg-main-surface",
-				)}
-				aria-label="Terminal"
-			>
-				<TerminalEmptyState />
-			</section>
-		);
-	}
+	const showWorktreeChrome = Boolean(selectedWorktreePath);
+	const showEmptyState = !showWorktreeChrome || !hasWorktreeTabs;
+	const terminalSurfaceStyle = showWorktreeChrome
+		? ({
+				"--terminal-bg": terminalBackground,
+				backgroundColor: terminalBackground,
+			} as React.CSSProperties)
+		: undefined;
 
 	return (
 		<section
 			className={cn(
 				"terminal-panel relative flex min-h-0 flex-1 flex-col overflow-hidden",
+				!showWorktreeChrome && "bg-main-surface",
 			)}
-			style={
-				hasWorktreeTabs
-					? ({
-							"--terminal-bg": terminalBackground,
-							backgroundColor: terminalBackground,
-						} as React.CSSProperties)
-					: undefined
-			}
 			aria-label="Terminal"
 		>
-			<TerminalTabBar worktreePath={selectedWorktreePath} />
+			{selectedWorktreePath ? (
+				<TerminalTabBar worktreePath={selectedWorktreePath} />
+			) : null}
+
 			<div
 				className={cn(
 					"relative flex min-h-0 flex-1 flex-col",
-					!hasWorktreeTabs && "bg-main-surface",
+					showEmptyState && !showWorktreeChrome && "bg-main-surface",
+					showEmptyState && showWorktreeChrome && "bg-main-surface",
 				)}
 				style={
-					hasWorktreeTabs
-						? ({
-								"--terminal-bg": terminalBackground,
-								backgroundColor: terminalBackground,
-							} as React.CSSProperties)
+					showWorktreeChrome && hasWorktreeTabs
+						? terminalSurfaceStyle
 						: undefined
 				}
 			>
-				{!hasWorktreeTabs ? <TerminalEmptyState /> : null}
+				{showEmptyState ? <TerminalEmptyState /> : null}
+
+				{/* Keep all sessions mounted when switching repos/worktrees (scrollback + PTY). */}
 				{allTabs.map((tab) => (
 					<TerminalSessionView
 						key={tab.id}
 						sessionId={tab.id}
 						cwd={tab.worktreePath}
 						active={
+							showWorktreeChrome &&
 							tab.worktreePath === selectedWorktreePath &&
 							tab.id === activeTabId
 						}

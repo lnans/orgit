@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import path from "node:path";
 import {
 	EMPTY_WORKTREE_DIFF_STATS,
@@ -45,7 +46,14 @@ function buildWorktrees(
 	const resolvedMainRepoPath = path.resolve(mainRepoPath);
 
 	for (const entry of parseWorktreePorcelain(output)) {
-		if (path.resolve(entry.path) === resolvedMainRepoPath) {
+		const resolvedPath = path.resolve(entry.path);
+		if (resolvedPath === resolvedMainRepoPath) {
+			continue;
+		}
+		if (!existsSync(resolvedPath)) {
+			logger.warn(
+				`Skipping worktree "${entry.branchName}" — directory missing: ${resolvedPath}`,
+			);
 			continue;
 		}
 
@@ -55,7 +63,7 @@ function buildWorktrees(
 
 		worktrees.push({
 			name: entry.branchName,
-			path: path.resolve(entry.path),
+			path: resolvedPath,
 			...diffStats,
 		});
 	}
