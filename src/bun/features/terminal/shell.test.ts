@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { getDefaultShell, getShellArgs } from "./shell";
+import { existsSync } from "node:fs";
+import { getDefaultShell, getShellArgs, resolveShellCandidates } from "./shell";
 
 describe("getShellArgs", () => {
 	test("uses login flag for zsh and bash", () => {
@@ -12,8 +13,21 @@ describe("getShellArgs", () => {
 	});
 });
 
+describe("resolveShellCandidates", () => {
+	test("returns unique absolute paths", () => {
+		const candidates = resolveShellCandidates();
+		expect(candidates.length).toBeGreaterThan(0);
+		expect(new Set(candidates).size).toBe(candidates.length);
+		for (const shell of candidates) {
+			expect(shell.startsWith("/")).toBe(true);
+		}
+	});
+});
+
 describe("getDefaultShell", () => {
-	test("returns a non-empty shell path", () => {
-		expect(getDefaultShell().length).toBeGreaterThan(0);
+	test("returns an executable shell path", () => {
+		const shell = getDefaultShell();
+		expect(shell.length).toBeGreaterThan(0);
+		expect(existsSync(shell)).toBe(true);
 	});
 });

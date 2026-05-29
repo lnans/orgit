@@ -26,7 +26,7 @@ export function parseWorktreePorcelain(output: string): ParsedWorktreeEntry[] {
 	for (const line of output.split("\n")) {
 		if (line.startsWith("worktree ")) {
 			flush();
-			currentPath = line.slice("worktree ".length);
+			currentPath = line.slice("worktree ".length).trim();
 			continue;
 		}
 

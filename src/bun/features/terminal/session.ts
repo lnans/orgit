@@ -1,5 +1,8 @@
+import { existsSync } from "node:fs";
+import { homedir } from "node:os";
+import path from "node:path";
 import type { Subprocess } from "bun";
-import { getDefaultShell, getShellArgs } from "./shell";
+import { getShellArgs, resolveShellCandidates } from "./shell";
 
 export type TerminalSessionOptions = {
 	cwd: string;
@@ -20,11 +23,103 @@ function terminalEnv(): Record<string, string> {
 	};
 }
 
+function resolveSpawnCwd(cwd: string): string {
+	const resolved = path.resolve(cwd.trim() || homedir());
+	if (!existsSync(resolved)) {
+		throw new Error(`Working directory does not exist: ${resolved}`);
+	}
+	return resolved;
+}
+
+type SpawnTerminalOptions = {
+	cwd: string;
+	cols: number;
+	rows: number;
+	onData: (data: string) => void;
+};
+
+function formatSpawnError(error: unknown, cwd: string): string {
+	const message =
+		error instanceof Error ? error.message : "Failed to start shell";
+	const resolved = path.resolve(cwd);
+	const cwdHint = existsSync(resolved)
+		? `cwd=${resolved}`
+		: `cwd does not exist: ${cwd}`;
+	return `Failed to start shell (${cwdHint}): ${message}`;
+}
+
+function spawnTerminal(options: SpawnTerminalOptions): Subprocess {
+	const cwd = resolveSpawnCwd(options.cwd);
+	const spawnOptions = {
+		cwd,
+		env: terminalEnv(),
+		terminal: {
+			name: "xterm-256color",
+			cols: options.cols,
+			rows: options.rows,
+			data(_terminal: unknown, data: string | Uint8Array) {
+				options.onData(
+					typeof data === "string" ? data : new TextDecoder().decode(data),
+				);
+			},
+		},
+	} as const;
+
+	// Bare names first — same pattern as git spawn in packaged macOS builds.
+	const shells = ["zsh", "bash", "sh", ...resolveShellCandidates()];
+	const tried = new Set<string>();
+	let lastError: unknown;
+
+	for (const shell of shells) {
+		if (tried.has(shell)) {
+			continue;
+		}
+		tried.add(shell);
+		try {
+			return Bun.spawn([shell, ...getShellArgs(shell)], spawnOptions);
+		} catch (error) {
+			lastError = error;
+		}
+	}
+
+	throw lastError instanceof Error
+		? lastError
+		: new Error("Failed to spawn a shell for the terminal session");
+}
+
+function createFailedSession(
+	options: TerminalSessionOptions,
+	message: string,
+): {
+	write: (data: string) => void;
+	resize: (cols: number, rows: number) => void;
+	dispose: () => void;
+} {
+	let closed = false;
+
+	const writeError = () => {
+		options.onData(`\r\n\x1b[31m${message}\x1b[0m\r\n`);
+		queueMicrotask(() => {
+			if (!closed) {
+				options.onExit(1);
+			}
+		});
+	};
+
+	queueMicrotask(writeError);
+
+	return {
+		write() {},
+		resize() {},
+		dispose() {
+			closed = true;
+		},
+	};
+}
+
 export function createTerminalSession(options: TerminalSessionOptions) {
-	const shell = getDefaultShell();
 	let proc: Subprocess | undefined;
 	let closed = false;
-	/** Per-session decoder so partial UTF-8 bytes are not mixed across tabs. */
 	const textDecoder = new TextDecoder("utf-8");
 
 	function decodeTerminalData(data: string | Uint8Array): string {
@@ -41,24 +136,24 @@ export function createTerminalSession(options: TerminalSessionOptions) {
 		proc = undefined;
 	}
 
-	proc = Bun.spawn([shell, ...getShellArgs(shell)], {
-		cwd: options.cwd,
-		env: terminalEnv(),
-		terminal: {
-			name: "xterm-256color",
+	try {
+		proc = spawnTerminal({
+			cwd: options.cwd,
 			cols: options.cols,
 			rows: options.rows,
-			data(_terminal, data) {
+			onData: (data) => {
 				if (!closed) {
 					options.onData(decodeTerminalData(data));
 				}
 			},
-		},
-	});
+		});
+	} catch (error) {
+		return createFailedSession(options, formatSpawnError(error, options.cwd));
+	}
 
 	const terminal = proc.terminal;
 	if (!terminal) {
-		throw new Error("Failed to create terminal PTY");
+		return createFailedSession(options, "Failed to create terminal PTY");
 	}
 
 	void proc.exited.then((exitCode) => {

@@ -3,6 +3,19 @@ import { shallowEqualRecord } from "../../../shared/equality";
 import { getSelectedWorktreePath } from "../../../shared/selection";
 import type { AppState, SelectedWorktreePaths } from "../../../shared/types";
 
+function findWorktreeSelection(
+	repository: NonNullable<ReturnType<typeof findRepository>>,
+	selection: string,
+) {
+	const selectionBase = path.basename(selection);
+	return repository.worktrees.find(
+		(worktree) =>
+			pathsEqual(worktree.path, selection) ||
+			worktree.name === selection ||
+			worktree.name === selectionBase,
+	);
+}
+
 export function reconcileAppState(state: AppState): AppState {
 	// Repositories not loaded yet (startup) — keep persisted selections intact.
 	if (state.repositories.length === 0) {
@@ -42,14 +55,24 @@ export function reconcileAppState(state: AppState): AppState {
 		next.repositories,
 		next.selectedRepositoryPath,
 	);
-	const worktreeStillExists = repository?.worktrees.some((worktree) =>
-		pathsEqual(worktree.path, selectedWorktreePath),
-	);
+	const worktree = repository
+		? findWorktreeSelection(repository, selectedWorktreePath)
+		: undefined;
 
-	if (!worktreeStillExists) {
+	if (!worktree) {
 		const updated = { ...next.selectedWorktreePaths };
 		delete updated[next.selectedRepositoryPath];
 		return { ...next, selectedWorktreePaths: updated };
+	}
+
+	if (!pathsEqual(worktree.path, selectedWorktreePath)) {
+		return {
+			...next,
+			selectedWorktreePaths: {
+				...next.selectedWorktreePaths,
+				[next.selectedRepositoryPath]: worktree.path,
+			},
+		};
 	}
 
 	return next;
@@ -81,9 +104,7 @@ function pruneSelectedWorktreePaths(
 			continue;
 		}
 
-		const worktree = repository.worktrees.find((entry) =>
-			pathsEqual(entry.path, worktreePath),
-		);
+		const worktree = findWorktreeSelection(repository, worktreePath);
 		if (worktree) {
 			pruned[repository.path] = worktree.path;
 		}

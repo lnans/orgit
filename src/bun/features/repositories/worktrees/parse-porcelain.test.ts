@@ -33,6 +33,22 @@ describe("parseWorktreePorcelain", () => {
 		]);
 	});
 
+	test("parses branch names containing slashes", () => {
+		const output = [
+			"worktree /repo/feature-checkout",
+			"HEAD abc",
+			"branch refs/heads/feature/my-branch",
+			"",
+		].join("\n");
+
+		expect(parseWorktreePorcelain(output)).toEqual([
+			{
+				path: "/repo/feature-checkout",
+				branchName: "feature/my-branch",
+			},
+		]);
+	});
+
 	test("uses unknown branch when branch line is missing", () => {
 		const output = ["worktree /repo/orphan", "HEAD abc", ""].join("\n");
 

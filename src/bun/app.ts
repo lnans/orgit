@@ -1,8 +1,12 @@
 import { Utils } from "electrobun/bun";
+import { getSelectedWorktreePath } from "../shared/selection";
 import { createAppState } from "./features/app-state/index";
 import { createConfigSync } from "./features/config";
 import { createLogSync } from "./features/logs";
-import { createTerminalManager, resolveTerminalCwd } from "./features/terminal";
+import {
+	createTerminalManager,
+	resolveTerminalAttachCwd,
+} from "./features/terminal";
 import { logger } from "./lib/logger";
 import { createRpc } from "./rpc";
 import { createMainWindow } from "./window";
@@ -38,11 +42,13 @@ export async function startApp() {
 			const state = appState.get();
 			terminal.attach({
 				sessionId,
-				cwd: resolveTerminalCwd(
-					state.workspacePath,
-					cwd,
-					state.selectedRepositoryPath,
-				),
+				cwd: resolveTerminalAttachCwd({
+					workspacePath: state.workspacePath,
+					tabCwd: cwd,
+					selectedWorktreePath: getSelectedWorktreePath(state),
+					repositoryPath: state.selectedRepositoryPath,
+					repositories: state.repositories,
+				}),
 				cols,
 				rows,
 			});

@@ -116,12 +116,37 @@ describe("reconcileAppState", () => {
 			],
 		});
 
-		expect(reconcileAppState(state)).toEqual({
-			...state,
+		expect(reconcileAppState(state).selectedWorktreePaths).toEqual({
+			"/ws/repo": "/ws/repo/wt-a",
+		});
+	});
+
+	test("normalizes branch name selections to worktree paths", () => {
+		const state = baseState({
 			selectedRepositoryPath: "/ws/repo",
 			selectedWorktreePaths: {
-				"/ws/repo": "/ws/repo/wt-a",
+				"/ws/repo": "feature/my-branch",
 			},
+			repositories: [
+				{
+					name: "repo",
+					path: "/ws/repo",
+					branch: "main",
+					worktrees: [
+						{
+							name: "feature/my-branch",
+							path: "/ws/repo/feature-checkout",
+							filesModified: 0,
+							linesAdded: 0,
+							linesRemoved: 0,
+						},
+					],
+				},
+			],
+		});
+
+		expect(reconcileAppState(state).selectedWorktreePaths).toEqual({
+			"/ws/repo": "/ws/repo/feature-checkout",
 		});
 	});
 });
