@@ -73,5 +73,5 @@ features/<domain>/
 
 ## References
 
-- Full layout and RPC table: `README.md`
+- Full layout and RPC table: `doc/architecture.md`, `doc/project-structure.md`
 - Cursor-specific rules: `.cursorrules`, `.cursor/rules/orgit-architecture.mdc`

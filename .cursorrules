@@ -77,4 +77,4 @@ Document public APIs in `index.ts`, shared types, non-obvious hooks, and pure li
 - Add path aliases in the Bun main process.
 - Create commits unless explicitly asked.
 
-See also: `.cursor/rules/orgit-architecture.mdc` and `README.md`.
+See also: `.cursor/rules/orgit-architecture.mdc` and `doc/README.md`.
