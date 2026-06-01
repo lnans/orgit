@@ -5,6 +5,7 @@ import {
 } from "@client/components/ui/sidebar";
 import { useAppStore } from "@client/store";
 import { useTranslation } from "react-i18next";
+import { useCreateRepositoryDialogStore } from "../store-create-dialog";
 import { RepositoryMenuItem } from "./repository-menu-item";
 import { RepositoryMenuLabel } from "./repository-menu-label";
 
@@ -15,10 +16,16 @@ function RepositoryMenu() {
 		(state) => state.selectedRepositoryPath,
 	);
 	const selectRepository = useAppStore((state) => state.selectRepository);
+	const openCreateRepository = useCreateRepositoryDialogStore(
+		(state) => state.openDialog,
+	);
 
 	return (
 		<SidebarGroup className="pe-0">
-			<RepositoryMenuLabel label={t("repositories")} />
+			<RepositoryMenuLabel
+				label={t("repositories")}
+				onAddClick={openCreateRepository}
+			/>
 
 			<SidebarGroupContent>
 				<SidebarMenu className="gap-1">
