@@ -62,6 +62,20 @@ export async function startApp() {
 		onTerminalResize: ({ cols, rows }) => {
 			terminal.resize(cols, rows);
 		},
+		onCreateRepository: async (params) => {
+			const result = await appState.createRepository(params);
+			rpc.syncCreateRepositoryResult(result);
+			if (result.ok) {
+				rpc.syncAppState(appState.get());
+			}
+		},
+		onCreateWorktree: async (params) => {
+			const result = await appState.createWorktree(params);
+			rpc.syncCreateWorktreeResult(result);
+			if (result.ok) {
+				rpc.syncAppState(appState.get());
+			}
+		},
 	});
 
 	logSync = createLogSync({

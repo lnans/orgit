@@ -9,9 +9,15 @@ import { TooltipProvider } from "@client/components/ui/tooltip";
 import { LogPanel } from "@client/features/logs";
 import { useLogPanelShortcut } from "@client/features/logs/hooks/use-log-panel-shortcut";
 import { useLogStore } from "@client/features/logs/store";
-import { RepositoryMenu } from "@client/features/repositories";
+import {
+	CreateRepositoryDialogHost,
+	RepositoryMenu,
+} from "@client/features/repositories";
 import { TerminalPanel } from "@client/features/terminal";
-import { WorktreeMenu } from "@client/features/worktrees";
+import {
+	CreateWorktreeDialogHost,
+	WorktreeMenu,
+} from "@client/features/worktrees";
 import { useWindowFocusOnMount } from "@client/hooks/use-window-focus";
 import { i18next } from "@client/lib/i18n";
 import { I18nextProvider } from "react-i18next";
@@ -24,6 +30,8 @@ function App() {
 
 	return (
 		<div className="flex h-dvh flex-col overflow-hidden dark:bg-orgit-background">
+			<CreateRepositoryDialogHost />
+			<CreateWorktreeDialogHost />
 			<SidebarProvider className="flex min-h-0 flex-1 flex-col">
 				<Header />
 

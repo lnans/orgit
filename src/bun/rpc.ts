@@ -1,5 +1,13 @@
 import { BrowserView } from "electrobun";
 import type { AppConfig } from "../shared/config";
+import type {
+	CreateRepositoryParams,
+	CreateRepositoryResult,
+} from "../shared/create-repository";
+import type {
+	CreateWorktreeParams,
+	CreateWorktreeResult,
+} from "../shared/create-worktree";
 import type { AppState, MainRPC } from "../shared/types";
 
 type WindowControls = {
@@ -26,6 +34,8 @@ type RpcHandlers = {
 	onTerminalClose: (params: { sessionId: string }) => void;
 	onTerminalInput: (params: { sessionId: string; data: string }) => void;
 	onTerminalResize: (params: { cols: number; rows: number }) => void;
+	onCreateRepository: (params: CreateRepositoryParams) => Promise<void>;
+	onCreateWorktree: (params: CreateWorktreeParams) => Promise<void>;
 };
 
 export type WebviewRPC = ReturnType<typeof createRpc>;
@@ -65,6 +75,12 @@ export function createRpc(handlers: RpcHandlers) {
 				onTerminalResize: ({ cols, rows }) => {
 					handlers.onTerminalResize({ cols, rows });
 				},
+				onCreateRepository: (params) => {
+					void handlers.onCreateRepository(params);
+				},
+				onCreateWorktree: (params) => {
+					void handlers.onCreateWorktree(params);
+				},
 			},
 			requests: {},
 		},
@@ -89,6 +105,12 @@ export function createRpc(handlers: RpcHandlers) {
 		},
 		syncAppConfig: (config: AppConfig) => {
 			rpc.send.syncAppConfig({ config });
+		},
+		syncCreateRepositoryResult: (result: CreateRepositoryResult) => {
+			rpc.send.syncCreateRepositoryResult({ result });
+		},
+		syncCreateWorktreeResult: (result: CreateWorktreeResult) => {
+			rpc.send.syncCreateWorktreeResult({ result });
 		},
 	};
 }

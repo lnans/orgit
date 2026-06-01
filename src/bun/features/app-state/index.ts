@@ -1,5 +1,15 @@
+import type {
+	CreateRepositoryParams,
+	CreateRepositoryResult,
+} from "../../../shared/create-repository";
+import type {
+	CreateWorktreeParams,
+	CreateWorktreeResult,
+} from "../../../shared/create-worktree";
 import type { AppState } from "../../../shared/types";
 import {
+	executeAddWorktree,
+	executeCreateRepository,
 	type ListRepositoriesOptions,
 	listRepositories,
 } from "../repositories";
@@ -75,6 +85,55 @@ export function createAppState() {
 				...state,
 				selectedWorktreePaths,
 			});
+		},
+
+		/** Clone into the workspace, rescan, and select the new repository. */
+		async createRepository(
+			params: CreateRepositoryParams,
+		): Promise<CreateRepositoryResult> {
+			const outcome = await executeCreateRepository(
+				state.workspacePath,
+				params,
+			);
+			if (!outcome.ok || !outcome.paths) {
+				const { paths: _paths, ...result } = outcome;
+				return result;
+			}
+
+			const { repositoryPath } = outcome.paths;
+			const withRepos = await loadRepositories({ includeDiffStats: true });
+
+			applyState({
+				...withRepos,
+				selectedRepositoryPath: repositoryPath,
+			});
+
+			return { ok: true };
+		},
+
+		/** Add a worktree, rescan, and select the new checkout. */
+		async createWorktree(
+			params: CreateWorktreeParams,
+		): Promise<CreateWorktreeResult> {
+			const outcome = await executeAddWorktree(state.workspacePath, params);
+			if (!outcome.ok || !outcome.paths) {
+				const { paths: _paths, ...result } = outcome;
+				return result;
+			}
+
+			const { repositoryPath, worktreePath } = outcome.paths;
+			const withRepos = await loadRepositories({ includeDiffStats: true });
+
+			applyState({
+				...withRepos,
+				selectedRepositoryPath: repositoryPath,
+				selectedWorktreePaths: {
+					...withRepos.selectedWorktreePaths,
+					[repositoryPath]: worktreePath,
+				},
+			});
+
+			return { ok: true };
 		},
 	};
 }

@@ -5,6 +5,7 @@ import {
 } from "@client/components/ui/sidebar";
 import { useAppStore, useSelectedRepository } from "@client/store";
 import { useTranslation } from "react-i18next";
+import { useCreateWorktreeDialogStore } from "../store-create-dialog";
 import { WorktreeMenuItem } from "./worktree-menu-item";
 import { WorktreeMenuLabel } from "./worktree-menu-label";
 
@@ -17,10 +18,25 @@ function WorktreeMenu() {
 		return repoPath ? state.selectedWorktreePaths[repoPath] : undefined;
 	});
 	const selectWorktree = useAppStore((state) => state.selectWorktree);
+	const selectedRepositoryPath = useAppStore(
+		(state) => state.selectedRepositoryPath,
+	);
+	const openCreateWorktree = useCreateWorktreeDialogStore(
+		(state) => state.openDialog,
+	);
 
 	return (
 		<SidebarGroup className="pe-0">
-			<WorktreeMenuLabel label={t("worktrees")} />
+			<WorktreeMenuLabel
+				label={t("worktrees")}
+				onAddClick={() =>
+					openCreateWorktree(
+						selectedRepositoryPath
+							? { repositoryPath: selectedRepositoryPath }
+							: undefined,
+					)
+				}
+			/>
 
 			<SidebarGroupContent>
 				<SidebarMenu className="gap-1">

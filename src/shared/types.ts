@@ -1,5 +1,13 @@
 import type { RPCSchema } from "electrobun";
 import type { AppConfig } from "./config";
+import type {
+	CreateRepositoryParams,
+	CreateRepositoryResult,
+} from "./create-repository";
+import type {
+	CreateWorktreeParams,
+	CreateWorktreeResult,
+} from "./create-worktree";
 
 export type WorktreeDiffStats = {
 	filesModified: number;
@@ -71,6 +79,8 @@ export type MainRPC = {
 				cols: number;
 				rows: number;
 			};
+			onCreateRepository: CreateRepositoryParams;
+			onCreateWorktree: CreateWorktreeParams;
 		};
 	}>;
 	webview: RPCSchema<{
@@ -92,6 +102,12 @@ export type MainRPC = {
 			};
 			syncAppConfig: {
 				config: AppConfig;
+			};
+			syncCreateRepositoryResult: {
+				result: CreateRepositoryResult;
+			};
+			syncCreateWorktreeResult: {
+				result: CreateWorktreeResult;
 			};
 		};
 	}>;
