@@ -132,3 +132,12 @@ export function useActiveTerminalTabId(worktreePath: string | undefined) {
 		worktreePath ? state.activeTabIdByWorktree[worktreePath] : undefined,
 	);
 }
+
+export function useTerminalCount(worktreePath: string | undefined) {
+	return useTerminalStore((state) => {
+		if (!worktreePath) {
+			return 0;
+		}
+		return state.tabs.filter((tab) => tab.worktreePath === worktreePath).length;
+	});
+}

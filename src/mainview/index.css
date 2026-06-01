@@ -49,9 +49,12 @@
 
 	--color-orgit-background: var(--orgit-background);
 	--color-orgit-surface: var(--orgit-surface);
+	--color-orgit-surface-light: var(--orgit-surface-light);
 	--color-orgit-border: var(--orgit-border);
 	--color-orgit-border-darker: var(--orgit-border-darker);
+	--color-orgit-border-light: var(--orgit-border-light);
 	--color-orgit-hover: var(--orgit-hover);
+	--color-orgit-hover-light: var(--orgit-hover-light);
 	--color-orgit-input: var(--orgit-input);
 }
 
@@ -127,9 +130,12 @@
 
 	--orgit-background: oklch(27.266% 0.01372 267.072);
 	--orgit-surface: oklch(25.1% 0.01048 260.73);
+	--orgit-surface-light: oklch(31.7% 0.0132 267.147);
 	--orgit-border: oklch(35.229% 0.0091 268.423);
 	--orgit-border-darker: oklch(21.786% 0.01029 268.225);
+	--orgit-border-light: oklch(35.123% 0.01337 261.768);
 	--orgit-hover: oklch(31.253% 0.01544 264.346);
+	--orgit-hover-light: oklch(34.013% 0.01132 264.445);
 	--orgit-input: oklch(23.888% 0.00824 264.438);
 }
 

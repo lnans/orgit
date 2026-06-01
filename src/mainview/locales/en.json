@@ -4,6 +4,7 @@
   "workspace": "Workspace",
   "noData": "No data to display",
   "selectRepositoryFirst": "Select a repository first",
+  "selectWorktreeFirst": "Select a worktree first",
   "logPanel": "Log",
   "logs": "Logs",
   "logsToggle": "Toggle log panel",
