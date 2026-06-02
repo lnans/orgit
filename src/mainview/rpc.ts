@@ -15,6 +15,11 @@ import type {
 import type { DeleteItemParams, DeleteItemResult } from "@shared/delete-item";
 import type { GitPullParams, GitPullResult } from "@shared/git-pull";
 import type { MainRPC } from "@shared/types";
+import type {
+	OpenWorktreeInIdeParams,
+	WorktreeHasDotNetSolutionParams,
+	WorktreeHasDotNetSolutionResult,
+} from "@shared/worktree-ide";
 import { Electroview } from "electrobun/view";
 
 const rpc = Electroview.defineRPC<MainRPC>({
@@ -139,4 +144,17 @@ export const mainProcess = {
 			deleteItemResultListeners.delete(listener);
 		};
 	},
+	worktreeHasDotNetSolution: (
+		params: WorktreeHasDotNetSolutionParams,
+	): Promise<WorktreeHasDotNetSolutionResult | undefined> => {
+		const rpc = electroview.rpc;
+		if (!rpc) {
+			return Promise.resolve(undefined);
+		}
+		return rpc.request.worktreeHasDotNetSolution(params);
+	},
+	openInCode: (params: OpenWorktreeInIdeParams) =>
+		electroview.rpc?.send.onOpenInCode(params),
+	openInRider: (params: OpenWorktreeInIdeParams) =>
+		electroview.rpc?.send.onOpenInRider(params),
 };

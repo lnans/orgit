@@ -10,6 +10,11 @@ import {
 	createTerminalManager,
 	resolveTerminalAttachCwd,
 } from "./features/terminal";
+import {
+	checkWorktreeHasDotNetSolution,
+	openWorktreeInCode,
+	openWorktreeInRider,
+} from "./features/worktree-ide";
 import { logger } from "./lib/logger";
 import { createRpc } from "./rpc";
 import { createMainWindow } from "./window";
@@ -116,6 +121,9 @@ export async function startApp() {
 			}
 			rpc.syncDeleteItemResult(result);
 		},
+		worktreeHasDotNetSolution: checkWorktreeHasDotNetSolution,
+		onOpenInCode: openWorktreeInCode,
+		onOpenInRider: openWorktreeInRider,
 	});
 
 	logSync = createLogSync({

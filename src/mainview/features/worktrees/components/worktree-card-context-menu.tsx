@@ -5,8 +5,9 @@ import {
 } from "@client/components/ui/context-menu";
 import { useRequestDelete } from "@client/features/delete";
 import { useGitPull, useGitPullStore } from "@client/features/repositories";
+import { useWorktreeIdeMenu } from "@client/features/worktrees/hooks/use-worktree-ide-menu";
 import { useSelectedRepository } from "@client/store";
-import { Download, Trash2 } from "lucide-react";
+import { Code2, Download, Layers, Trash2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -28,16 +29,27 @@ export function WorktreeCardContextMenu({
 	const gitPull = useGitPull();
 	const requestDelete = useRequestDelete();
 	const selectedRepository = useSelectedRepository();
+	const { riderDisabled, onMenuOpenChange, openInCode, openInRider } =
+		useWorktreeIdeMenu(worktreePath);
 
 	return (
 		<SidebarCardContextMenu
 			loading={isLoading}
 			onSelect={onSelect}
+			onMenuOpenChange={onMenuOpenChange}
 			menu={
 				<>
 					<ContextMenuItem onClick={() => gitPull(worktreePath, worktreePath)}>
 						<Download />
 						{t("gitPull")}
+					</ContextMenuItem>
+					<ContextMenuItem onClick={openInCode}>
+						<Code2 />
+						{t("openInCode")}
+					</ContextMenuItem>
+					<ContextMenuItem disabled={riderDisabled} onClick={openInRider}>
+						<Layers />
+						{t("openInRider")}
 					</ContextMenuItem>
 					<ContextMenuSeparator />
 					<ContextMenuItem
