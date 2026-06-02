@@ -97,6 +97,10 @@ export function useTerminalSession({
 			},
 		});
 
+		// Observe the session wrapper: the inner container may keep a snapped height
+		// when a sibling (e.g. log panel) is removed, so it would not resize by itself.
+		const resizeTarget = container.parentElement ?? container;
+
 		const resizeObserver = new ResizeObserver(() => {
 			if (!activeRef.current) {
 				return;
@@ -106,7 +110,7 @@ export function useTerminalSession({
 				mainProcess.resizeTerminal(dimensions.cols, dimensions.rows);
 			}
 		});
-		resizeObserver.observe(container);
+		resizeObserver.observe(resizeTarget);
 
 		requestAnimationFrame(() => {
 			readyRef.current = true;
