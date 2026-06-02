@@ -1,8 +1,6 @@
 import { existsSync, type FSWatcher, readFileSync, watch } from "node:fs";
-import path from "node:path";
-import { CONFIG_DIR, LOG_FILE } from "../app-state/paths";
+import { LOG_FILE } from "../app-state/paths";
 
-const LOG_BASENAME = path.basename(LOG_FILE);
 const PUSH_DEBOUNCE_MS = 50;
 
 export function readLogFile(): string {
@@ -44,27 +42,11 @@ export function createLogSync(callbacks: LogSyncCallbacks) {
 	}
 
 	function startWatcher() {
-		if (watcher) {
+		if (watcher || !LOG_FILE || !existsSync(LOG_FILE)) {
 			return;
 		}
 
-		const watchPath = existsSync(LOG_FILE) ? LOG_FILE : CONFIG_DIR;
-		watcher = watch(watchPath, (_event, filename) => {
-			if (watchPath === LOG_FILE) {
-				schedulePush();
-				return;
-			}
-
-			if (filename !== null && filename !== LOG_BASENAME) {
-				return;
-			}
-
-			if (existsSync(LOG_FILE)) {
-				watcher?.close();
-				watcher = watch(LOG_FILE, schedulePush);
-				schedulePush();
-			}
-		});
+		watcher = watch(LOG_FILE, schedulePush);
 	}
 
 	function start() {
