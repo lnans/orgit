@@ -1,5 +1,6 @@
 import { Utils } from "electrobun/bun";
 import { getSelectedWorktreePath } from "../shared/selection";
+import { setupApplicationMenu } from "./application-menu";
 import { createAppState } from "./features/app-state/index";
 import { createConfigSync } from "./features/config";
 import { createLogSync } from "./features/logs";
@@ -13,6 +14,7 @@ import { createRpc } from "./rpc";
 import { createMainWindow } from "./window";
 
 export async function startApp() {
+	setupApplicationMenu();
 	const worktreeStatusSync = createWorktreeStatusSync({
 		onChange: (worktreePaths) => {
 			rpc.syncAppState(appState.refreshWorktreeDiffStats(worktreePaths));
