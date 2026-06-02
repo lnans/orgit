@@ -8,6 +8,7 @@ import type {
 	CreateWorktreeParams,
 	CreateWorktreeResult,
 } from "./create-worktree";
+import type { GitPullParams, GitPullResult } from "./git-pull";
 
 export type WorktreeDiffStats = {
 	filesModified: number;
@@ -81,6 +82,7 @@ export type MainRPC = {
 			};
 			onCreateRepository: CreateRepositoryParams;
 			onCreateWorktree: CreateWorktreeParams;
+			onGitPull: GitPullParams;
 		};
 	}>;
 	webview: RPCSchema<{
@@ -108,6 +110,10 @@ export type MainRPC = {
 			};
 			syncCreateWorktreeResult: {
 				result: CreateWorktreeResult;
+			};
+			syncGitPullResult: {
+				loadingKey: string;
+				result: GitPullResult;
 			};
 		};
 	}>;

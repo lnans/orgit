@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@client/components/ui/card";
-import { SidebarMenuItem } from "@client/components/ui/sidebar";
+import { Spinner } from "@client/components/ui/spinner";
 import { Text } from "@client/components/ui/text";
+import { useGitPullStore } from "@client/features/repositories";
 import { cn } from "@client/lib/utils";
 import type { Worktree } from "@shared/types";
 import { cva } from "class-variance-authority";
@@ -8,6 +9,7 @@ import { FileBracesIcon, GitFork, Minus, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { hasWorktreeChanges } from "../lib/worktree-changes";
 import { GitStat } from "./git-stat";
+import { WorktreeCardContextMenu } from "./worktree-card-context-menu";
 
 const worktreeMenuItemVariants = cva(
 	"py-1 mx-2 me-1.5 gap-0 rounded-sm cursor-pointer dark:bg-transparent ring-0 dark:hover:bg-orgit-hover transition-all",
@@ -34,14 +36,19 @@ export function WorktreeMenuItem({
 }: WorktreeMenuItemProps) {
 	const { t } = useTranslation();
 	const hasChanges = hasWorktreeChanges(worktree);
+	const isLoading = useGitPullStore((state) => state.isLoading(worktree.path));
 
 	return (
-		<SidebarMenuItem onClick={onSelect}>
+		<WorktreeCardContextMenu worktreePath={worktree.path} onSelect={onSelect}>
 			<Card className={cn(worktreeMenuItemVariants({ isSelected }))}>
 				<CardContent className="px-2">
 					<div className="flex flex-col w-full flex-1 gap-1">
 						<div className="inline-flex items-center gap-1">
-							<GitFork size={11} />
+							{isLoading ? (
+								<Spinner className="size-[11px]" />
+							) : (
+								<GitFork size={11} />
+							)}
 							<Text className="font-medium text-[10px]">{worktree.name}</Text>
 						</div>
 
@@ -71,6 +78,6 @@ export function WorktreeMenuItem({
 					</div>
 				</CardContent>
 			</Card>
-		</SidebarMenuItem>
+		</WorktreeCardContextMenu>
 	);
 }

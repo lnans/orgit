@@ -8,6 +8,7 @@ import type {
 	CreateWorktreeParams,
 	CreateWorktreeResult,
 } from "../shared/create-worktree";
+import type { GitPullParams, GitPullResult } from "../shared/git-pull";
 import type { AppState, MainRPC } from "../shared/types";
 
 type WindowControls = {
@@ -36,6 +37,7 @@ type RpcHandlers = {
 	onTerminalResize: (params: { cols: number; rows: number }) => void;
 	onCreateRepository: (params: CreateRepositoryParams) => Promise<void>;
 	onCreateWorktree: (params: CreateWorktreeParams) => Promise<void>;
+	onGitPull: (params: GitPullParams) => Promise<void>;
 };
 
 export type WebviewRPC = ReturnType<typeof createRpc>;
@@ -81,6 +83,9 @@ export function createRpc(handlers: RpcHandlers) {
 				onCreateWorktree: (params) => {
 					void handlers.onCreateWorktree(params);
 				},
+				onGitPull: (params) => {
+					void handlers.onGitPull(params);
+				},
 			},
 			requests: {},
 		},
@@ -111,6 +116,9 @@ export function createRpc(handlers: RpcHandlers) {
 		},
 		syncCreateWorktreeResult: (result: CreateWorktreeResult) => {
 			rpc.send.syncCreateWorktreeResult({ result });
+		},
+		syncGitPullResult: (loadingKey: string, result: GitPullResult) => {
+			rpc.send.syncGitPullResult({ loadingKey, result });
 		},
 	};
 }

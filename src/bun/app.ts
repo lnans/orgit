@@ -76,6 +76,13 @@ export async function startApp() {
 				rpc.syncAppState(appState.get());
 			}
 		},
+		onGitPull: async ({ checkoutPath, loadingKey }) => {
+			const result = await appState.gitPull(checkoutPath);
+			if (result.ok) {
+				rpc.syncAppState(appState.get());
+			}
+			rpc.syncGitPullResult(loadingKey, result);
+		},
 	});
 
 	logSync = createLogSync({
