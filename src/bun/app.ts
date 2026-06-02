@@ -109,6 +109,13 @@ export async function startApp() {
 			quitGuard.confirmQuit();
 		},
 		onCancelQuit: () => {},
+		onDeleteItem: async (params) => {
+			const result = await appState.deleteItem(params);
+			if (result.ok) {
+				rpc.syncAppState(appState.get());
+			}
+			rpc.syncDeleteItemResult(result);
+		},
 	});
 
 	logSync = createLogSync({

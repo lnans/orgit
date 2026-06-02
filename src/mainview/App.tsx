@@ -6,6 +6,7 @@ import {
 	SidebarProvider,
 } from "@client/components/ui/sidebar";
 import { TooltipProvider } from "@client/components/ui/tooltip";
+import { DeleteConfirmationDialogHost } from "@client/features/delete";
 import { LogPanel } from "@client/features/logs";
 import { useLogPanelShortcut } from "@client/features/logs/hooks/use-log-panel-shortcut";
 import { useLogStore } from "@client/features/logs/store";
@@ -34,6 +35,7 @@ function App() {
 	return (
 		<div className="flex h-dvh flex-col overflow-hidden dark:bg-orgit-background">
 			<QuitConfirmationDialogHost />
+			<DeleteConfirmationDialogHost />
 			<CreateRepositoryDialogHost />
 			<CreateWorktreeDialogHost />
 			<SidebarProvider className="flex min-h-0 flex-1 flex-col">
