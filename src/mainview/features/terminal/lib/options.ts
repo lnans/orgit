@@ -17,6 +17,7 @@ export function buildTerminalOptions(
 	terminalConfig: TerminalConfig,
 ): ITerminalOptions {
 	return {
+		allowProposedApi: true,
 		cursorBlink: terminalConfig.cursorBlink,
 		customGlyphs: true,
 		fontFamily: terminalConfig.fontFamily,
@@ -38,6 +39,7 @@ export function applyTerminalOptions(
 	terminalConfig: TerminalConfig,
 ) {
 	const next = buildTerminalOptions(terminalConfig);
+	terminal.options.allowProposedApi = next.allowProposedApi;
 	terminal.options.cursorBlink = next.cursorBlink;
 	terminal.options.customGlyphs = next.customGlyphs;
 	terminal.options.fontFamily = next.fontFamily;
