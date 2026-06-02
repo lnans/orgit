@@ -4,6 +4,7 @@ import { setupApplicationMenu } from "./application-menu";
 import { createAppState } from "./features/app-state/index";
 import { createConfigSync } from "./features/config";
 import { createLogSync } from "./features/logs";
+import { createQuitGuard } from "./features/quit";
 import { createWorktreeStatusSync } from "./features/repositories";
 import {
 	createTerminalManager,
@@ -33,6 +34,8 @@ export async function startApp() {
 		onOutput: (sessionId, data) => rpc.syncTerminalOutput(sessionId, data),
 		onExit: (sessionId, exitCode) => rpc.syncTerminalExit(sessionId, exitCode),
 	});
+
+	let quitGuard: ReturnType<typeof createQuitGuard>;
 
 	const rpc = createRpc({
 		onDoubleClickTitleBar: ({ mainWindow }) => {
@@ -102,6 +105,10 @@ export async function startApp() {
 				rpc.syncAppState(appState.refreshWorktreeDiffStats());
 			}
 		},
+		onConfirmQuit: () => {
+			quitGuard.confirmQuit();
+		},
+		onCancelQuit: () => {},
 	});
 
 	logSync = createLogSync({
@@ -115,12 +122,17 @@ export async function startApp() {
 	const mainWindow = await createMainWindow(rpc);
 	rpc.setMainWindow(mainWindow);
 
-	mainWindow.on("close", () => {
-		configSync.stop();
-		worktreeStatusSync.stop();
-		terminal.dispose();
-		Utils.quit();
+	quitGuard = createQuitGuard({
+		mainWindow,
+		requestConfirmation: () => rpc.syncQuitConfirmationRequest(),
+		onConfirmedQuit: () => {
+			configSync.stop();
+			worktreeStatusSync.stop();
+			terminal.dispose();
+			Utils.quit();
+		},
 	});
+	quitGuard.install();
 
 	mainWindow.webview.on("dom-ready", async () => {
 		mainWindow.activate();
