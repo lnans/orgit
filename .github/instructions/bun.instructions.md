@@ -19,7 +19,7 @@ You are editing the Electrobun **main process** (Bun runtime). This code runs ou
 - App state: `createAppState()` in `features/app-state/` — mutate, reconcile, persist.
 - Terminal: PTY sessions keyed by tab UUID from the webview; manager in `features/terminal/`.
 - Config: watch `~/.config/orgit/config.json`, push `syncAppConfig`.
-- Logs: tail `orgit.log` when the UI opens the log panel.
+- Logs: tail the per-run file under `~/.config/orgit/logs/` when the UI opens the log panel.
 
 ## Tests
 

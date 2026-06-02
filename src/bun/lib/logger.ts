@@ -2,7 +2,7 @@ import { appendFileSync } from "node:fs";
 import { inspect } from "node:util";
 import {
 	CONFIG_DIR,
-	ensureConfigDir,
+	initLogSession,
 	LOG_FILE,
 } from "../features/app-state/paths";
 
@@ -43,7 +43,6 @@ function formatLine(level: LogLevel, message: string, args: unknown[]): string {
 function write(level: LogLevel, message: string, ...args: unknown[]) {
 	const line = formatLine(level, message, args);
 
-	ensureConfigDir();
 	appendFileSync(LOG_FILE, `${line}\n`, "utf-8");
 
 	const log =
@@ -71,8 +70,8 @@ export const logger = {
 };
 
 export function initLogger() {
-	ensureConfigDir();
+	const logFile = initLogSession();
 	logger.info(
-		`Orgit main process started (log: ${LOG_FILE}, dir: ${CONFIG_DIR})`,
+		`Orgit main process started (log: ${logFile}, dir: ${CONFIG_DIR})`,
 	);
 }

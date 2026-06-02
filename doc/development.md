@@ -18,7 +18,7 @@ bun run build:canary  # vite build && electrobun build
 | ---- | ------- |
 | `~/.config/orgit/state.json` | Persisted state (versioned) |
 | `~/.config/orgit/config.json` | UI preferences (terminal theme, font) |
-| `~/.config/orgit/orgit.log` | Application log file (tailed by UI) |
+| `~/.config/orgit/logs/orgit-*.log` | Per-run application log (tailed by UI) |
 | `~/.config/orgit/workspace/` | Default folder scanned for repo roots |
 
 See [`config.example.json`](../config.example.json) in the repository root for a documented terminal configuration sample.

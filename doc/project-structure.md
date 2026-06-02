@@ -24,7 +24,7 @@ src/
 │       ├── repositories/        # listRepositories, git/, worktrees/
 │       ├── terminal/            # PTY manager (Bun.spawn)
 │       ├── config/              # Watch config.json, push to webview
-│       └── logs/                # Tail orgit.log when panel is open
+│       └── logs/                # Tail per-run session log when panel is open
 │
 └── mainview/                    # React UI (Vite root)
     ├── main.tsx, App.tsx
