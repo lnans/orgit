@@ -32,6 +32,7 @@ function RepositoryMenu() {
 					{repositories.map((repository) => (
 						<RepositoryMenuItem
 							key={repository.path}
+							repositoryPath={repository.path}
 							name={repository.name}
 							branch={repository.branch}
 							isSelected={selectedRepositoryPath === repository.path}

@@ -10,6 +10,7 @@ import type { AppState } from "../../../shared/types";
 import {
 	executeAddWorktree,
 	executeCreateRepository,
+	executeGitPull,
 	type ListRepositoriesOptions,
 	listRepositories,
 } from "../repositories";
@@ -134,6 +135,14 @@ export function createAppState() {
 			});
 
 			return { ok: true };
+		},
+
+		async gitPull(checkoutPath: string) {
+			const result = await executeGitPull(checkoutPath);
+			if (result.ok) {
+				await loadRepositories({ includeDiffStats: true });
+			}
+			return result;
 		},
 	};
 }

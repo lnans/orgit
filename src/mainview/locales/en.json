@@ -13,6 +13,7 @@
   "toggleMenu": "Toggle menu",
   "toggleLogs": "Toggle logs",
   "noChanges": "No changes",
+  "gitPull": "Git pull",
   "closeTab": "Close {{label}}",
   "close": "Close",
   "folderName.error.empty_input": "Folder name cannot be empty.",
