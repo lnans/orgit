@@ -1,8 +1,38 @@
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { Utils } from "electrobun";
 
-export const CONFIG_DIR = path.join(Utils.paths.home, ".config", "orgit");
+/** Dev builds use a separate config folder so state does not mix with production. */
+export function resolveConfigDirName(channel: string | null): string {
+	return channel === "dev" ? "orgit-dev" : "orgit";
+}
+
+function readElectrobunChannel(): string | null {
+	try {
+		const raw = readFileSync(
+			path.join("..", "Resources", "version.json"),
+			"utf-8",
+		);
+		const parsed: unknown = JSON.parse(raw);
+		if (
+			typeof parsed === "object" &&
+			parsed !== null &&
+			"channel" in parsed &&
+			typeof parsed.channel === "string"
+		) {
+			return parsed.channel;
+		}
+	} catch {
+		// Not running inside an Electrobun bundle (e.g. unit tests).
+	}
+	return null;
+}
+
+export const CONFIG_DIR = path.join(
+	Utils.paths.home,
+	".config",
+	resolveConfigDirName(readElectrobunChannel()),
+);
 export const CONFIG_FILE = path.join(CONFIG_DIR, "config.json");
 export const STATE_FILE = path.join(CONFIG_DIR, "state.json");
 export const LOGS_DIR = path.join(CONFIG_DIR, "logs");
