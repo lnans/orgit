@@ -10,6 +10,7 @@
   "logsToggle": "Toggle log panel",
   "logPanelEmpty": "No log output yet.",
   "openTerminal": "Open terminal",
+  "addWorktree": "Add worktree",
   "toggleMenu": "Toggle menu",
   "toggleLogs": "Toggle logs",
   "noChanges": "No changes",

@@ -18,7 +18,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CreateWorktreeResult } from "@shared/create-worktree";
 import type { Repository } from "@shared/types";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
@@ -74,6 +74,10 @@ function CreateWorktreeDialog({
 		return repositories.find((r) => r.path === repositoryPath)?.name;
 	}, [repositories, repositoryPath]);
 
+	const branchNameInputRef = useRef<HTMLInputElement | null>(null);
+	const { ref: branchNameFieldRef, ...branchNameField } =
+		form.register("branchName");
+
 	useEffect(() => {
 		if (!open) {
 			return;
@@ -83,6 +87,16 @@ function CreateWorktreeDialog({
 			branchName: "",
 		});
 	}, [open, defaults?.repositoryPath, form, repositories]);
+
+	useEffect(() => {
+		if (!open || !hasRepositories) {
+			return;
+		}
+		const frame = requestAnimationFrame(() => {
+			branchNameInputRef.current?.focus();
+		});
+		return () => cancelAnimationFrame(frame);
+	}, [open, hasRepositories]);
 
 	const handleOpenChange = (nextOpen: boolean) => {
 		if (isSubmitting && !nextOpen) {
@@ -166,7 +180,11 @@ function CreateWorktreeDialog({
 								autoComplete="off"
 								disabled={isSubmitting || !repositoryPath}
 								aria-invalid={Boolean(form.formState.errors.branchName)}
-								{...form.register("branchName")}
+								ref={(node) => {
+									branchNameFieldRef(node);
+									branchNameInputRef.current = node;
+								}}
+								{...branchNameField}
 							/>
 							<WorktreeBranchFieldHint
 								value={branchName ?? ""}

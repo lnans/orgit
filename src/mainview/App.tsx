@@ -20,6 +20,7 @@ import {
 	CreateWorktreeDialogHost,
 	WorktreeMenu,
 } from "@client/features/worktrees";
+import { useCreateWorktreeShortcut } from "@client/features/worktrees/hooks/use-create-worktree-shortcut";
 import { useWindowFocusOnMount } from "@client/hooks/use-window-focus";
 import { useWorktreeStatusWatchFocus } from "@client/hooks/use-worktree-status-watch-focus";
 import { i18next } from "@client/lib/i18n";
@@ -29,6 +30,7 @@ function App() {
 	const logPanelOpen = useLogStore((state) => state.open);
 
 	useLogPanelShortcut();
+	useCreateWorktreeShortcut();
 	useWindowFocusOnMount();
 	useWorktreeStatusWatchFocus();
 

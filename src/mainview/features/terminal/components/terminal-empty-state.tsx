@@ -15,6 +15,10 @@ function TerminalEmptyState() {
 				/>
 				<TerminalEmptyStateHelper message={t("toggleMenu")} keys={["⌘", "B"]} />
 				<TerminalEmptyStateHelper message={t("toggleLogs")} keys={["⌘", "J"]} />
+				<TerminalEmptyStateHelper
+					message={t("addWorktree")}
+					keys={["⌘", "N"]}
+				/>
 			</div>
 		</div>
 	);
