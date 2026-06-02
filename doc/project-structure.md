@@ -38,7 +38,7 @@ src/
     └── features/
         ├── repositories/        # Repository sidebar
         ├── worktrees/           # Worktree sidebar + diff stats
-        ├── terminal/            # xterm.js tabs, viewport, WebGL
+        ├── terminal/            # xterm.js tabs, fit, Unicode11
         └── logs/                # Log panel UI
 ```
 

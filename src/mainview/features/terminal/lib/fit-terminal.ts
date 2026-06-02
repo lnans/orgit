@@ -1,9 +1,6 @@
 import type { FitAddon } from "@xterm/addon-fit";
 import type { Terminal } from "@xterm/xterm";
-import {
-	snapTerminalContainerHeight,
-	syncAlternateBufferViewport,
-} from "./viewport";
+import { snapTerminalContainerHeight } from "./viewport";
 
 export type TerminalDimensions = {
 	cols: number;
@@ -11,8 +8,8 @@ export type TerminalDimensions = {
 };
 
 /**
- * Fits the terminal to its container, snaps row height, and syncs the
- * alternate-buffer viewport. Returns the resulting column/row dimensions.
+ * Fits the terminal to its container and snaps row height. Returns the
+ * resulting column/row dimensions.
  */
 export function fitTerminalDimensions(
 	fitAddon: FitAddon | null,
@@ -33,7 +30,6 @@ export function fitTerminalDimensions(
 	if (container && snapTerminalContainerHeight(terminal, container)) {
 		fitAddon.fit();
 	}
-	syncAlternateBufferViewport(terminal);
 
 	return {
 		cols: terminal.cols,

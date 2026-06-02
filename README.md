@@ -26,7 +26,7 @@ Modern Git workflows often mean more than one checkout per repository. Orgit tur
 | **Workspace** | Configurable root directory; repositories are detected as top-level Git roots under that path. |
 | **Repositories** | Sidebar list with current branch; select a repo to drive the rest of the UI. |
 | **Worktrees** | Linked checkouts per repo with change indicators; selections persist across sessions. |
-| **Terminal** | Multiple tabs per worktree, Dracula-style theming, WebGL-backed rendering for responsive TUIs. |
+| **Terminal** | Multiple tabs per worktree, Dracula-style theming, Unicode-aware xterm.js for TUIs like Copilot CLI. |
 | **Logs** | Built-in tail of the application log for support and debugging. |
 | **Preferences** | Terminal font, colors, and scrollback via `~/.config/orgit/config.json`. |
 

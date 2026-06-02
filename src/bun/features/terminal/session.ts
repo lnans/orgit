@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import path from "node:path";
 import type { Subprocess } from "bun";
+import { createTerminalStreamDecoder } from "./decode";
 import { getShellArgs, resolveShellCandidates } from "./shell";
 
 export type TerminalSessionOptions = {
@@ -35,7 +36,7 @@ type SpawnTerminalOptions = {
 	cwd: string;
 	cols: number;
 	rows: number;
-	onData: (data: string) => void;
+	onData: (data: string | Uint8Array) => void;
 };
 
 function formatSpawnError(error: unknown, cwd: string): string {
@@ -58,9 +59,7 @@ function spawnTerminal(options: SpawnTerminalOptions): Subprocess {
 			cols: options.cols,
 			rows: options.rows,
 			data(_terminal: unknown, data: string | Uint8Array) {
-				options.onData(
-					typeof data === "string" ? data : new TextDecoder().decode(data),
-				);
+				options.onData(data);
 			},
 		},
 	} as const;
@@ -120,17 +119,11 @@ function createFailedSession(
 export function createTerminalSession(options: TerminalSessionOptions) {
 	let proc: Subprocess | undefined;
 	let closed = false;
-	const textDecoder = new TextDecoder("utf-8");
-
-	function decodeTerminalData(data: string | Uint8Array): string {
-		return typeof data === "string"
-			? data
-			: textDecoder.decode(data, { stream: true });
-	}
+	const streamDecoder = createTerminalStreamDecoder();
 
 	function dispose() {
 		closed = true;
-		textDecoder.decode();
+		streamDecoder.flush();
 		proc?.terminal?.close();
 		proc?.kill();
 		proc = undefined;
@@ -143,7 +136,7 @@ export function createTerminalSession(options: TerminalSessionOptions) {
 			rows: options.rows,
 			onData: (data) => {
 				if (!closed) {
-					options.onData(decodeTerminalData(data));
+					options.onData(streamDecoder.decode(data));
 				}
 			},
 		});
