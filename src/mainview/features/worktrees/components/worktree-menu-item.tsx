@@ -39,13 +39,17 @@ export function WorktreeMenuItem({
 	const isLoading = useGitPullStore((state) => state.isLoading(worktree.path));
 
 	return (
-		<WorktreeCardContextMenu worktreePath={worktree.path} onSelect={onSelect}>
+		<WorktreeCardContextMenu
+			worktreePath={worktree.path}
+			name={worktree.name}
+			onSelect={onSelect}
+		>
 			<Card className={cn(worktreeMenuItemVariants({ isSelected }))}>
 				<CardContent className="px-2">
 					<div className="flex flex-col w-full flex-1 gap-1">
 						<div className="inline-flex items-center gap-1">
 							{isLoading ? (
-								<Spinner className="size-[11px]" />
+								<Spinner className="size-2.75" />
 							) : (
 								<GitFork size={11} />
 							)}

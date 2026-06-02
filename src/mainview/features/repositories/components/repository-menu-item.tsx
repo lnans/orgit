@@ -39,6 +39,7 @@ export function RepositoryMenuItem({
 	return (
 		<RepositoryCardContextMenu
 			repositoryPath={repositoryPath}
+			name={name}
 			onSelect={onSelect}
 		>
 			<Card className={cn(repositoryMenuItemVariants({ isSelected }))}>
@@ -46,7 +47,7 @@ export function RepositoryMenuItem({
 					<div className="inline-flex w-full flex-1 items-center justify-between">
 						<div className="inline-flex items-center gap-1">
 							{isLoading ? (
-								<Spinner className="size-[11px]" />
+								<Spinner className="size-2.75" />
 							) : (
 								<FolderOpen size={11} />
 							)}

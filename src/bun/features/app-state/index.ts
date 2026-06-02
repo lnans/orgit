@@ -6,10 +6,16 @@ import type {
 	CreateWorktreeParams,
 	CreateWorktreeResult,
 } from "../../../shared/create-worktree";
+import type {
+	DeleteItemParams,
+	DeleteItemResult,
+} from "../../../shared/delete-item";
 import type { AppState, Repository } from "../../../shared/types";
 import {
 	executeAddWorktree,
 	executeCreateRepository,
+	executeDeleteRepository,
+	executeDeleteWorktree,
 	executeGitPull,
 	getWorktreeDiffStats,
 	type ListRepositoriesOptions,
@@ -171,6 +177,20 @@ export function createAppState(options: CreateAppStateOptions = {}) {
 				await loadRepositories({ includeDiffStats: true });
 			}
 			return result;
+		},
+
+		async deleteItem(params: DeleteItemParams): Promise<DeleteItemResult> {
+			const outcome =
+				params.kind === "worktree"
+					? await executeDeleteWorktree(params)
+					: await executeDeleteRepository(params);
+			if (!outcome.ok) {
+				return outcome;
+			}
+
+			const withRepos = await loadRepositories({ includeDiffStats: true });
+			applyState(withRepos);
+			return { ok: true };
 		},
 
 		/** Recompute diff stats for some or all worktrees (used by filesystem watch). */

@@ -8,6 +8,7 @@ import type {
 	CreateWorktreeParams,
 	CreateWorktreeResult,
 } from "../shared/create-worktree";
+import type { DeleteItemParams, DeleteItemResult } from "../shared/delete-item";
 import type { GitPullParams, GitPullResult } from "../shared/git-pull";
 import type { AppState, MainRPC } from "../shared/types";
 
@@ -41,6 +42,7 @@ type RpcHandlers = {
 	onWindowFocused: (params: { focused: boolean }) => void;
 	onConfirmQuit: () => void;
 	onCancelQuit: () => void;
+	onDeleteItem: (params: DeleteItemParams) => Promise<void>;
 };
 
 export type WebviewRPC = ReturnType<typeof createRpc>;
@@ -98,6 +100,9 @@ export function createRpc(handlers: RpcHandlers) {
 				onCancelQuit: () => {
 					handlers.onCancelQuit();
 				},
+				onDeleteItem: (params) => {
+					void handlers.onDeleteItem(params);
+				},
 			},
 			requests: {},
 		},
@@ -134,6 +139,9 @@ export function createRpc(handlers: RpcHandlers) {
 		},
 		syncQuitConfirmationRequest: () => {
 			rpc.send.syncQuitConfirmationRequest({});
+		},
+		syncDeleteItemResult: (result: DeleteItemResult) => {
+			rpc.send.syncDeleteItemResult({ result });
 		},
 	};
 }

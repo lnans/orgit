@@ -12,6 +12,7 @@ import type {
 	CreateWorktreeParams,
 	CreateWorktreeResult,
 } from "@shared/create-worktree";
+import type { DeleteItemParams, DeleteItemResult } from "@shared/delete-item";
 import type { GitPullParams, GitPullResult } from "@shared/git-pull";
 import type { MainRPC } from "@shared/types";
 import { Electroview } from "electrobun/view";
@@ -55,6 +56,11 @@ const rpc = Electroview.defineRPC<MainRPC>({
 			syncQuitConfirmationRequest: () => {
 				useQuitConfirmationStore.getState().requestOpen();
 			},
+			syncDeleteItemResult: ({ result }) => {
+				for (const listener of deleteItemResultListeners) {
+					listener(result);
+				}
+			},
 		},
 	},
 });
@@ -68,6 +74,7 @@ const createWorktreeResultListeners = new Set<
 const gitPullResultListeners = new Set<
 	(payload: { loadingKey: string; result: GitPullResult }) => void
 >();
+const deleteItemResultListeners = new Set<(result: DeleteItemResult) => void>();
 
 const electroview = new Electroview({ rpc });
 
@@ -124,4 +131,12 @@ export const mainProcess = {
 	},
 	confirmQuit: () => electroview.rpc?.send.onConfirmQuit({}),
 	cancelQuit: () => electroview.rpc?.send.onCancelQuit({}),
+	deleteItem: (params: DeleteItemParams) =>
+		electroview.rpc?.send.onDeleteItem(params),
+	onDeleteItemResult: (listener: (result: DeleteItemResult) => void) => {
+		deleteItemResultListeners.add(listener);
+		return () => {
+			deleteItemResultListeners.delete(listener);
+		};
+	},
 };

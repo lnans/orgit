@@ -8,6 +8,7 @@ import type {
 	CreateWorktreeParams,
 	CreateWorktreeResult,
 } from "./create-worktree";
+import type { DeleteItemParams, DeleteItemResult } from "./delete-item";
 import type { GitPullParams, GitPullResult } from "./git-pull";
 
 export type WorktreeDiffStats = {
@@ -88,6 +89,7 @@ export type MainRPC = {
 			};
 			onConfirmQuit: object;
 			onCancelQuit: object;
+			onDeleteItem: DeleteItemParams;
 		};
 	}>;
 	webview: RPCSchema<{
@@ -121,6 +123,9 @@ export type MainRPC = {
 				result: GitPullResult;
 			};
 			syncQuitConfirmationRequest: object;
+			syncDeleteItemResult: {
+				result: DeleteItemResult;
+			};
 		};
 	}>;
 };
