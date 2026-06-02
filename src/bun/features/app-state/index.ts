@@ -6,11 +6,12 @@ import type {
 	CreateWorktreeParams,
 	CreateWorktreeResult,
 } from "../../../shared/create-worktree";
-import type { AppState } from "../../../shared/types";
+import type { AppState, Repository } from "../../../shared/types";
 import {
 	executeAddWorktree,
 	executeCreateRepository,
 	executeGitPull,
+	getWorktreeDiffStats,
 	type ListRepositoriesOptions,
 	listRepositories,
 } from "../repositories";
@@ -21,7 +22,12 @@ import {
 } from "./persistence";
 import { reconcileAppState, shouldPersistState } from "./reconcile";
 
-export function createAppState() {
+type CreateAppStateOptions = {
+	/** Called after the repository list is rescanned (worktrees added/removed). */
+	onRepositoriesChanged?: (repositories: Repository[]) => void;
+};
+
+export function createAppState(options: CreateAppStateOptions = {}) {
 	const persisted = loadPersistedState();
 	let state = reconcileAppState({
 		...persisted,
@@ -40,12 +46,34 @@ export function createAppState() {
 	}
 
 	async function loadRepositories(
-		options?: ListRepositoriesOptions,
+		listOptions?: ListRepositoriesOptions,
 	): Promise<AppState> {
-		return applyState({
+		const next = applyState({
 			...state,
-			repositories: await listRepositories(state.workspacePath, options),
+			repositories: await listRepositories(state.workspacePath, listOptions),
 		});
+		options.onRepositoriesChanged?.(state.repositories);
+		return next;
+	}
+
+	function refreshWorktreeDiffStats(
+		worktreePaths?: ReadonlySet<string>,
+	): AppState {
+		const repositories = state.repositories.map((repository) => ({
+			...repository,
+			worktrees: repository.worktrees.map((worktree) => {
+				if (worktreePaths && !worktreePaths.has(worktree.path)) {
+					return worktree;
+				}
+
+				return {
+					...worktree,
+					...getWorktreeDiffStats(worktree.path),
+				};
+			}),
+		}));
+
+		return applyState({ ...state, repositories });
 	}
 
 	return {
@@ -144,5 +172,8 @@ export function createAppState() {
 			}
 			return result;
 		},
+
+		/** Recompute diff stats for some or all worktrees (used by filesystem watch). */
+		refreshWorktreeDiffStats,
 	};
 }

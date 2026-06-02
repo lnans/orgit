@@ -33,24 +33,20 @@ export function parseDiffNumStat(output: string): WorktreeDiffStats {
 	return { filesModified, linesAdded, linesRemoved };
 }
 
-/** Committed state on main (empty tree when main has no commits yet). */
-export function getMainBaselineRef(mainRepoPath: string): string {
-	if (!hasHeadCommit(mainRepoPath)) {
+/** Current branch HEAD in this worktree (empty tree when the branch has no commits). */
+function getWorktreeBaselineRef(worktreePath: string): string {
+	if (!hasHeadCommit(worktreePath)) {
 		return EMPTY_TREE;
 	}
 
-	const head = runGit(mainRepoPath, ["rev-parse", "HEAD"]);
+	const head = runGit(worktreePath, ["rev-parse", "HEAD"]);
 	return head.ok ? head.stdout : EMPTY_TREE;
 }
 
-export function getWorktreeDiffStats(
-	worktreePath: string,
-	mainBaselineRef: string,
-): WorktreeDiffStats {
-	// Diff this worktree's checkout (index + working tree) against main's committed
-	// state — not main's staged index, which can add phantom removals for files
-	// that only exist on main (e.g. foo.txt staged on main, absent in branch-1).
-	const diff = runGit(worktreePath, ["diff", "--numstat", mainBaselineRef]);
+/** Staged, unstaged, and untracked changes vs this worktree's branch HEAD. */
+export function getWorktreeDiffStats(worktreePath: string): WorktreeDiffStats {
+	const baselineRef = getWorktreeBaselineRef(worktreePath);
+	const diff = runGit(worktreePath, ["diff", "--numstat", baselineRef]);
 	if (!diff.ok) {
 		return EMPTY_WORKTREE_DIFF_STATS;
 	}

@@ -6,7 +6,7 @@ import {
 } from "../../../../shared/types";
 import { logger } from "../../../lib/logger";
 import { runGitAsync } from "../git";
-import { getMainBaselineRef, getWorktreeDiffStats } from "./diff-stats";
+import { getWorktreeDiffStats } from "./diff-stats";
 import { parseWorktreePorcelain } from "./parse-porcelain";
 
 export type ListWorktreesOptions = {
@@ -40,9 +40,6 @@ function buildWorktrees(
 	includeDiffStats: boolean,
 ): Worktree[] {
 	const worktrees: Worktree[] = [];
-	const mainBaselineRef = includeDiffStats
-		? getMainBaselineRef(mainRepoPath)
-		: "";
 	const resolvedMainRepoPath = path.resolve(mainRepoPath);
 
 	for (const entry of parseWorktreePorcelain(output)) {
@@ -58,7 +55,7 @@ function buildWorktrees(
 		}
 
 		const diffStats = includeDiffStats
-			? getWorktreeDiffStats(entry.path, mainBaselineRef)
+			? getWorktreeDiffStats(entry.path)
 			: EMPTY_WORKTREE_DIFF_STATS;
 
 		worktrees.push({

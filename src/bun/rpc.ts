@@ -38,6 +38,7 @@ type RpcHandlers = {
 	onCreateRepository: (params: CreateRepositoryParams) => Promise<void>;
 	onCreateWorktree: (params: CreateWorktreeParams) => Promise<void>;
 	onGitPull: (params: GitPullParams) => Promise<void>;
+	onWindowFocused: (params: { focused: boolean }) => void;
 };
 
 export type WebviewRPC = ReturnType<typeof createRpc>;
@@ -85,6 +86,9 @@ export function createRpc(handlers: RpcHandlers) {
 				},
 				onGitPull: (params) => {
 					void handlers.onGitPull(params);
+				},
+				onWindowFocused: ({ focused }) => {
+					handlers.onWindowFocused({ focused });
 				},
 			},
 			requests: {},

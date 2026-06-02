@@ -1,6 +1,6 @@
 import type { Worktree } from "@shared/types";
 
-/** True when the worktree has uncommitted changes vs main's committed HEAD. */
+/** True when the worktree has staged, unstaged, or untracked changes vs its branch HEAD. */
 export function hasWorktreeChanges(worktree: Worktree): boolean {
 	return (
 		worktree.linesAdded > 0 ||

@@ -3,6 +3,7 @@ import { getSelectedWorktreePath } from "../shared/selection";
 import { createAppState } from "./features/app-state/index";
 import { createConfigSync } from "./features/config";
 import { createLogSync } from "./features/logs";
+import { createWorktreeStatusSync } from "./features/repositories";
 import {
 	createTerminalManager,
 	resolveTerminalAttachCwd,
@@ -12,7 +13,17 @@ import { createRpc } from "./rpc";
 import { createMainWindow } from "./window";
 
 export async function startApp() {
-	const appState = createAppState();
+	const worktreeStatusSync = createWorktreeStatusSync({
+		onChange: (worktreePaths) => {
+			rpc.syncAppState(appState.refreshWorktreeDiffStats(worktreePaths));
+		},
+	});
+
+	const appState = createAppState({
+		onRepositoriesChanged: (repositories) => {
+			worktreeStatusSync.sync(repositories);
+		},
+	});
 
 	let logSync: ReturnType<typeof createLogSync>;
 
@@ -83,6 +94,12 @@ export async function startApp() {
 			}
 			rpc.syncGitPullResult(loadingKey, result);
 		},
+		onWindowFocused: ({ focused }) => {
+			worktreeStatusSync.setActive(focused);
+			if (focused) {
+				rpc.syncAppState(appState.refreshWorktreeDiffStats());
+			}
+		},
 	});
 
 	logSync = createLogSync({
@@ -98,6 +115,7 @@ export async function startApp() {
 
 	mainWindow.on("close", () => {
 		configSync.stop();
+		worktreeStatusSync.stop();
 		terminal.dispose();
 		Utils.quit();
 	});
