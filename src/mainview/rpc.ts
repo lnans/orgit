@@ -108,6 +108,8 @@ export const mainProcess = {
 		};
 	},
 	gitPull: (params: GitPullParams) => electroview.rpc?.send.onGitPull(params),
+	setWindowFocused: (focused: boolean) =>
+		electroview.rpc?.send.onWindowFocused({ focused }),
 	onGitPullResult: (
 		listener: (payload: { loadingKey: string; result: GitPullResult }) => void,
 	) => {

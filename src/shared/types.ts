@@ -83,6 +83,9 @@ export type MainRPC = {
 			onCreateRepository: CreateRepositoryParams;
 			onCreateWorktree: CreateWorktreeParams;
 			onGitPull: GitPullParams;
+			onWindowFocused: {
+				focused: boolean;
+			};
 		};
 	}>;
 	webview: RPCSchema<{

@@ -19,6 +19,7 @@ import {
 	WorktreeMenu,
 } from "@client/features/worktrees";
 import { useWindowFocusOnMount } from "@client/hooks/use-window-focus";
+import { useWorktreeStatusWatchFocus } from "@client/hooks/use-worktree-status-watch-focus";
 import { i18next } from "@client/lib/i18n";
 import { I18nextProvider } from "react-i18next";
 
@@ -27,6 +28,7 @@ function App() {
 
 	useLogPanelShortcut();
 	useWindowFocusOnMount();
+	useWorktreeStatusWatchFocus();
 
 	return (
 		<div className="flex h-dvh flex-col overflow-hidden dark:bg-orgit-background">
