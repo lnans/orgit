@@ -24,6 +24,11 @@ export function fitTerminalDimensions(
 		return fallback;
 	}
 
+	// Allow the container to grow with its parent before measuring (snapping sets a fixed height).
+	if (container) {
+		container.style.height = "";
+	}
+
 	fitAddon.fit();
 	if (container && snapTerminalContainerHeight(terminal, container)) {
 		fitAddon.fit();
