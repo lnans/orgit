@@ -6,6 +6,10 @@ export default {
 		identifier: "lnans.orgit.dev",
 		version: "0.0.1",
 	},
+	runtime: {
+		/** Quit is handled after user confirms in the webview dialog. */
+		exitOnLastWindowClosed: false,
+	},
 	build: {
 		// Vite builds to dist/, we copy from there
 		copy: {

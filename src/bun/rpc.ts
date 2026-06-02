@@ -39,6 +39,8 @@ type RpcHandlers = {
 	onCreateWorktree: (params: CreateWorktreeParams) => Promise<void>;
 	onGitPull: (params: GitPullParams) => Promise<void>;
 	onWindowFocused: (params: { focused: boolean }) => void;
+	onConfirmQuit: () => void;
+	onCancelQuit: () => void;
 };
 
 export type WebviewRPC = ReturnType<typeof createRpc>;
@@ -90,6 +92,12 @@ export function createRpc(handlers: RpcHandlers) {
 				onWindowFocused: ({ focused }) => {
 					handlers.onWindowFocused({ focused });
 				},
+				onConfirmQuit: () => {
+					handlers.onConfirmQuit();
+				},
+				onCancelQuit: () => {
+					handlers.onCancelQuit();
+				},
 			},
 			requests: {},
 		},
@@ -123,6 +131,9 @@ export function createRpc(handlers: RpcHandlers) {
 		},
 		syncGitPullResult: (loadingKey: string, result: GitPullResult) => {
 			rpc.send.syncGitPullResult({ loadingKey, result });
+		},
+		syncQuitConfirmationRequest: () => {
+			rpc.send.syncQuitConfirmationRequest({});
 		},
 	};
 }

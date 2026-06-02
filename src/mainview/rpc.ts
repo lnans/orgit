@@ -1,4 +1,5 @@
 import { useLogStore } from "@client/features/logs/store";
+import { useQuitConfirmationStore } from "@client/features/quit/store";
 import { useGitPullStore } from "@client/features/repositories/store-git-pull";
 import { useTerminalStore } from "@client/features/terminal/store";
 import { useAppStore } from "@client/store";
@@ -50,6 +51,9 @@ const rpc = Electroview.defineRPC<MainRPC>({
 				for (const listener of gitPullResultListeners) {
 					listener({ loadingKey, result });
 				}
+			},
+			syncQuitConfirmationRequest: () => {
+				useQuitConfirmationStore.getState().requestOpen();
 			},
 		},
 	},
@@ -118,4 +122,6 @@ export const mainProcess = {
 			gitPullResultListeners.delete(listener);
 		};
 	},
+	confirmQuit: () => electroview.rpc?.send.onConfirmQuit({}),
+	cancelQuit: () => electroview.rpc?.send.onCancelQuit({}),
 };

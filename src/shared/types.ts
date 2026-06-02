@@ -86,6 +86,8 @@ export type MainRPC = {
 			onWindowFocused: {
 				focused: boolean;
 			};
+			onConfirmQuit: object;
+			onCancelQuit: object;
 		};
 	}>;
 	webview: RPCSchema<{
@@ -118,6 +120,7 @@ export type MainRPC = {
 				loadingKey: string;
 				result: GitPullResult;
 			};
+			syncQuitConfirmationRequest: object;
 		};
 	}>;
 };
