@@ -15,6 +15,8 @@
   "toggleLogs": "Toggle logs",
   "noChanges": "No changes",
   "gitPull": "Git pull",
+  "openInCode": "Open in Code",
+  "openInRider": "Open in Rider",
   "delete": "Delete",
   "deleteConfirmation.cancel": "Cancel",
   "deleteConfirmation.confirm": "Delete",

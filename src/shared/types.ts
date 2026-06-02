@@ -10,6 +10,11 @@ import type {
 } from "./create-worktree";
 import type { DeleteItemParams, DeleteItemResult } from "./delete-item";
 import type { GitPullParams, GitPullResult } from "./git-pull";
+import type {
+	OpenWorktreeInIdeParams,
+	WorktreeHasDotNetSolutionParams,
+	WorktreeHasDotNetSolutionResult,
+} from "./worktree-ide";
 
 export type WorktreeDiffStats = {
 	filesModified: number;
@@ -52,7 +57,12 @@ export type AppState = PersistedState & {
 
 export type MainRPC = {
 	bun: RPCSchema<{
-		requests: Record<string, never>;
+		requests: {
+			worktreeHasDotNetSolution: {
+				params: WorktreeHasDotNetSolutionParams;
+				response: WorktreeHasDotNetSolutionResult;
+			};
+		};
 		messages: {
 			onDoubleClickTitleBar: object;
 			onSelectRepository: {
@@ -90,6 +100,8 @@ export type MainRPC = {
 			onConfirmQuit: object;
 			onCancelQuit: object;
 			onDeleteItem: DeleteItemParams;
+			onOpenInCode: OpenWorktreeInIdeParams;
+			onOpenInRider: OpenWorktreeInIdeParams;
 		};
 	}>;
 	webview: RPCSchema<{

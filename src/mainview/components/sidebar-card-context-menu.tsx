@@ -10,6 +10,7 @@ export type SidebarCardContextMenuProps = {
 	/** When true, the context menu is disabled (e.g. while an action runs). */
 	loading?: boolean;
 	onSelect: () => void;
+	onMenuOpenChange?: (open: boolean) => void;
 	menu: ReactNode;
 	children: ReactNode;
 };
@@ -18,6 +19,7 @@ export type SidebarCardContextMenuProps = {
 export function SidebarCardContextMenu({
 	loading = false,
 	onSelect,
+	onMenuOpenChange,
 	menu,
 	children,
 }: SidebarCardContextMenuProps) {
@@ -30,7 +32,7 @@ export function SidebarCardContextMenu({
 	}
 
 	return (
-		<ContextMenu>
+		<ContextMenu onOpenChange={onMenuOpenChange}>
 			<ContextMenuTrigger
 				render={<SidebarMenuItem onClick={onSelect} className="list-none" />}
 			>

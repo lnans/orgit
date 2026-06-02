@@ -11,6 +11,11 @@ import type {
 import type { DeleteItemParams, DeleteItemResult } from "../shared/delete-item";
 import type { GitPullParams, GitPullResult } from "../shared/git-pull";
 import type { AppState, MainRPC } from "../shared/types";
+import type {
+	OpenWorktreeInIdeParams,
+	WorktreeHasDotNetSolutionParams,
+	WorktreeHasDotNetSolutionResult,
+} from "../shared/worktree-ide";
 
 type WindowControls = {
 	isMaximized(): boolean;
@@ -43,6 +48,11 @@ type RpcHandlers = {
 	onConfirmQuit: () => void;
 	onCancelQuit: () => void;
 	onDeleteItem: (params: DeleteItemParams) => Promise<void>;
+	worktreeHasDotNetSolution: (
+		params: WorktreeHasDotNetSolutionParams,
+	) => WorktreeHasDotNetSolutionResult;
+	onOpenInCode: (params: OpenWorktreeInIdeParams) => void;
+	onOpenInRider: (params: OpenWorktreeInIdeParams) => void;
 };
 
 export type WebviewRPC = ReturnType<typeof createRpc>;
@@ -103,8 +113,17 @@ export function createRpc(handlers: RpcHandlers) {
 				onDeleteItem: (params) => {
 					void handlers.onDeleteItem(params);
 				},
+				onOpenInCode: (params) => {
+					handlers.onOpenInCode(params);
+				},
+				onOpenInRider: (params) => {
+					handlers.onOpenInRider(params);
+				},
 			},
-			requests: {},
+			requests: {
+				worktreeHasDotNetSolution: (params) =>
+					handlers.worktreeHasDotNetSolution(params),
+			},
 		},
 	});
 
