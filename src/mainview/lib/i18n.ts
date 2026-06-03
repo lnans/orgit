@@ -10,6 +10,11 @@ i18next.use(initReactI18next).init({
 	},
 	fallbackLng: ["en"],
 	supportedLngs: ["en"],
+	interpolation: {
+		// React escapes rendered text; i18next's default HTML entity encoding breaks
+		// branch names and paths (e.g. releases/4.1.14 → releases&#x2F;4.1.14).
+		escapeValue: false,
+	},
 });
 
 export { i18next };
