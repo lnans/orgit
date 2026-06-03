@@ -14,6 +14,10 @@ import type {
 } from "@shared/create-worktree";
 import type { DeleteItemParams, DeleteItemResult } from "@shared/delete-item";
 import type { GitPullParams, GitPullResult } from "@shared/git-pull";
+import type {
+	ListRemoteBranchesParams,
+	ListRemoteBranchesResult,
+} from "@shared/list-remote-branches";
 import type { MainRPC } from "@shared/types";
 import type {
 	OpenWorktreeInIdeParams,
@@ -152,6 +156,15 @@ export const mainProcess = {
 			return Promise.resolve(undefined);
 		}
 		return rpc.request.worktreeHasDotNetSolution(params);
+	},
+	listRemoteBranchesForWorktree: (
+		params: ListRemoteBranchesParams,
+	): Promise<ListRemoteBranchesResult | undefined> => {
+		const rpc = electroview.rpc;
+		if (!rpc) {
+			return Promise.resolve(undefined);
+		}
+		return rpc.request.listRemoteBranchesForWorktree(params);
 	},
 	openInCode: (params: OpenWorktreeInIdeParams) =>
 		electroview.rpc?.send.onOpenInCode(params),

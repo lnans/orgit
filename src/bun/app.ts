@@ -5,7 +5,10 @@ import { createAppState } from "./features/app-state/index";
 import { createConfigSync } from "./features/config";
 import { createLogSync } from "./features/logs";
 import { createQuitGuard } from "./features/quit";
-import { createWorktreeStatusSync } from "./features/repositories";
+import {
+	createWorktreeStatusSync,
+	listRemoteBranchesForWorktree,
+} from "./features/repositories";
 import {
 	createTerminalManager,
 	resolveTerminalAttachCwd,
@@ -122,6 +125,8 @@ export async function startApp() {
 			rpc.syncDeleteItemResult(result);
 		},
 		worktreeHasDotNetSolution: checkWorktreeHasDotNetSolution,
+		listRemoteBranchesForWorktree: (params) =>
+			listRemoteBranchesForWorktree(params.repositoryPath),
 		onOpenInCode: openWorktreeInCode,
 		onOpenInRider: openWorktreeInRider,
 	});

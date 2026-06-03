@@ -1,10 +1,7 @@
 import { mainProcess } from "@client/rpc";
 import { useAppStore } from "@client/store";
+import type { CreateWorktreeParams } from "@shared/create-worktree";
 import { useEffect } from "react";
-import {
-	type CreateWorktreeFormValues,
-	toCreateWorktreeParams,
-} from "../lib/create-worktree-form-schema";
 import { useCreateWorktreeDialogStore } from "../store-create-dialog";
 import { CreateWorktreeDialog } from "./create-worktree-dialog";
 
@@ -38,10 +35,10 @@ function CreateWorktreeDialogHost() {
 		});
 	}, [setOpen, setSubmitError, setSubmitting]);
 
-	const submit = (values: CreateWorktreeFormValues) => {
+	const submit = (params: CreateWorktreeParams) => {
 		setSubmitError(null);
 		setSubmitting(true);
-		mainProcess.createWorktree(toCreateWorktreeParams(values));
+		mainProcess.createWorktree(params);
 	};
 
 	return (

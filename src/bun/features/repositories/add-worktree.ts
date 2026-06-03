@@ -26,7 +26,12 @@ export async function executeAddWorktree(
 	params: CreateWorktreeParams,
 ): Promise<CreateWorktreeResult & { paths?: AddWorktreeSuccess }> {
 	const repositoryBasename = repositoryPathBasename(params.repositoryPath);
-	const resolved = resolveWorktreeCheckout(params.branchName, {
+	const branchInput =
+		params.mode === "existing"
+			? branchNameFromRemoteRef(params.remoteBranch)
+			: params.branchName;
+
+	const resolved = resolveWorktreeCheckout(branchInput, {
 		repositoryBasename,
 	});
 	if (!resolved.ok) {
@@ -46,19 +51,18 @@ export async function executeAddWorktree(
 
 	const worktreePath = path.join(
 		workspacePath,
-		formatWorktreeFolderName(
-			repositoryPathBasename(repositoryPath),
-			resolved.folderName,
-		),
+		formatWorktreeFolderName(repositoryBasename, resolved.folderName),
 	);
 
-	const branchName = resolved.branchName;
-
-	const worktreeResult = await addWorktree(
-		repositoryPath,
-		branchName,
-		worktreePath,
-	);
+	const worktreeResult =
+		params.mode === "existing"
+			? await addWorktreeFromRemote(
+					repositoryPath,
+					params.remoteBranch,
+					resolved.branchName,
+					worktreePath,
+				)
+			: await addWorktree(repositoryPath, resolved.branchName, worktreePath);
 	if (!worktreeResult.ok) {
 		return worktreeResult;
 	}
@@ -67,6 +71,14 @@ export async function executeAddWorktree(
 		ok: true,
 		paths: { repositoryPath, worktreePath },
 	};
+}
+
+function branchNameFromRemoteRef(remoteRef: string): string {
+	const slash = remoteRef.indexOf("/");
+	if (slash === -1) {
+		return remoteRef;
+	}
+	return remoteRef.slice(slash + 1);
 }
 
 async function addWorktree(
@@ -87,6 +99,46 @@ async function addWorktree(
 		branchName,
 		worktreePath,
 	]);
+	if (!result.ok) {
+		logger.error(
+			`git worktree add failed (exit ${result.status}): ${result.stdout}`,
+			result.args,
+		);
+		return {
+			ok: false,
+			error: "worktree_failed",
+			detail: result.stdout || undefined,
+		};
+	}
+
+	return { ok: true };
+}
+
+async function addWorktreeFromRemote(
+	repositoryPath: string,
+	remoteRef: string,
+	localBranchName: string,
+	worktreePath: string,
+): Promise<Extract<CreateWorktreeResult, { ok: false }> | { ok: true }> {
+	if (existsSync(worktreePath)) {
+		return { ok: false, error: "destination_exists" };
+	}
+
+	mkdirSync(path.dirname(worktreePath), { recursive: true });
+
+	const localRef = `refs/heads/${localBranchName}`;
+	const hasLocalBranch = await runGitAsync(repositoryPath, [
+		"show-ref",
+		"--verify",
+		"--quiet",
+		localRef,
+	]);
+
+	const args = hasLocalBranch.ok
+		? ["worktree", "add", worktreePath, localBranchName]
+		: ["worktree", "add", "-b", localBranchName, worktreePath, remoteRef];
+
+	const result = await runGitAsync(repositoryPath, args);
 	if (!result.ok) {
 		logger.error(
 			`git worktree add failed (exit ${result.status}): ${result.stdout}`,
