@@ -40,6 +40,7 @@ import {
 	toCreateWorktreeParams,
 } from "../lib/create-worktree-form-schema";
 import type { CreateWorktreeDialogDefaults } from "../store-create-dialog";
+import { RemoteBranchSelectItems } from "./remote-branch-select-items";
 import { WorktreeBranchFieldHint } from "./worktree-branch-field-hint";
 
 type CreateWorktreeTab = "new" | "existing";
@@ -326,11 +327,7 @@ function CreateWorktreeDialog({
 												/>
 											</SelectTrigger>
 											<SelectContent>
-												{branches.map((branch) => (
-													<SelectItem key={branch.ref} value={branch.ref}>
-														{branch.branchName}
-													</SelectItem>
-												))}
+												<RemoteBranchSelectItems branches={branches} />
 											</SelectContent>
 										</Select>
 									)}
