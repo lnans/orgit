@@ -1,11 +1,12 @@
 import path from "node:path";
 import { logger } from "../../../lib/logger";
+import { whichExecutable } from "../../../lib/which-executable";
 import { spawnDetached } from "./spawn-detached";
 
 /** Open the worktree folder in Visual Studio Code. */
 export function openInCode(worktreePath: string): void {
 	const cwd = path.resolve(worktreePath);
-	const codeCli = Bun.which("code");
+	const codeCli = whichExecutable("code");
 
 	if (codeCli) {
 		spawnDetached([codeCli, cwd], { cwd });
@@ -13,7 +14,7 @@ export function openInCode(worktreePath: string): void {
 	}
 
 	if (process.platform === "darwin") {
-		spawnDetached(["open", "-a", "Visual Studio Code", cwd]);
+		spawnDetached(["/usr/bin/open", "-a", "Visual Studio Code", cwd]);
 		return;
 	}
 

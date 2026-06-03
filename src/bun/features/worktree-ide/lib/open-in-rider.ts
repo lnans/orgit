@@ -1,7 +1,36 @@
 import path from "node:path";
 import { logger } from "../../../lib/logger";
 import { findDotNetSolutionFile } from "./find-dotnet-solution";
+import { macOsOpenRiderAttempts, resolveRiderCli } from "./rider-launch";
 import { spawnDetached } from "./spawn-detached";
+
+function trySpawnSync(command: string[]): boolean {
+	try {
+		const proc = Bun.spawnSync(command, {
+			stdout: "ignore",
+			stderr: "ignore",
+		});
+		return proc.exitCode === 0;
+	} catch {
+		return false;
+	}
+}
+
+function openRiderOnMac(resolvedSolution: string): boolean {
+	const riderCli = resolveRiderCli();
+	if (riderCli) {
+		spawnDetached([riderCli, resolvedSolution]);
+		return true;
+	}
+
+	for (const argv of macOsOpenRiderAttempts(resolvedSolution)) {
+		if (trySpawnSync(argv)) {
+			return true;
+		}
+	}
+
+	return false;
+}
 
 /** Open the first solution file under the worktree in JetBrains Rider. */
 export function openInRider(worktreePath: string): void {
@@ -14,16 +43,21 @@ export function openInRider(worktreePath: string): void {
 	}
 
 	const resolvedSolution = path.resolve(solutionPath);
-	const riderCli =
-		Bun.which("rider") ?? Bun.which("rider.bat") ?? Bun.which("rider64.exe");
 
-	if (riderCli) {
-		spawnDetached([riderCli, resolvedSolution]);
+	if (process.platform === "darwin") {
+		if (openRiderOnMac(resolvedSolution)) {
+			return;
+		}
+
+		logger.warn(
+			`Could not open Rider for ${resolvedSolution}: Rider CLI not found and macOS open fallbacks failed.`,
+		);
 		return;
 	}
 
-	if (process.platform === "darwin") {
-		spawnDetached(["open", "-a", "JetBrains Rider", resolvedSolution]);
+	const riderCli = resolveRiderCli();
+	if (riderCli) {
+		spawnDetached([riderCli, resolvedSolution]);
 		return;
 	}
 
