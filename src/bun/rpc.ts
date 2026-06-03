@@ -10,6 +10,10 @@ import type {
 } from "../shared/create-worktree";
 import type { DeleteItemParams, DeleteItemResult } from "../shared/delete-item";
 import type { GitPullParams, GitPullResult } from "../shared/git-pull";
+import type {
+	ListRemoteBranchesParams,
+	ListRemoteBranchesResult,
+} from "../shared/list-remote-branches";
 import type { AppState, MainRPC } from "../shared/types";
 import type {
 	OpenWorktreeInIdeParams,
@@ -51,6 +55,9 @@ type RpcHandlers = {
 	worktreeHasDotNetSolution: (
 		params: WorktreeHasDotNetSolutionParams,
 	) => WorktreeHasDotNetSolutionResult;
+	listRemoteBranchesForWorktree: (
+		params: ListRemoteBranchesParams,
+	) => Promise<ListRemoteBranchesResult>;
 	onOpenInCode: (params: OpenWorktreeInIdeParams) => void;
 	onOpenInRider: (params: OpenWorktreeInIdeParams) => void;
 };
@@ -123,6 +130,8 @@ export function createRpc(handlers: RpcHandlers) {
 			requests: {
 				worktreeHasDotNetSolution: (params) =>
 					handlers.worktreeHasDotNetSolution(params),
+				listRemoteBranchesForWorktree: (params) =>
+					handlers.listRemoteBranchesForWorktree(params),
 			},
 		},
 	});

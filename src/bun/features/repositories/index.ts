@@ -6,6 +6,7 @@ export {
 export { executeDeleteRepository } from "./delete-repository";
 export { executeDeleteWorktree } from "./delete-worktree";
 export { executeGitPull } from "./git-pull";
+export { listRemoteBranchesForWorktree } from "./list-remote-branches";
 export { type ListRepositoriesOptions, listRepositories } from "./scan";
 export { getWorktreeDiffStats } from "./worktrees/diff-stats";
 export { createWorktreeStatusSync } from "./worktrees/status-sync";

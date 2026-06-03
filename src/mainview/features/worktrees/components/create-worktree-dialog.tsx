@@ -15,25 +15,41 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@client/components/ui/select";
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from "@client/components/ui/tabs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { CreateWorktreeResult } from "@shared/create-worktree";
+import type {
+	CreateWorktreeParams,
+	CreateWorktreeResult,
+} from "@shared/create-worktree";
 import type { Repository } from "@shared/types";
-import { useEffect, useMemo, useRef } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useRemoteBranchesForWorktree } from "../hooks/use-remote-branches-for-worktree";
 import {
+	type CreateWorktreeExistingFormValues,
 	type CreateWorktreeFormValues,
+	createWorktreeExistingFormSchema,
 	createWorktreeFormSchema,
+	toCreateWorktreeExistingParams,
+	toCreateWorktreeParams,
 } from "../lib/create-worktree-form-schema";
 import type { CreateWorktreeDialogDefaults } from "../store-create-dialog";
 import { WorktreeBranchFieldHint } from "./worktree-branch-field-hint";
+
+type CreateWorktreeTab = "new" | "existing";
 
 type CreateWorktreeDialogProps = {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	repositories: Repository[];
 	defaults?: CreateWorktreeDialogDefaults;
-	onSubmit: (values: CreateWorktreeFormValues) => void;
+	onSubmit: (params: CreateWorktreeParams) => void;
 	isSubmitting: boolean;
 	submitError: CreateWorktreeResult | null;
 };
@@ -48,18 +64,30 @@ function CreateWorktreeDialog({
 	submitError,
 }: CreateWorktreeDialogProps) {
 	const { t } = useTranslation();
+	const [activeTab, setActiveTab] = useState<CreateWorktreeTab>("new");
 
 	const form = useForm<CreateWorktreeFormValues>({
 		resolver: zodResolver(createWorktreeFormSchema),
 		defaultValues: {
 			repositoryPath: defaults?.repositoryPath ?? "",
 			branchName: "",
+			remoteBranch: "",
 		},
 	});
 
 	const repositoryPath = form.watch("repositoryPath");
 	const branchName = form.watch("branchName");
+	const remoteBranch = form.watch("remoteBranch");
 	const hasRepositories = repositories.length > 0;
+
+	const {
+		branches,
+		loading: branchesLoading,
+		loadError,
+	} = useRemoteBranchesForWorktree(
+		repositoryPath,
+		open && activeTab === "existing",
+	);
 
 	const repositoryItems = useMemo(
 		() =>
@@ -74,6 +102,20 @@ function CreateWorktreeDialog({
 		return repositories.find((r) => r.path === repositoryPath)?.name;
 	}, [repositories, repositoryPath]);
 
+	const selectedRemoteBranch = useMemo(
+		() => branches.find((branch) => branch.ref === remoteBranch),
+		[branches, remoteBranch],
+	);
+
+	const remoteBranchItems = useMemo(
+		() =>
+			branches.map((branch) => ({
+				value: branch.ref,
+				label: branch.branchName,
+			})),
+		[branches],
+	);
+
 	const branchNameInputRef = useRef<HTMLInputElement | null>(null);
 	const { ref: branchNameFieldRef, ...branchNameField } =
 		form.register("branchName");
@@ -82,21 +124,32 @@ function CreateWorktreeDialog({
 		if (!open) {
 			return;
 		}
+		setActiveTab("new");
 		form.reset({
 			repositoryPath: defaults?.repositoryPath ?? repositories[0]?.path ?? "",
 			branchName: "",
+			remoteBranch: "",
 		});
 	}, [open, defaults?.repositoryPath, form, repositories]);
 
 	useEffect(() => {
-		if (!open || !hasRepositories) {
+		if (
+			remoteBranch &&
+			!branches.some((branch) => branch.ref === remoteBranch)
+		) {
+			form.setValue("remoteBranch", "");
+		}
+	}, [branches, form, remoteBranch]);
+
+	useEffect(() => {
+		if (!open || !hasRepositories || activeTab !== "new") {
 			return;
 		}
 		const frame = requestAnimationFrame(() => {
 			branchNameInputRef.current?.focus();
 		});
 		return () => cancelAnimationFrame(frame);
-	}, [open, hasRepositories]);
+	}, [open, hasRepositories, activeTab]);
 
 	const handleOpenChange = (nextOpen: boolean) => {
 		if (isSubmitting && !nextOpen) {
@@ -104,6 +157,37 @@ function CreateWorktreeDialog({
 		}
 		onOpenChange(nextOpen);
 	};
+
+	const submitNewBranch = form.handleSubmit((values) => {
+		onSubmit(toCreateWorktreeParams(values));
+	});
+
+	const submitExistingBranch = () => {
+		const values: CreateWorktreeExistingFormValues = {
+			repositoryPath,
+			remoteBranch,
+		};
+		const parsed = createWorktreeExistingFormSchema.safeParse(values);
+		if (!parsed.success) {
+			return;
+		}
+		onSubmit(toCreateWorktreeExistingParams(parsed.data));
+	};
+
+	const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (activeTab === "existing") {
+			submitExistingBranch();
+			return;
+		}
+		void submitNewBranch();
+	};
+
+	const canSubmitExisting =
+		Boolean(repositoryPath) &&
+		Boolean(remoteBranch) &&
+		!branchesLoading &&
+		loadError === null;
 
 	return (
 		<Dialog
@@ -124,10 +208,7 @@ function CreateWorktreeDialog({
 						{t("createWorktree.noRepositories")}
 					</p>
 				) : (
-					<form
-						className="flex flex-col gap-3"
-						onSubmit={form.handleSubmit(onSubmit)}
-					>
+					<form className="flex flex-col gap-3" onSubmit={handleFormSubmit}>
 						<div className="flex flex-col gap-1.5">
 							<label
 								className="text-xs font-medium"
@@ -168,29 +249,113 @@ function CreateWorktreeDialog({
 							/>
 						</div>
 
-						<div className="flex flex-col gap-1.5">
-							<label
-								className="text-xs font-medium"
-								htmlFor="create-worktree-branch-name"
+						<Tabs
+							value={activeTab}
+							onValueChange={(value) =>
+								setActiveTab(value as CreateWorktreeTab)
+							}
+						>
+							<TabsList className="w-full">
+								<TabsTrigger className="flex-1" value="new">
+									{t("createWorktree.tabNewBranch")}
+								</TabsTrigger>
+								<TabsTrigger className="flex-1" value="existing">
+									{t("createWorktree.tabExistingBranch")}
+								</TabsTrigger>
+							</TabsList>
+
+							<TabsContent value="new" className="mt-3 flex flex-col gap-1.5">
+								<label
+									className="text-xs font-medium"
+									htmlFor="create-worktree-branch-name"
+								>
+									{t("createWorktree.branchName")}
+								</label>
+								<Input
+									id="create-worktree-branch-name"
+									autoComplete="off"
+									disabled={isSubmitting || !repositoryPath}
+									aria-invalid={Boolean(form.formState.errors.branchName)}
+									ref={(node) => {
+										branchNameFieldRef(node);
+										branchNameInputRef.current = node;
+									}}
+									{...branchNameField}
+								/>
+								<WorktreeBranchFieldHint
+									value={branchName ?? ""}
+									repositoryBasename={repositoryBasename}
+								/>
+							</TabsContent>
+
+							<TabsContent
+								value="existing"
+								className="mt-3 flex flex-col gap-1.5"
 							>
-								{t("createWorktree.branchName")}
-							</label>
-							<Input
-								id="create-worktree-branch-name"
-								autoComplete="off"
-								disabled={isSubmitting || !repositoryPath}
-								aria-invalid={Boolean(form.formState.errors.branchName)}
-								ref={(node) => {
-									branchNameFieldRef(node);
-									branchNameInputRef.current = node;
-								}}
-								{...branchNameField}
-							/>
-							<WorktreeBranchFieldHint
-								value={branchName ?? ""}
-								repositoryBasename={repositoryBasename}
-							/>
-						</div>
+								<label
+									className="text-xs font-medium"
+									htmlFor="create-worktree-remote-branch"
+								>
+									{t("createWorktree.remoteBranch")}
+								</label>
+								<Controller
+									control={form.control}
+									name="remoteBranch"
+									render={({ field }) => (
+										<Select
+											value={field.value}
+											onValueChange={field.onChange}
+											items={remoteBranchItems}
+											disabled={
+												isSubmitting ||
+												!repositoryPath ||
+												branchesLoading ||
+												branches.length === 0
+											}
+										>
+											<SelectTrigger
+												id="create-worktree-remote-branch"
+												className="w-full"
+											>
+												<SelectValue
+													placeholder={
+														branchesLoading
+															? t("createWorktree.remoteBranchLoading")
+															: t("createWorktree.remoteBranchPlaceholder")
+													}
+												/>
+											</SelectTrigger>
+											<SelectContent>
+												{branches.map((branch) => (
+													<SelectItem key={branch.ref} value={branch.ref}>
+														{branch.branchName}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									)}
+								/>
+								{loadError ? (
+									<p className="text-[10px] text-destructive">
+										{t(`createWorktree.remoteBranchError.${loadError}`)}
+									</p>
+								) : null}
+								{!loadError &&
+								!branchesLoading &&
+								repositoryPath &&
+								branches.length === 0 ? (
+									<p className="text-[10px] text-muted-foreground">
+										{t("createWorktree.noRemoteBranches")}
+									</p>
+								) : null}
+								{selectedRemoteBranch ? (
+									<WorktreeBranchFieldHint
+										value={selectedRemoteBranch.branchName}
+										repositoryBasename={repositoryBasename}
+									/>
+								) : null}
+							</TabsContent>
+						</Tabs>
 
 						{submitError && !submitError.ok ? (
 							<p className="text-[10px] text-destructive">
@@ -209,7 +374,14 @@ function CreateWorktreeDialog({
 							>
 								{t("createWorktree.cancel")}
 							</Button>
-							<Button type="submit" disabled={isSubmitting || !repositoryPath}>
+							<Button
+								type="submit"
+								disabled={
+									isSubmitting ||
+									!repositoryPath ||
+									(activeTab === "new" ? false : !canSubmitExisting)
+								}
+							>
 								{isSubmitting
 									? t("createWorktree.submitting")
 									: t("createWorktree.submit")}

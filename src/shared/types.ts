@@ -11,6 +11,10 @@ import type {
 import type { DeleteItemParams, DeleteItemResult } from "./delete-item";
 import type { GitPullParams, GitPullResult } from "./git-pull";
 import type {
+	ListRemoteBranchesParams,
+	ListRemoteBranchesResult,
+} from "./list-remote-branches";
+import type {
 	OpenWorktreeInIdeParams,
 	WorktreeHasDotNetSolutionParams,
 	WorktreeHasDotNetSolutionResult,
@@ -61,6 +65,10 @@ export type MainRPC = {
 			worktreeHasDotNetSolution: {
 				params: WorktreeHasDotNetSolutionParams;
 				response: WorktreeHasDotNetSolutionResult;
+			};
+			listRemoteBranchesForWorktree: {
+				params: ListRemoteBranchesParams;
+				response: ListRemoteBranchesResult;
 			};
 		};
 		messages: {
