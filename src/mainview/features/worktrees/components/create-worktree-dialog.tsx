@@ -118,20 +118,55 @@ function CreateWorktreeDialog({
 	);
 
 	const branchNameInputRef = useRef<HTMLInputElement | null>(null);
+	const didInitForOpenRef = useRef(false);
+	const pendingBranchNameFocusRef = useRef(false);
 	const { ref: branchNameFieldRef, ...branchNameField } =
 		form.register("branchName");
 
+	// Reset form only when the dialog opens — not when `repositories` gets a new
+	// reference from app-state sync while the user is typing.
 	useEffect(() => {
 		if (!open) {
+			didInitForOpenRef.current = false;
+			pendingBranchNameFocusRef.current = false;
 			return;
 		}
+		if (didInitForOpenRef.current) {
+			return;
+		}
+		const defaultRepositoryPath =
+			defaults?.repositoryPath ?? repositories[0]?.path ?? "";
+		if (!defaultRepositoryPath) {
+			return;
+		}
+		didInitForOpenRef.current = true;
 		setActiveTab("new");
 		form.reset({
-			repositoryPath: defaults?.repositoryPath ?? repositories[0]?.path ?? "",
+			repositoryPath: defaultRepositoryPath,
 			branchName: "",
 			remoteBranch: "",
 		});
+		pendingBranchNameFocusRef.current = true;
 	}, [open, defaults?.repositoryPath, form, repositories]);
+
+	// Focus is decoupled from the one-time init guard so React Strict Mode can
+	// re-run this effect after cleanup without losing autofocus.
+	useEffect(() => {
+		if (!open || !hasRepositories || activeTab !== "new") {
+			return;
+		}
+		if (!pendingBranchNameFocusRef.current) {
+			return;
+		}
+		pendingBranchNameFocusRef.current = false;
+		const frame = requestAnimationFrame(() => {
+			branchNameInputRef.current?.focus();
+		});
+		return () => {
+			cancelAnimationFrame(frame);
+			pendingBranchNameFocusRef.current = true;
+		};
+	}, [open, hasRepositories, activeTab]);
 
 	useEffect(() => {
 		if (
@@ -141,16 +176,6 @@ function CreateWorktreeDialog({
 			form.setValue("remoteBranch", "");
 		}
 	}, [branches, form, remoteBranch]);
-
-	useEffect(() => {
-		if (!open || !hasRepositories || activeTab !== "new") {
-			return;
-		}
-		const frame = requestAnimationFrame(() => {
-			branchNameInputRef.current?.focus();
-		});
-		return () => cancelAnimationFrame(frame);
-	}, [open, hasRepositories, activeTab]);
 
 	const handleOpenChange = (nextOpen: boolean) => {
 		if (isSubmitting && !nextOpen) {
