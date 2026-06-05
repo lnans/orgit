@@ -3,7 +3,7 @@ import type { ElectrobunConfig } from "electrobun";
 export default {
 	app: {
 		name: "Orgit",
-		identifier: "lnans.orgit.dev",
+		identifier: "orgit",
 		version: "0.0.1",
 	},
 	runtime: {

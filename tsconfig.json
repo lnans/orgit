@@ -16,16 +16,13 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@client/*": ["./src/mainview/*"],
-      "@shared/*": ["./src/shared/*"]
-    }
+      "@/server/*": ["./src/bun/*"],
+      "@/client/*": ["./src/mainview/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/tests": ["./tests/test-mocks"]
+    },
+    "types": ["bun"]
   },
-  "include": ["src"],
-  "exclude": [
-    "node_modules",
-    "**/node_modules/**",
-    "dist",
-    "build",
-    "../../package/dist"
-  ]
+  "include": ["src", "tests"],
+  "exclude": ["node_modules", "**/node_modules/**", "dist", "build", "../../package/dist"]
 }

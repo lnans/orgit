@@ -11,6 +11,7 @@
     "fmt": "biome check --write .",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
+    "coverage": "rm -rf .coverage && bun test --coverage && genhtml .coverage/lcov.info --output-directory .coverage/html",
     "validate": "bun run fmt && bun run typecheck && bun run test"
   },
   "dependencies": {
@@ -41,6 +42,7 @@
     "@types/bun": "latest",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.184.1",
     "@vitejs/plugin-react": "^6.0.2",
     "concurrently": "^10.0.3",
     "tailwindcss": "^4.3.0",

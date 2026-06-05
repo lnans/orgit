@@ -28,7 +28,6 @@ Modern Git workflows often mean more than one checkout per repository. Orgit tur
 | **Worktrees**    | Linked checkouts per repo with change indicators; selections persist across sessions.                |
 | **Terminal**     | Multiple tabs per worktree, Dracula-style theming, Unicode-aware xterm.js for TUIs like Copilot CLI. |
 | **Logs**         | Built-in tail of the application log for support and debugging.                                      |
-| **Preferences**  | Terminal font, colors, and scrollback via `~/.config/orgit/config.json`.                             |
 
 ---
 
@@ -48,24 +47,11 @@ bun install
 bun run dev:hmr
 ```
 
-On first launch, Orgit uses `~/.config/orgit/workspace` as the default scan directory. Add your Git repository roots there (each repo as a direct child folder with a `.git` directory).
+On first launch, Orgit uses `<userDataPath>/orgit/workspace` as the default scan directory. Add your Git repository roots there (each repo as a direct child folder with a `.git` directory).
 
 ### Configuration
 
-User settings and persisted selections live under `~/.config/orgit/`. See the [development guide](./doc/development.md#workspace-on-disk) for paths and [`config.example.json`](./config.example.json) for terminal appearance options.
-
----
-
-## Documentation
-
-Technical documentation for architecture, project layout, and contribution workflows lives in **[`doc/`](./doc/README.md)**.
-
-| Guide                                           | Description                              |
-| ----------------------------------------------- | ---------------------------------------- |
-| [Architecture](./doc/architecture.md)           | Main vs webview, RPC, state, and startup |
-| [Project structure](./doc/project-structure.md) | Source tree and feature conventions      |
-| [Development](./doc/development.md)             | Commands, local paths, build notes       |
-| [Contributing features](./doc/contributing.md)  | End-to-end checklist for new domains     |
+User settings and persisted selections live under `<userDataPath>/orgit/`. See the [development guide](./doc/development.md#workspace-on-disk) for paths and [`config.example.json`](./config.example.json) for terminal appearance options.
 
 ---
 

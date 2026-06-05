@@ -8,8 +8,8 @@ export default defineConfig({
 	root: "src/mainview",
 	resolve: {
 		alias: {
-			"@client": path.resolve(__dirname, "src/mainview"),
-			"@shared": path.resolve(__dirname, "src/shared"),
+			"@/client": path.resolve(__dirname, "src/mainview"),
+			"@/shared": path.resolve(__dirname, "src/shared"),
 		},
 	},
 	build: {
