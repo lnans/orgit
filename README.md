@@ -21,14 +21,14 @@ Modern Git workflows often mean more than one checkout per repository. Orgit tur
 
 ## Capabilities
 
-| Area | What you get |
-| ---- | ------------ |
-| **Workspace** | Configurable root directory; repositories are detected as top-level Git roots under that path. |
-| **Repositories** | Sidebar list with current branch; select a repo to drive the rest of the UI. |
-| **Worktrees** | Linked checkouts per repo with change indicators; selections persist across sessions. |
-| **Terminal** | Multiple tabs per worktree, Dracula-style theming, Unicode-aware xterm.js for TUIs like Copilot CLI. |
-| **Logs** | Built-in tail of the application log for support and debugging. |
-| **Preferences** | Terminal font, colors, and scrollback via `~/.config/orgit/config.json`. |
+| Area             | What you get                                                                                         |
+| ---------------- | ---------------------------------------------------------------------------------------------------- |
+| **Workspace**    | Configurable root directory; repositories are detected as top-level Git roots under that path.       |
+| **Repositories** | Sidebar list with current branch; select a repo to drive the rest of the UI.                         |
+| **Worktrees**    | Linked checkouts per repo with change indicators; selections persist across sessions.                |
+| **Terminal**     | Multiple tabs per worktree, Dracula-style theming, Unicode-aware xterm.js for TUIs like Copilot CLI. |
+| **Logs**         | Built-in tail of the application log for support and debugging.                                      |
+| **Preferences**  | Terminal font, colors, and scrollback via `~/.config/orgit/config.json`.                             |
 
 ---
 
@@ -60,12 +60,12 @@ User settings and persisted selections live under `~/.config/orgit/`. See the [d
 
 Technical documentation for architecture, project layout, and contribution workflows lives in **[`doc/`](./doc/README.md)**.
 
-| Guide | Description |
-| ----- | ----------- |
-| [Architecture](./doc/architecture.md) | Main vs webview, RPC, state, and startup |
-| [Project structure](./doc/project-structure.md) | Source tree and feature conventions |
-| [Development](./doc/development.md) | Commands, local paths, build notes |
-| [Contributing features](./doc/contributing.md) | End-to-end checklist for new domains |
+| Guide                                           | Description                              |
+| ----------------------------------------------- | ---------------------------------------- |
+| [Architecture](./doc/architecture.md)           | Main vs webview, RPC, state, and startup |
+| [Project structure](./doc/project-structure.md) | Source tree and feature conventions      |
+| [Development](./doc/development.md)             | Commands, local paths, build notes       |
+| [Contributing features](./doc/contributing.md)  | End-to-end checklist for new domains     |
 
 ---
 
