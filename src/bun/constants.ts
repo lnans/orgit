@@ -11,8 +11,6 @@ const AppLogsFolderPath = join(AppDataDir, AppLogsFolderName);
 
 const AppStateDefaults = {
 	workspacePath: AppWorkspaceFolderPath,
-	selectedRepositoryPath: undefined,
-	selectedWorktreePaths: undefined,
 } satisfies AppStatePersistedDto;
 
 export const Constants = {

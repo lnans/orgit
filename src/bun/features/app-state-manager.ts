@@ -5,8 +5,6 @@ import type { AppStatePersistedDto } from "@/shared/types/AppStateDto";
 
 const stateSchema = z.object({
 	workspacePath: z.string().min(1),
-	selectedRepositoryPath: z.string().min(1).optional().catch(undefined),
-	selectedWorktreePaths: z.record(z.string().min(1), z.string().min(1)).optional().catch(undefined),
 });
 
 export class AppStateManager {
@@ -31,16 +29,6 @@ export class AppStateManager {
 
 	get state(): AppStatePersistedDto {
 		return structuredClone(this._state);
-	}
-
-	set selectedRepositoryPath(path: AppStatePersistedDto["selectedRepositoryPath"]) {
-		this._state.selectedRepositoryPath = path;
-		this.saveStateToFile();
-	}
-
-	set selectedWorktreePaths(paths: AppStatePersistedDto["selectedWorktreePaths"]) {
-		this._state.selectedWorktreePaths = paths;
-		this.saveStateToFile();
 	}
 
 	public ensureReady(): AppStateManager {

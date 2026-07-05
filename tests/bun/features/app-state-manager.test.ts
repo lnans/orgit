@@ -58,7 +58,6 @@ describe("AppStateManager", () => {
 	test("ensureReady: loads valid state and skips write when nothing changed", () => {
 		const persisted = {
 			workspacePath: "/workspace",
-			selectedRepositoryPath: "/workspace/repo",
 		};
 		const persistedJson = `${JSON.stringify(persisted, undefined, 2)}\n`;
 
@@ -198,68 +197,5 @@ describe("AppStateManager", () => {
 		state.workspacePath = "/mutated";
 
 		expect(manager.state).toEqual(defaults);
-	});
-
-	test("selectedRepositoryPath: persists selection", () => {
-		NODE_FS_MOCK.existsSync.mockReturnValueOnce(false);
-
-		const manager = createManager();
-		manager.ensureReady();
-
-		manager.selectedRepositoryPath = "/workspace/repo";
-
-		const expected = {
-			workspacePath: "/workspace",
-			selectedRepositoryPath: "/workspace/repo",
-		};
-
-		expect(manager.state).toEqual(expected);
-		expect(NODE_FS_MOCK.writeFileSync).toHaveBeenLastCalledWith(
-			stateFilePath,
-			`${JSON.stringify(expected, undefined, 2)}\n`,
-			{ encoding: "utf8" },
-		);
-	});
-
-	test("selectedWorktreePaths: persists selections", () => {
-		NODE_FS_MOCK.existsSync.mockReturnValueOnce(false);
-
-		const manager = createManager();
-		manager.ensureReady();
-
-		manager.selectedWorktreePaths = {
-			"/workspace/repo": "/workspace/repo-feature",
-		};
-
-		const expected = {
-			workspacePath: "/workspace",
-			selectedWorktreePaths: {
-				"/workspace/repo": "/workspace/repo-feature",
-			},
-		};
-
-		expect(manager.state).toEqual(expected);
-		expect(NODE_FS_MOCK.writeFileSync).toHaveBeenLastCalledWith(
-			stateFilePath,
-			`${JSON.stringify(expected, undefined, 2)}\n`,
-			{ encoding: "utf8" },
-		);
-	});
-
-	test("selectedRepositoryPath: logs error when write fails", () => {
-		const writeError = new Error("EACCES");
-		NODE_FS_MOCK.existsSync.mockReturnValueOnce(false);
-		NODE_FS_MOCK.writeFileSync
-			.mockImplementationOnce(() => null)
-			.mockImplementationOnce(() => {
-				throw writeError;
-			});
-
-		const manager = createManager();
-		manager.ensureReady();
-		manager.selectedRepositoryPath = "/workspace/repo";
-
-		expect(manager.state.selectedRepositoryPath).toBe("/workspace/repo");
-		expect(loggerMock.error).toHaveBeenCalled();
 	});
 });
