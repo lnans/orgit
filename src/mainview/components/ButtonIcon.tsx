@@ -4,7 +4,7 @@ import type React from "react";
 import { cn } from "@/client/lib/utils";
 
 const variants = cva(
-	"flex items-center justify-center size-5 cursor-pointer rounded-md text-neutral-500 transition-colors duration-75 active:scale-95",
+	"flex items-center justify-center size-5 cursor-pointer rounded-md text-neutral-500 transition-colors duration-75 active:scale-95 ring-none",
 	{
 		variants: {
 			variant: {

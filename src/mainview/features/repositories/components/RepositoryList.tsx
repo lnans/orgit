@@ -10,7 +10,6 @@ import { RepositoryWorktreeItem } from "./RepositoryWorktreeItem";
 export function RepositoryList() {
 	const { t } = useTranslation();
 	const repositories = useRepositoryStore((state) => state.repositories);
-	console.log(repositories);
 
 	return (
 		<div className="flex flex-col mt-2">
