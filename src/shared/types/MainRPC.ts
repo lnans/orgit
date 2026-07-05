@@ -1,4 +1,5 @@
 import type { RPCSchema } from "electrobun";
+import type { AppStateDto } from "./AppStateDto";
 
 export type MainRPC = {
 	bun: RPCSchema<{
@@ -7,6 +8,10 @@ export type MainRPC = {
 		};
 	}>;
 	webview: RPCSchema<{
-		messages: Record<string, never>;
+		messages: {
+			onAppStateUpdate: {
+				appState: AppStateDto;
+			};
+		};
 	}>;
 };

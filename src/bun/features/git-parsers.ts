@@ -67,7 +67,9 @@ export function parseWorktreeListPorcelain(output: string): ParsedWorktree[] {
 	}
 
 	flush();
-	return worktrees;
+
+	// Skip first result to exclude main branch
+	return worktrees.slice(1);
 }
 
 export function worktreeDisplayName(parsed: ParsedWorktree): string {

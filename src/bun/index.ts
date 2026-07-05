@@ -32,16 +32,19 @@ process.on("unhandledRejection", (reason) => {
 
 try {
 	setupApplicationMenu();
-
 	appStateManager.ensureReady();
-	gitManager.scanGitRepositories(appStateManager.state.workspacePath);
 
+	const repositories = gitManager.scanGitRepositories(appStateManager.state.workspacePath);
 	const mainWindow = await createMainWindow(logger);
 
 	mainWindow.webview.on("dom-ready", async () => {
 		mainWindow.maximize();
 		mainWindow.activate();
 		logger.info("[Window] Main view DOM is ready", appStateManager.state.workspacePath);
+
+		mainWindow.webview.rpc?.send("onAppStateUpdate", {
+			appState: { ...appStateManager.state, repositories },
+		});
 	});
 } catch (err) {
 	await shutdownWithError(err, "[MainProcess] An unhandled has error occurs");

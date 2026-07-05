@@ -1,6 +1,6 @@
 import { AppHeader } from "./components/ui/AppHeader";
 import { Navbar } from "./components/ui/Navbar";
-import { RepositoryList } from "./features/repositories/RepositoryList";
+import { RepositoryList } from "./features/repositories/components/RepositoryList";
 
 export default function App() {
 	return (
