@@ -114,7 +114,7 @@ export class FsManager implements IFsManager {
 		const readDirResult = this.safeRunSync(() => readdirSync(path, { withFileTypes: true }));
 		if (readDirResult.isError) return [];
 
-		const isMatchingType = (entry: Dirent<string>) =>
+		const isMatchingType = (entry: Dirent) =>
 			(type === "dir" && entry.isDirectory()) || (type === "file" && entry.isFile());
 
 		const found: string[] = [];

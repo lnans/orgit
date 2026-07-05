@@ -25,12 +25,8 @@ export async function createMainWindow(logger: ILogger) {
 		activate: true,
 		frame: { width: 900, height: 700, x: 200, y: 200 },
 		styleMask: {
-			Resizable: true,
-			Borderless: true,
-			Closable: true,
 			FullSizeContentView: true,
 		},
-		trafficLightOffset: { y: 6, x: 6 },
 		titleBarStyle: "hiddenInset",
 	});
 
