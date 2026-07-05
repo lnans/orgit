@@ -1,6 +1,6 @@
 import { Fragment } from "react/jsx-runtime";
 import { useTranslation } from "react-i18next";
-import { NavbarItemEmpty } from "@/client/components/ui/Navbar";
+import { NavbarItemEmpty } from "@/client/components/Navbar";
 import { sortByKey } from "@/client/lib/utils";
 import { useRepositoryStore } from "../stores/repositoryStore";
 import { RepositoryItem } from "./RepositoryItem";

@@ -1,7 +1,7 @@
 import { IconTerminal2, IconTrash } from "@tabler/icons-react";
 import { useCallback } from "react";
-import { ButtonIcon } from "@/client/components/ui/ButtonIcon";
-import { NavbarSubItem } from "@/client/components/ui/Navbar";
+import { ButtonIcon } from "@/client/components/ButtonIcon";
+import { NavbarSubItem } from "@/client/components/Navbar";
 
 type RepositoryWorktreeItemProps = {
 	name: string;

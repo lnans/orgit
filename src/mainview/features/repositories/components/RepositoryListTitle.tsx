@@ -1,7 +1,7 @@
 import { IconFolderPlus } from "@tabler/icons-react";
 import { useCallback } from "react";
-import { ButtonIcon } from "@/client/components/ui/ButtonIcon";
-import { NavbarTitle } from "@/client/components/ui/Navbar";
+import { ButtonIcon } from "@/client/components/ButtonIcon";
+import { NavbarTitle } from "@/client/components/Navbar";
 
 type RepositoryListTitleProps = {
 	label: string;

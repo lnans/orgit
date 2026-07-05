@@ -1,7 +1,7 @@
 import { IconFolderOpen, IconGitBranch, IconGitFork, IconRefresh } from "@tabler/icons-react";
 import { useCallback } from "react";
-import { ButtonIcon } from "@/client/components/ui/ButtonIcon";
-import { NavbarItem } from "@/client/components/ui/Navbar";
+import { ButtonIcon } from "@/client/components/ButtonIcon";
+import { NavbarItem } from "@/client/components/Navbar";
 
 type RepositoryItemProps = {
 	name: string;
