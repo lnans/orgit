@@ -1,5 +1,6 @@
 import { BrowserWindow, Updater } from "electrobun/bun";
 import type { ILogger } from "@/server/types/server.types";
+import { setupMainRpc } from "./rpc";
 
 const DEV_SERVER_URL = "http://localhost:5173";
 const MAIN_VIEW_URL = "views://mainview/index.html";
@@ -19,6 +20,8 @@ async function resolveMainViewUrl(logger: ILogger): Promise<string> {
 }
 
 export async function createMainWindow(logger: ILogger) {
+	const rpcSetup = setupMainRpc();
+
 	const mainWindow = new BrowserWindow({
 		title: "Orgit",
 		url: await resolveMainViewUrl(logger),
@@ -28,7 +31,9 @@ export async function createMainWindow(logger: ILogger) {
 			FullSizeContentView: true,
 		},
 		titleBarStyle: "hiddenInset",
+		rpc: rpcSetup.mainRpc,
 	});
+	rpcSetup.setMainWindow(mainWindow);
 
 	return mainWindow;
 }

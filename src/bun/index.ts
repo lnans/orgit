@@ -1,9 +1,10 @@
+import { setupApplicationMenu } from "./application-menu";
+import { createMainWindow } from "./application-window";
 import { Constants } from "./constants";
 import { AppStateManager } from "./features/app-state-manager";
 import { FsManager } from "./features/fs-manager";
 import { GitManager } from "./features/git-manager";
 import { Logger } from "./features/logger";
-import { createMainWindow } from "./window";
 
 const fsManager = new FsManager();
 const logger = new Logger(Constants.AppLogsFolderPath, fsManager).ensureReady();
@@ -30,8 +31,11 @@ process.on("unhandledRejection", (reason) => {
 });
 
 try {
+	setupApplicationMenu();
+
 	appStateManager.ensureReady();
 	gitManager.scanGitRepositories(appStateManager.state.workspacePath);
+
 	const mainWindow = await createMainWindow(logger);
 
 	mainWindow.webview.on("dom-ready", async () => {

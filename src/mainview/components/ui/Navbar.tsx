@@ -51,7 +51,7 @@ export function NavbarItem({
 
 export function NavbarSubItem({ label, children }: { label: string; children?: React.ReactNode }) {
 	return (
-		<div className="group inline-flex items-center mx-2.5 h-5 rounded-md text-neutral-400 hover:bg-neutral-500/10 hover:text-neutral-300 select-none">
+		<div className="group inline-flex items-center mx-2.5 h-5 rounded-md text-neutral-400 hover:bg-neutral-500/10 hover:text-neutral-300">
 			<p className="ps-5 text-xxs">{label}</p>
 			<div className="flex-1" />
 			<div className="invisible inline-flex items-center justify-center gap-0.5 group-hover:visible">
