@@ -1,0 +1,7 @@
+{
+  "localePaths": ["src/mainview/locales"],
+  "sourceLocale": "en",
+  "keyStyle": "flat",
+  "displayMode": "inlayHints",
+  "namespaceEnabled": false
+}
