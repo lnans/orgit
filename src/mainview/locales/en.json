@@ -1,4 +1,5 @@
 {
   "repositories": "Repositories",
+  "repositories_empty": "No repository yet",
   "worktree_empty": "No worktree yet"
 }

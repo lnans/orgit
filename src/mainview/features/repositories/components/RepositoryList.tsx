@@ -27,6 +27,7 @@ export function RepositoryList() {
 					{!repository.worktrees.length && <NavbarItemEmpty label={t("worktree_empty")} />}
 				</Fragment>
 			))}
+			{!repositories.length && <NavbarItemEmpty label={t("repositories_empty")} />}
 		</div>
 	);
 }
