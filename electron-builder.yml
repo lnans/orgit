@@ -1,0 +1,46 @@
+appId: com.lnans.orgit
+productName: orgit
+directories:
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!**/.yarn/*'
+  - '!src/*'
+  - '!scripts/*'
+  - '!{vite.config.mts,vite.main.config.mts}'
+  - '!{.yarnrc.yml,yarn.lock}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!node_modules/{electron,@electron-internal,@electron/get}/**'
+asarUnpack:
+  - resources/**
+win:
+  executableName: orgit
+nsis:
+  artifactName: ${productName}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+mac:
+  icon: build/orgit.icon
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    - NSCameraUsageDescription: Application requests access to the device's camera.
+    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  notarize: false
+dmg:
+  artifactName: ${productName}-${version}.${ext}
+linux:
+  target:
+    - AppImage
+    - snap
+    - deb
+  maintainer: electronjs.org
+  category: Utility
+appImage:
+  artifactName: ${productName}-${version}.${ext}
+npmRebuild: false
+publish:
+  provider: generic
+  url: https://example.com/auto-updates
