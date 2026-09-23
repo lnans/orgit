@@ -1,19 +1,14 @@
-import { IconFolderPlus } from "@tabler/icons-react";
-import { useCallback } from "react";
-import { ButtonIcon } from "@/client/components/ButtonIcon";
 import { NavbarTitle } from "@/client/components/Navbar";
+import { RepositoryAddForm } from "./RepositoryAddForm";
 
 type RepositoryListTitleProps = {
 	label: string;
-	onNewRepository?: () => void;
 };
 
-export function RepositoryListTitle({ label, onNewRepository }: RepositoryListTitleProps) {
-	const handleNewRepository = useCallback(() => onNewRepository?.(), [onNewRepository]);
-
+export function RepositoryListTitle({ label }: RepositoryListTitleProps) {
 	return (
 		<NavbarTitle label={label}>
-			<ButtonIcon icon={IconFolderPlus} onClick={handleNewRepository} />
+			<RepositoryAddForm />
 		</NavbarTitle>
 	);
 }

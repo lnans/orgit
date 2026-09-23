@@ -3,7 +3,8 @@
 
 @theme inline {
 	--color-main: rgb(20, 20, 20);
-	--color-nav: rgb(23, 23, 24);
+	--color-surface: rgb(23, 23, 24);
+	--color-on-surface: rgb(40, 40, 41);
 
 	--text-2xs: 0.625rem;
 

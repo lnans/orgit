@@ -10,7 +10,7 @@ export function Navbar({ children }: { children?: React.ReactNode }) {
 
 	return (
 		<div
-			className="flex flex-col relative pt-7 bg-nav bg-opacity-20 shrink-0"
+			className="flex flex-col relative pt-7 bg-surface bg-opacity-20 shrink-0"
 			ref={ref}
 			style={{ width: DEFAULT_WIDTH }}
 		>

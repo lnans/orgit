@@ -1,5 +1,6 @@
 {
   "repositories": "Repositories",
   "repositories_empty": "No repository yet",
+  "repositories_add": "Clone new repository",
   "worktree_empty": "No worktree yet"
 }
