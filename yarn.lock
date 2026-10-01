@@ -349,10 +349,12 @@ __metadata:
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
     "@vitejs/plugin-react": "npm:^6.1.1"
-    electron: "npm:^44.4.5"
+    clsx: "npm:^2.1.1"
+    electron: "npm:^44.5.1"
     electron-builder: "npm:26.17.0"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
+    tailwind-merge: "npm:^3.7.0"
     tailwindcss: "npm:^4.3.3"
     typescript: "npm:^7.0.2"
     vite: "npm:^8.3.1"
@@ -1398,6 +1400,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clsx@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: 10c0/c4c8eb865f8c82baab07e71bfa8897c73454881c4f99d6bc81585aecd7c441746c1399d08363dc096c550cceaf97bd4ce1e8854e1771e9998d9f94c4fe075839
+  languageName: node
+  linkType: hard
+
 "color-convert@npm:^2.0.1":
   version: 2.0.1
   resolution: "color-convert@npm:2.0.1"
@@ -1647,9 +1656,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^44.4.5":
-  version: 44.4.5
-  resolution: "electron@npm:44.4.5"
+"electron@npm:^44.5.1":
+  version: 44.5.1
+  resolution: "electron@npm:44.5.1"
   dependencies:
     "@electron-internal/extract-zip": "npm:^1.0.1"
     "@electron/get": "npm:^5.0.0"
@@ -1657,7 +1666,7 @@ __metadata:
   bin:
     electron: cli.js
     install-electron: install.js
-  checksum: 10c0/42e112458252a0c63de488eb99aa40f2ccce1010bd6a18c2131109999d825bebc5e6c7bf787d670bda52f2c5c61efd63b31b6a747034732245fbfc800a76349d
+  checksum: 10c0/37fa3bbb95698dc8066c192146d34f1623e21e60cd47420f495868039a3506684d285da208808e297a38805ee58a876d7967500de6955156a977a7edd7fcd271
   languageName: node
   linkType: hard
 
@@ -3340,6 +3349,13 @@ __metadata:
   dependencies:
     has-flag: "npm:^4.0.0"
   checksum: 10c0/afb4c88521b8b136b5f5f95160c98dee7243dc79d5432db7efc27efb219385bbc7d9427398e43dd6cc730a0f87d5085ce1652af7efbe391327bc0a7d0f7fc124
+  languageName: node
+  linkType: hard
+
+"tailwind-merge@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "tailwind-merge@npm:3.7.0"
+  checksum: 10c0/1b1439fe30b6ee63fc3abc1c985bf9beb8529eb2db21cc321bd8c7cf73f36cd4ec80846ea10af8ae09175810f385336c22a6ce355a0b5cce69432d49672f90c1
   languageName: node
   linkType: hard
 

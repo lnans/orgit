@@ -1,6 +1,26 @@
 @import "tailwindcss";
 
+html,
+body {
+	background-color: rgb(20, 20, 20);
+}
+
+.window-drag {
+	user-select: none;
+	app-region: drag;
+}
+
+.window-no-drag {
+	app-region: no-drag;
+}
+
 @theme inline {
+	--color-main: rgb(20, 20, 20);
+	--color-surface: rgb(23, 23, 24);
+	--color-on-surface: rgb(40, 40, 41);
+
+	--text-2xs: 0.625rem;
+
 	--font-jet:
 		"JetBrainsMono", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
 		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
