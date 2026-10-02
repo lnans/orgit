@@ -1,5 +1,8 @@
 import { useResizeWidth } from "@renderer/hooks/useResizeWidth";
+import { IconPlus } from "@tabler/icons-react";
 import type React from "react";
+import { Button } from "./Button";
+import { Text } from "./Text";
 
 const DEFAULT_WIDTH = 300;
 const MAX_WIDTH = 800;
@@ -23,6 +26,22 @@ export function Navbar({ children }: { children?: React.ReactNode }) {
 				className="absolute top-0 right-0 h-full w-1 border-r border-r-border hover:cursor-col-resize transition-colors"
 				onPointerDown={handlePointerDown}
 			/>
+		</div>
+	);
+}
+
+type NavBarTitleProps = {
+	title: string;
+	onAdd?: () => void;
+};
+
+export function NavBarTitle({ title, onAdd }: NavBarTitleProps) {
+	return (
+		<div className="inline-flex items-center justify-between px-2.5 py-1">
+			<Text>{title}</Text>
+			<Button variant="ghost" size="icon-xs" onClick={onAdd}>
+				<IconPlus />
+			</Button>
 		</div>
 	);
 }

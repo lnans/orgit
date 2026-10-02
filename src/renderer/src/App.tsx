@@ -1,19 +1,17 @@
 import { AppHeader } from "./components/AppHeader";
-import { Navbar } from "./components/NavBar";
-import { Text } from "./components/Text";
+import { NavBarTitle, Navbar } from "./components/NavBar";
 import { TitleBarButtons } from "./components/TitleBarButtons";
 
-function App(): React.JSX.Element {
+function App() {
 	return (
 		<div className="w-dvw h-dvh flex flex-col bg-background">
 			<AppHeader />
+			<TitleBarButtons />
 			<div className="flex flex-1 h-dvh">
 				<Navbar>
-					<TitleBarButtons />
+					<NavBarTitle title="Repositories" />
 				</Navbar>
-				<div className="w-full overflow-auto">
-					<Text>Content</Text>
-				</div>
+				<div className="w-full overflow-auto mt-7"></div>
 			</div>
 		</div>
 	);

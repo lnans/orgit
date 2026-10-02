@@ -9,7 +9,7 @@ import {
 
 export function TitleBarButtons() {
 	return (
-		<div className="absolute window-no-drag top-2.5 h-7 px-3 z-999">
+		<div className="absolute window-no-drag top-1.75 h-7 px-3 z-999">
 			<div className="group flex items-center space-x-2.25">
 				<TitleBarButton
 					icon={IconX}
