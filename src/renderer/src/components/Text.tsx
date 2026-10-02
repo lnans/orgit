@@ -7,9 +7,5 @@ type TextProps = {
 };
 
 export function Text({ children, className }: TextProps) {
-	return (
-		<p className={cn("font-jet text-gray-200 text-xs", className)}>
-			{children}
-		</p>
-	);
+	return <p className={cn("font-jet text-xs", className)}>{children}</p>;
 }

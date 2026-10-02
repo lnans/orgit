@@ -5,7 +5,7 @@ import { TitleBarButtons } from "./components/TitleBarButtons";
 
 function App(): React.JSX.Element {
 	return (
-		<div className="w-dvw h-dvh flex flex-col bg-main">
+		<div className="w-dvw h-dvh flex flex-col bg-background">
 			<AppHeader />
 			<div className="flex flex-1 h-dvh">
 				<Navbar>

@@ -12,7 +12,7 @@ export function Navbar({ children }: { children?: React.ReactNode }) {
 
 	return (
 		<div
-			className="flex flex-col relative pt-7 bg-surface bg-opacity-20 shrink-0"
+			className="flex flex-col relative pt-7 shrink-0"
 			ref={ref}
 			style={{ width: DEFAULT_WIDTH }}
 		>
@@ -20,7 +20,7 @@ export function Navbar({ children }: { children?: React.ReactNode }) {
 
 			{/* Draggable border right */}
 			<span
-				className="absolute top-0 right-0 h-full w-1 border-r border-r-neutral-800 hover:cursor-col-resize hover:border-r-neutral-700 transition-colors"
+				className="absolute top-0 right-0 h-full w-1 border-r border-r-border hover:cursor-col-resize transition-colors"
 				onPointerDown={handlePointerDown}
 			/>
 		</div>

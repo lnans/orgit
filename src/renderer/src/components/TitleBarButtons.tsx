@@ -53,7 +53,7 @@ function TitleBarButton({
 			onClick={onClick}
 		>
 			<Icon
-				className="opacity-0 group-hover:opacity-55"
+				className="opacity-0 group-hover:opacity-55 text-black"
 				stroke={4}
 				height={11}
 			/>
