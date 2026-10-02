@@ -344,6 +344,7 @@ __metadata:
     "@electron-toolkit/preload": "npm:^3.0.2"
     "@electron-toolkit/tsconfig": "npm:^2.0.0"
     "@electron-toolkit/utils": "npm:^4.0.0"
+    "@tabler/icons-react": "npm:^3.48.0"
     "@tailwindcss/vite": "npm:^4.3.3"
     "@types/node": "npm:^26.6.3"
     "@types/react": "npm:^19.3.0"
@@ -575,6 +576,24 @@ __metadata:
   dependencies:
     defer-to-connect: "npm:^2.0.0"
   checksum: 10c0/73946918c025339db68b09abd91fa3001e87fc749c619d2e9c2003a663039d4c3cb89836c98a96598b3d47dec2481284ba85355392644911f5ecd2336536697f
+  languageName: node
+  linkType: hard
+
+"@tabler/icons-react@npm:^3.48.0":
+  version: 3.48.0
+  resolution: "@tabler/icons-react@npm:3.48.0"
+  dependencies:
+    "@tabler/icons": "npm:3.48.0"
+  peerDependencies:
+    react: ">= 16"
+  checksum: 10c0/49c314159da3d19cbb4e4791928a4edd78a02805ac262702b0a177fccbf2b8f3b7ace1ca81e1df873237ef86266dce5bf5547758803e83d24d5887af99716240
+  languageName: node
+  linkType: hard
+
+"@tabler/icons@npm:3.48.0":
+  version: 3.48.0
+  resolution: "@tabler/icons@npm:3.48.0"
+  checksum: 10c0/52c4e582dede13508c6cf34b73c23f80449dde042ee487cb2ef082e92b50cb644f61072871a95f6a0ebb11b117d7f10581455906bb74ed0fa0a9924170876e80
   languageName: node
   linkType: hard
 

@@ -1,6 +1,7 @@
 import { AppHeader } from "./components/AppHeader";
 import { Navbar } from "./components/NavBar";
 import { Text } from "./components/Text";
+import { TitleBarButtons } from "./components/TitleBarButtons";
 
 function App(): React.JSX.Element {
 	return (
@@ -8,9 +9,11 @@ function App(): React.JSX.Element {
 			<AppHeader />
 			<div className="flex flex-1 h-dvh">
 				<Navbar>
-					<Text>Content</Text>
+					<TitleBarButtons />
 				</Navbar>
-				<div className="w-full overflow-auto">content</div>
+				<div className="w-full overflow-auto">
+					<Text>Content</Text>
+				</div>
 			</div>
 		</div>
 	);

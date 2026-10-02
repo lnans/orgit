@@ -1,3 +1,5 @@
 export const IPC = {
-	ping: () => window.electron.ipcRenderer.send("ping"),
+	windowClose: () => window.electron.ipcRenderer.send("window:close"),
+	windowMinimize: () => window.electron.ipcRenderer.send("window:minimize"),
+	windowMaximize: () => window.electron.ipcRenderer.send("window:maximize"),
 };

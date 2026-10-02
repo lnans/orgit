@@ -27,6 +27,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
     "@electron-toolkit/tsconfig": "^2.0.0",
+    "@tabler/icons-react": "^3.48.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.6.3",
     "@types/react": "^19.3.0",

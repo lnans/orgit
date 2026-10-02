@@ -19,6 +19,10 @@ body {
 	--color-surface: rgb(23, 23, 24);
 	--color-on-surface: rgb(40, 40, 41);
 
+	--color-traffic-red: rgb(255, 92, 95);
+	--color-traffic-orange: rgb(250, 200, 0);
+	--color-traffic-green: rgb(52, 199, 89);
+
 	--text-2xs: 0.625rem;
 
 	--font-jet:
