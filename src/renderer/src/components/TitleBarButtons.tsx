@@ -1,3 +1,4 @@
+import { useToggle } from "@renderer/hooks/useToggle";
 import { IPC } from "@renderer/ipcRenderer";
 import { cn } from "@renderer/utils/className";
 import {
@@ -6,15 +7,31 @@ import {
 	type IconProps,
 	IconX,
 } from "@tabler/icons-react";
+import React from "react";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "./AlertDialog";
 
 export function TitleBarButtons() {
+	const [confirmOpened, toggleConfirmOpened, setConfirmOpened] =
+		useToggle(false);
+
+	const onQuit = React.useCallback(() => IPC.windowClose(), []);
+
 	return (
 		<div className="absolute window-no-drag top-1.75 h-7 px-3 z-999">
 			<div className="group flex items-center space-x-2.25">
 				<TitleBarButton
 					icon={IconX}
 					color="bg-traffic-red"
-					onClick={IPC.windowClose}
+					onClick={toggleConfirmOpened}
 				/>
 				<TitleBarButton
 					icon={IconMinus}
@@ -27,6 +44,26 @@ export function TitleBarButtons() {
 					onClick={IPC.windowMaximize}
 				/>
 			</div>
+
+			<AlertDialog open={confirmOpened} onOpenChangeComplete={setConfirmOpened}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+						<AlertDialogDescription>
+							This action cannot be undone. This will permanently delete your
+							account from our servers.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel onClick={toggleConfirmOpened}>
+							Cancel
+						</AlertDialogCancel>
+						<AlertDialogAction variant="destructive" onClick={onQuit}>
+							Quit
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }

@@ -1,5 +1,5 @@
 import { useResizeWidth } from "@renderer/hooks/useResizeWidth";
-import { IconPlus } from "@tabler/icons-react";
+import { IconFolderPlus } from "@tabler/icons-react";
 import type React from "react";
 import { Button } from "./Button";
 import { Text } from "./Text";
@@ -40,7 +40,7 @@ export function NavBarTitle({ title, onAdd }: NavBarTitleProps) {
 		<div className="inline-flex items-center justify-between px-2.5 py-1">
 			<Text>{title}</Text>
 			<Button variant="ghost" size="icon-xs" onClick={onAdd}>
-				<IconPlus />
+				<IconFolderPlus />
 			</Button>
 		</div>
 	);
