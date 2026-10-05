@@ -8,6 +8,7 @@ import {
 	IconX,
 } from "@tabler/icons-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -20,6 +21,7 @@ import {
 } from "./AlertDialog";
 
 export function TitleBarButtons() {
+	const { t } = useTranslation();
 	const [confirmOpened, toggleConfirmOpened, setConfirmOpened] =
 		useToggle(false);
 
@@ -48,18 +50,17 @@ export function TitleBarButtons() {
 			<AlertDialog open={confirmOpened} onOpenChangeComplete={setConfirmOpened}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+						<AlertDialogTitle>{t("main.quit.title")}</AlertDialogTitle>
 						<AlertDialogDescription>
-							This action cannot be undone. This will permanently delete your
-							account from our servers.
+							{t("main.quit.description")}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel onClick={toggleConfirmOpened}>
-							Cancel
+							{t("common.cancel")}
 						</AlertDialogCancel>
 						<AlertDialogAction variant="destructive" onClick={onQuit}>
-							Quit
+							{t("main.quit.title")}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
