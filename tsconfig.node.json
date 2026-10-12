@@ -3,6 +3,7 @@
   "include": [
     "vite.config.mts",
     "vite.main.config.mts",
+    "vitest.config.mts",
     "src/main/**/*",
     "src/preload/index.ts",
     "src/shared/**/*"
