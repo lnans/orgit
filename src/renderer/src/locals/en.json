@@ -1,5 +1,6 @@
 {
   "common.cancel": "Cancel",
   "main.quit.title": "Quit",
-  "main.quit.description": "Are you sure you want to quit the application?"
+  "main.quit.description": "Are you sure you want to quit the application?",
+  "repositories.title": "Repositories"
 }

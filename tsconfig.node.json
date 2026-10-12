@@ -4,7 +4,8 @@
     "vite.config.mts",
     "vite.main.config.mts",
     "src/main/**/*",
-    "src/preload/**/*"
+    "src/preload/**/*",
+    "src/shared/**/*"
   ],
   "compilerOptions": {
     "composite": true,

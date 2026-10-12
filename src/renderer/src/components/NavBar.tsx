@@ -1,7 +1,6 @@
 import { useResizeWidth } from "@renderer/hooks/useResizeWidth";
-import { IconFolderPlus } from "@tabler/icons-react";
+import type { IconProps } from "@tabler/icons-react";
 import type React from "react";
-import { Button } from "./Button";
 import { Text } from "./Text";
 
 const DEFAULT_WIDTH = 300;
@@ -32,16 +31,51 @@ export function Navbar({ children }: { children?: React.ReactNode }) {
 
 type NavBarTitleProps = {
 	title: string;
-	onAdd?: () => void;
+	children?: React.ReactNode;
 };
 
-export function NavBarTitle({ title, onAdd }: NavBarTitleProps) {
+export function NavBarTitle({ title, children }: NavBarTitleProps) {
 	return (
-		<div className="inline-flex items-center justify-between px-2.5 py-1">
+		<div className="inline-flex items-center px-2.5 py-1">
 			<Text>{title}</Text>
-			<Button variant="ghost" size="icon-xs" onClick={onAdd}>
-				<IconFolderPlus />
-			</Button>
+			<div className="inline-flex items-center ms-auto gap-0.5">{children}</div>
+		</div>
+	);
+}
+
+type NavBarItemProps = {
+	title: string;
+	icon: React.ForwardRefExoticComponent<
+		IconProps & React.RefAttributes<SVGSVGElement>
+	>;
+	children?: React.ReactNode;
+};
+
+export function NavBarItem({ title, icon, children }: NavBarItemProps) {
+	const Icon = icon;
+	return (
+		<div className="inline-flex items-center ms-3 me-3 py-0.5">
+			<Icon height={14} />
+			<Text>{title}</Text>
+			<div className="inline-flex items-center ms-auto gap-0.5">{children}</div>
+		</div>
+	);
+}
+
+type NavBarSubItemProps = {
+	title: string;
+	children?: React.ReactNode;
+};
+
+export function NavBarSubItem({ title, children }: NavBarSubItemProps) {
+	return (
+		<div className="group inline-flex items-center ms-4.5 me-2.5 ps-4.5 rounded-md hover:bg-sidebar-accent/60">
+			<Text className="overflow-hidden whitespace-nowrap text-ellipsis select-none py-0.75">
+				{title}
+			</Text>
+			<div className="hidden group-hover:inline-flex items-center ms-auto gap-0.5 *:size-5">
+				{children}
+			</div>
 		</div>
 	);
 }

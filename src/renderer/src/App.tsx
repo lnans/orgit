@@ -1,6 +1,7 @@
 import { AppHeader } from "./components/AppHeader";
-import { NavBarTitle, Navbar } from "./components/NavBar";
+import { Navbar } from "./components/NavBar";
 import { TitleBarButtons } from "./components/TitleBarButtons";
+import { RepositoriesList } from "./features/repositories/components/RepositoriesList";
 
 function App() {
 	return (
@@ -9,9 +10,8 @@ function App() {
 			<TitleBarButtons />
 			<div className="flex flex-1 h-dvh">
 				<Navbar>
-					<NavBarTitle title="Repositories" />
+					<RepositoriesList />
 				</Navbar>
-				<div className="w-full overflow-auto mt-7"></div>
 			</div>
 		</div>
 	);
