@@ -1,5 +1,5 @@
 import { useToggle } from "@renderer/hooks/useToggle";
-import { IPC } from "@renderer/ipcRenderer";
+import { ipc } from "@renderer/ipcRenderer";
 import { cn } from "@renderer/utils/className";
 import {
 	IconMinus,
@@ -25,7 +25,7 @@ export function TitleBarButtons() {
 	const [confirmOpened, toggleConfirmOpened, setConfirmOpened] =
 		useToggle(false);
 
-	const onQuit = React.useCallback(() => IPC.windowClose(), []);
+	const onQuit = React.useCallback(() => ipc.windowClose(), []);
 
 	return (
 		<div className="absolute window-no-drag top-1.75 h-7 px-3 z-999">
@@ -38,12 +38,12 @@ export function TitleBarButtons() {
 				<TitleBarButton
 					icon={IconMinus}
 					color="bg-traffic-orange"
-					onClick={IPC.windowMinimize}
+					onClick={ipc.windowMinimize}
 				/>
 				<TitleBarButton
 					icon={IconPlus}
 					color="bg-traffic-green"
-					onClick={IPC.windowMaximize}
+					onClick={ipc.windowMaximize}
 				/>
 			</div>
 

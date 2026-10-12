@@ -4,12 +4,15 @@
     "vite.config.mts",
     "vite.main.config.mts",
     "src/main/**/*",
-    "src/preload/**/*",
+    "src/preload/index.ts",
     "src/shared/**/*"
   ],
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./.cache/tsconfig.node.tsbuildinfo",
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@shared/*": ["./src/shared/*"]
+    }
   }
 }
