@@ -9,6 +9,7 @@
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],
+  "exclude": ["node_modules", "tests/main"],
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./.cache/tsconfig.web.tsbuildinfo",

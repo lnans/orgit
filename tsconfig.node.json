@@ -6,13 +6,15 @@
     "vitest.config.mts",
     "src/main/**/*",
     "src/preload/index.ts",
-    "src/shared/**/*"
+    "src/shared/**/*",
+    "tests/main/**/*.ts"
   ],
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./.cache/tsconfig.node.tsbuildinfo",
     "types": ["node"],
     "paths": {
+      "@main/*": ["./src/main/*"],
       "@shared/*": ["./src/shared/*"]
     }
   }
