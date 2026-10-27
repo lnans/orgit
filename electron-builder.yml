@@ -3,14 +3,14 @@ productName: Orgit
 directories:
   buildResources: build
 files:
-  - '!**/.vscode/*'
-  - '!**/.yarn/*'
-  - '!src/*'
-  - '!scripts/*'
-  - '!{vite.config.mts,vite.main.config.mts}'
-  - '!{.yarnrc.yml,yarn.lock}'
-  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
-  - '!node_modules/{electron,@electron-internal,@electron/get}/**'
+  - "!**/.vscode/*"
+  - "!**/.yarn/*"
+  - "!src/*"
+  - "!scripts/*"
+  - "!{vite.config.mts,vite.main.config.mts}"
+  - "!{.yarnrc.yml,yarn.lock}"
+  - "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
+  - "!node_modules/{electron,@electron-internal,@electron/get}/**"
 asarUnpack:
   - resources/**
 win:

@@ -1,4 +1,4 @@
-import { TitleBarButtons } from "@renderer/components/TitleBarButtons";
+import { TitleBarButtons } from "@renderer/components/layout/TitleBarButtons";
 import { expect, test } from "vitest";
 import { userEvent } from "vitest/browser";
 import { type RenderResult, render } from "vitest-browser-react";

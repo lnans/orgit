@@ -1,7 +1,7 @@
 import { useResizeWidth } from "@renderer/hooks/useResizeWidth";
 import type { IconProps } from "@tabler/icons-react";
 import type React from "react";
-import { Text } from "./Text";
+import { Text } from "../Text";
 
 const DEFAULT_WIDTH = 300;
 const MAX_WIDTH = 800;

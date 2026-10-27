@@ -18,7 +18,7 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "./AlertDialog";
+} from "../overlays/AlertDialog";
 
 export function TitleBarButtons() {
 	const { t } = useTranslation();

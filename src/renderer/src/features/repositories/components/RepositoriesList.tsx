@@ -1,9 +1,8 @@
-import { Button } from "@renderer/components/Button";
-import { NavBarTitle } from "@renderer/components/NavBar";
-import { IconFolderPlus } from "@tabler/icons-react";
+import { NavBarTitle } from "@renderer/components/layout/NavBar";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useRepositories } from "../stores/repositoriesStore";
+import { RepositoryAddForm } from "./RepositoryAddForm";
 import { RepositoryItem } from "./RepositoryItem";
 import { RepositoryWorktreeItem } from "./RepositoryWorktreeItem";
 
@@ -14,9 +13,7 @@ export function RepositoriesList() {
 	return (
 		<>
 			<NavBarTitle title={t("repositories.title")}>
-				<Button variant="ghost" size="icon-xs">
-					<IconFolderPlus />
-				</Button>
+				<RepositoryAddForm />
 			</NavBarTitle>
 
 			{repositories.map((repo) => (

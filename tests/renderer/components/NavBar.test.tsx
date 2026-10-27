@@ -4,7 +4,7 @@ import {
 	NavBarSubItem,
 	NavBarTitle,
 	Navbar,
-} from "@renderer/components/NavBar";
+} from "@renderer/components/layout/NavBar";
 import { IconFolderOpen } from "@tabler/icons-react";
 import { expect, test } from "vitest";
 import { userEvent } from "vitest/browser";

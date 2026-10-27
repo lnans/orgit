@@ -1,5 +1,5 @@
 import { Button } from "@renderer/components/Button";
-import { NavBarSubItem } from "@renderer/components/NavBar";
+import { NavBarSubItem } from "@renderer/components/layout/NavBar";
 import type { WorktreeDto } from "@shared/types/WorktreeDto";
 import { IconTerminal2, IconTrash } from "@tabler/icons-react";
 

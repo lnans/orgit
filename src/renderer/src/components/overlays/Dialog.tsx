@@ -2,7 +2,7 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { cn } from "@renderer/utils/className";
 import { IconX } from "@tabler/icons-react";
 import type React from "react";
-import { Button } from "./Button";
+import { Button } from "../Button";
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
 	return <DialogPrimitive.Root data-slot="dialog" {...props} />;

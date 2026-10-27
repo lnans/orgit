@@ -1,6 +1,6 @@
-import { AppHeader } from "./components/AppHeader";
-import { Navbar } from "./components/NavBar";
-import { TitleBarButtons } from "./components/TitleBarButtons";
+import { AppHeader } from "./components/layout/AppHeader";
+import { Navbar } from "./components/layout/NavBar";
+import { TitleBarButtons } from "./components/layout/TitleBarButtons";
 import { RepositoriesList } from "./features/repositories/components/RepositoriesList";
 
 function App() {

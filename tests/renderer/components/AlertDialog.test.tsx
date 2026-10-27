@@ -1,3 +1,4 @@
+import { Button } from "@renderer/components/Button";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -9,8 +10,7 @@ import {
 	AlertDialogMedia,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@renderer/components/AlertDialog";
-import { Button } from "@renderer/components/Button";
+} from "@renderer/components/overlays/AlertDialog";
 import { IconAlertTriangle } from "@tabler/icons-react";
 import { expect, test } from "vitest";
 import { render } from "vitest-browser-react";

@@ -1,4 +1,4 @@
-import { AppHeader } from "@renderer/components/AppHeader";
+import { AppHeader } from "@renderer/components/layout/AppHeader";
 import { expect, test } from "vitest";
 import { render } from "vitest-browser-react";
 
