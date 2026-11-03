@@ -1,6 +1,13 @@
 {
   "common.cancel": "Cancel",
-  "main.quit.title": "Quit",
+  "common.validate": "Validate",
+  "form.invalidChars": "invalid character",
+  "form.required": "required",
   "main.quit.description": "Are you sure you want to quit the application?",
-  "repositories.title": "Repositories"
+  "main.quit.title": "Quit",
+  "repositories.clone": "Repositories",
+  "repositories.name": "Name",
+  "repositories.new": "New repository",
+  "repositories.title": "Repositories",
+  "repositories.url": "Repository URL"
 }
