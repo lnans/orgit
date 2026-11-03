@@ -1,4 +1,4 @@
-import { Text } from "@renderer/components/Text";
+import { Text } from "@renderer/components/ui/Text";
 import { expect, test } from "vitest";
 import { render } from "vitest-browser-react";
 

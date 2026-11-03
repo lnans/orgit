@@ -1,6 +1,6 @@
 import { Button } from "@renderer/components/Button";
 import { NavBarItem } from "@renderer/components/layout/NavBar";
-import { Text } from "@renderer/components/Text";
+import { Text } from "@renderer/components/ui/Text";
 import type { RepositoryDto } from "@shared/types/RepositoryDto";
 import {
 	IconFolderOpen,
